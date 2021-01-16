@@ -1,0 +1,8 @@
+.layout {
+  max-width: 868px;
+  margin: 0 16px;
+
+  @media (min-width: 900px) {
+    margin: 0 auto;
+  }
+}

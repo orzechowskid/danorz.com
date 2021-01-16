@@ -1,0 +1,23 @@
+.container {
+  margin: 0 16px;
+  max-width: 868px;
+
+  @media (min-width: 900px) {
+    margin: 0 auto;
+  }
+
+  flex-grow: 1;
+  display: flex;
+  align-items: stretch;
+}
+
+.feed {
+  order: 2;
+  flex-grow: 1;
+  min-width: 100px;
+}
+
+.otherStuff {
+  order: 1;
+  flex-basis: 20%;
+}

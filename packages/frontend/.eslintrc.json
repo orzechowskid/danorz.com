@@ -1,0 +1,73 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": [
+    "../../.eslintrc.json",
+    "plugin:react/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "jsx": true,
+    "sourceType": "module",
+    "project": [ "./tsconfig.json" ]
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "no-case-declarations": "off",
+    "no-const-assign": "error",
+    "no-multi-assign": "off",
+    "no-return-assign": [ "error", "except-parens" ],
+    "no-shadow": [
+      "warn", {
+        "builtinGlobals": true
+      } ],
+    "no-underscore-dangle": "off",
+    "no-unused-vars": [
+      "warn", {
+        "varsIgnorePattern": "types"
+      } ],
+    "prefer-const": "warn",
+
+    "import/default": "error",
+    "import/named": "error",
+    "import/no-extraneous-dependencies": [
+      "warn", {
+        "devDependencies": false
+      } ],
+    "import/no-mutable-exports": "warn",
+    "import/no-nodejs-modules": "error",
+    "import/no-self-import": "error",
+    "import/no-unresolved": "error",
+    "import/no-webpack-loader-syntax": "error",
+    "import/prefer-default-export": "off",
+
+    "jsx-a11y/href-no-hash": "off",
+    "jsx-a11y/label-has-for": "off",
+
+    "react/destructuring-assignment": [
+      "warn", "always", {
+        "ignoreClassFields": true
+      } ],
+    "react/jsx-filename-extension": "off",
+    "react/jsx-indent": [ "warn", 2 ],
+    "react/jsx-indent-props": [ "warn", 2 ],
+    "react/no-unknown-property": [ "error" ],
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "@orzechowskid/eslint-import-resolver-parcel": {
+        "fileExtensions": [ ".js" ],
+        "rootDir": "public",
+      }
+    },
+    "react": {
+      "pragma": "h",
+      "version": "16.0"
+    }
+  }
+}

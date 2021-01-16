@@ -1,0 +1,31 @@
+@import '../theme.css';
+
+.siteBanner {
+  padding: 8px;
+}
+
+.bannerContents {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dismissTrigger {
+  font-size: 24px;
+  font-weight: 600;
+  color: unset;
+  background-color: transparent;
+  border: 0;
+}
+
+.info {
+  background-color: var(--severity-info);
+}
+
+.warning {
+  background-color: var(--severity-warning);
+}
+
+.danger {
+  color: var(--text-inverted);
+  background-color: var(--severity-danger);
+}

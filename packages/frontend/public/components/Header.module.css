@@ -1,0 +1,9 @@
+@import '../theme.css';
+
+.header {
+  position: sticky;
+  top: 0;
+  font-size: 24px;
+  color: var(--foreground-primary);
+  background: var(--background-primary);
+}

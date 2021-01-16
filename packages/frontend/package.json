@@ -1,0 +1,41 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "wmr build --prerender",
+    "start": "wmr"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/types": "^7.12.12",
+    "@orzechowskid/eslint-import-resolver-parcel": "^1.0.4",
+    "@rollup/plugin-alias": "^3.1.1",
+    "@rollup/plugin-replace": "^2.3.4",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.16.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-react": "^7.21.5",
+    "stylelint": "^13.8.0",
+    "stylelint-config-recess-order": "^2.3.0",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-order": "^4.1.0",
+    "wmr": "^1.1.0"
+  },
+  "alias": {
+    "react": "preact/compat",
+    "react-dom": "preact/compat"
+  },
+  "dependencies": {
+    "intl-messageformat": "^9.4.0",
+    "markdown-to-jsx": "^7.1.0",
+    "preact": "^10.5.7",
+    "preact-iso": "^0.3.0",
+    "reselect": "^4.0.0",
+    "unistore": "^3.5.2"
+  }
+}

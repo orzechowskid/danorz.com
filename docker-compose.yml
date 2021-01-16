@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  web-backend:
+    build:
+      context: ./packages/backend
+    ports:
+      - 8000:8000
+    environment:
+      - PORT=8000
+  web-frontend:
+    build:
+      context: ./packages/frontend
+    ports:
+      - 8001:8001
+    environment:
+      - PORT=8001
+      - API_SERVER=web-backend:8000
+    depends_on:
+      - web-backend
+      

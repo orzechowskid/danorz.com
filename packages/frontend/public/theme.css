@@ -1,0 +1,11 @@
+:root {
+  --background-primary: #4f6272;
+  --background-secondary: #404e5c;
+  --foreground-primary: #acc18a;
+  --foreground-secondary: #dafeb7;
+  --text-normal: #222222;
+  --text-inverted: #fafafa;
+  --severity-info: lightblue;
+  --severity-warning: gold;
+  --severity-danger: firebrick;
+}

@@ -1,0 +1,17 @@
+.primary {
+  padding: 8px;
+  background: tomato;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  outline: 0;
+
+  &:focus {
+    border: 1px solid tomato;
+    box-shadow: 1px 1px 4px #a0a0a0;
+  }
+}
+
+.secondary {
+  padding: 8px;
+  background-color: teal;
+}
