@@ -1,24 +1,28 @@
-import FeedItem from '../../../components/FeedItem';
+import * as types from '~/types';
+
+import FeedItem from '~/components/FeedItem';
 import {
-  useRemoteData
+  useGetData
 } from '~/utils/useRemoteData';
 
-import * as types from '../../../types';
+import styles from './Feed.module.css';
 
 /** @type {types.Component<undefined>} */
 function Feed() {
   /** @type {types.RemoteData<types.BlogPost>} */
-  const posts = useRemoteData(`blog/posts`);
+  const posts = useGetData(`blog/posts`);
 
   return (
     <>
-      <div>{posts?.metadata.error ?? ''}</div>
+      <div>{posts?.metadata.error}</div>
 
-      {posts?.data.map(
-        (post) => (
-          <FeedItem key={post._id} {...post} />
-        )
-      ) ?? ''}
+      <div className={styles.feed}>
+        {posts?.data.map(
+          (post) => (
+            <FeedItem key={post._id} {...post} />
+          )
+        )}
+      </div>
     </>
   );
 }

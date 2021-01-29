@@ -1,0 +1,9 @@
+# code stuff
+node_modules
+
+# editor stuff
+**/*~
+**/.#*
+**/.projectile
+**/.log
+**/#*#

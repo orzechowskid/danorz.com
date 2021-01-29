@@ -1,141 +1,124 @@
-/* eslint-env browser */
+import * as types from '~/types';
 
-const API_PATH = `/api/1`;
+const API_HOST = process.env.API_URL;
+const API_PATH = `api/1`;
+
+/** @typedef {'GET'|'POST'|'PUT'} HttpMethod */
 
 /**
- * requests JSON data from API endpoint
- *
- * @param {String} path
- * @return {Promise}
+ * @param {string} apiEndpoint
+ * @param {HttpMethod} method
+ * @param {T} [payload]
+ * @param {Object} [opts] - extra `window.fetch` options
+ * @return {Promise<types.RemoteData<T>>}
+ * @template T
  */
-async function getData(path) {
-  const response = await window.fetch(`${API_PATH}/${path}`, {
-    credentials: `include`
-  });
-
+async function doFetch(apiEndpoint, method, payload, opts={}) {
   try {
-    return await response.json();
+    const response = await window.fetch(`${API_HOST}/${API_PATH}/${apiEndpoint}`, {
+      body: payload,
+      method,
+      ...opts
+    });
+    const json = await response.json();
+
+    return json;
   } catch (ex) {
     return {
+      data: [],
       metadata: {
         count: -1,
-        error: `unknown error`
+        error: ex.message
       }
     };
   }
 }
 
-/*
-export async function getChunkedData(path) {
-    try {
-        const response = await window.fetch(`${API_PATH}/${path}`, {
-            credentials: `include`
-        });
-
-        return response.json();
-    } catch (ex) {
-        throw getErrorFromNetworkObject(ex);
-    }
+/**
+ * @param {string} apiEndpoint
+ * @param {HttpMethod} method
+ * @param {Object} [opts] - extra `window.fetch` options
+ * @return {Promise<Response>}
+ */
+async function doRawFetch(apiEndpoint, method, opts={}) {
+  return window.fetch(`${API_HOST}/${API_PATH}/${apiEndpoint}`, {
+    method,
+    ...opts
+  });
 }
-*/
+
+/**
+ * fetches JSON data from API endpoint
+ *
+ * @param {string} apiEndpoint
+ * @return {Promise<types.RemoteData<T>>}
+ * @template T
+ */
+async function getData(apiEndpoint) {
+  return doFetch(apiEndpoint, `GET`);
+}
 
 /**
  * posts JSON data to API endpoint
  *
- * @param {string} path
- * @param {object} [data]
- * @returns {Promise<object>}
+ * @param {string} apiEndpoint
+ * @param {T} payload
+ * @returns {Promise<types.RemoteData<T>>}
+ * @template T
  */
-async function postData(path, data) {
-  const response = await window.fetch(`${API_PATH}/${path}`, {
-    body: JSON.stringify(data),
+async function postData(apiEndpoint, payload) {
+  return doFetch(apiEndpoint, `POST`, payload, {
     headers: {
       'Content-Type': `application/json`
-    },
-    method: `POST`
+    }
   });
-
-  try {
-    return await response.json();
-  } catch (ex) {
-    return {
-      metadata: {
-        count: -1,
-        error: `unknown error`
-      }
-    };
-  }
 }
 
 /**
  * puts JSON data to API endpoint
  *
- * @param {String} path
- * @param {Object} data
- * @return {Promise<any>}
+ * @param {String} apiEndpoint
+ * @param {T} payload
+ * @return {Promise<types.RemoteData<T>>}
+ * @template T
  */
-async function putData(path, data) {
-  const response = await window.fetch(`${API_PATH}/${path}`, {
-    body: JSON.stringify(data),
+async function putData(apiEndpoint, payload) {
+  return doFetch(apiEndpoint, `PUT`, payload, {
+    headers: {
+      'Content-Type': `application/json`
+    }
+  });
+}
+
+/**
+ * requests data from API endpoint and returns the fetch object with no processing
+ *
+ * @param {String} apiEndpoint
+ * @param {Object} [opts] - extra `window.fetch` options
+ * @return {Promise<Response>}
+ */
+function rawGetData(apiEndpoint, opts={}) {
+  return doRawFetch(apiEndpoint, `GET`, opts);
+}
+
+/**
+ * writes data to API endpoint and returns the fetch object with no processing
+ *
+ * @param {String} apiEndpoint
+ * @param {Object} payload
+ * @param {Object} [opts] - extra `window.fetch` options
+ * @return {Promise<Response>}
+ */
+function rawPostData(apiEndpoint, payload, opts={}) {
+  return doRawFetch(apiEndpoint, `POST`, payload, {
     headers: {
       'Content-Type': `application/json`
     },
-    method: `PUT`
+    ...opts
   });
-
-  try {
-    return await response.json();
-  } catch (ex) {
-    return {
-      metadata: {
-        count: -1,
-        error: `unknown error`
-      }
-    };
-  }
-}
-
-/**
- * gets JSON data from API endpoint and returns the fetch object with no processing
- *
- * @param {String} path
- * @return {Promise<Response>}
- */
-function rawGetData(path) {
-  return window.fetch(`${API_PATH}/${path}`, {
-    credentials: `include`
-  });
-}
-
-/**
- * posts JSON data to API endpoint and returns the fetch object with no processing
- *
- * @param {String} path
- * @param {Object=} data
- * @return {Promise<Response>}
- */
-function rawPostData(path, data) {
-  let args = {
-    credentials: `include`,
-    method: `POST`
-  };
-
-  if (data) {
-    args = {
-      ...args,
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': `application/json`
-      }
-    };
-  }
-
-  return window.fetch(`${API_PATH}/${path}`, args);
 }
 
 export {
-  API_PATH as _apiPath,
-
   getData,
   postData,
   putData,

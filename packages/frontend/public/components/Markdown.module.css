@@ -1,0 +1,27 @@
+.markdown blockquote {
+  padding: var(--gutter-sm);
+  border-left: var(--border-width-blockquote) solid var(--border-color-blockquote);
+}
+
+.markdown code {
+  padding: var(--gutter-xs);
+  background: var(--color-code-block-background);
+}
+
+.markdown > pre > code {
+  display: block;
+  padding: var(--gutter-md);
+  border-radius: var(--border-radius-code-block);
+}
+
+.markdown li {
+  /* make room for the list-style indicators */
+  /* stylelint-disable-next-line magic-numbers/magic-numbers */
+  margin-left: 1em;
+  line-height: var(--line-height-body-copy);
+  list-style: initial;
+}
+
+.markdown > * ~ * {
+  margin-top: var(--gutter-lg);
+}

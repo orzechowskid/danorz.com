@@ -1,14 +1,14 @@
-import FeedItem from '../../../components/FeedItem';
-import {
-  useRemoteData
-} from '../../../utils/useRemoteData';
+import * as types from '~/types';
 
-import * as types from '../../../types';
+import FeedItem from '~/components/FeedItem';
+import {
+  useGetData
+} from '~/utils/useRemoteData';
 
 /** @type {types.Component<undefined>} */
 function Feed() {
   /** @type {types.RemoteData<types.BlogPost>} */
-  const posts = useRemoteData(`my/posts`);
+  const posts = useGetData(`my/posts`);
 
   return (
     <>

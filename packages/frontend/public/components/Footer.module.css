@@ -1,4 +1,11 @@
 .footer {
-  color: #fafafa;
-  background: #4f6272;
+  padding: var(--gutter-lg) 0;
+  color: var(--color-footer-foreground);
+  background: var(--color-footer-background);
+}
+
+.footer a,
+.footer a:visited {
+  line-height: var(--line-height-footer-nav);
+  color: var(--color-footer-foreground);
 }

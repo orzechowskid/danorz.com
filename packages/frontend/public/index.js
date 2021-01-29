@@ -19,7 +19,8 @@ import {
   initialState
 } from './state/selectors';
 
-import './App.module.css';
+import './theme.css';
+import './global.css';
 
 const publicRoutes = {
   '/blog': lazy(() => import('./pages/blog/index.js'))
@@ -42,10 +43,10 @@ export function App(serverData) {
         <main id="main">
           <Router>
             {Object.entries(publicRoutes).map(
-              ([path, Component]) => <Component path={path} key={path} />
+              ([ path, Component ]) => <Component path={path} key={path} />
             )}
             {Object.entries(privateRoutes).map(
-              ([path, Component]) => <PrivateRoute component={Component} path={path} key={path} />
+              ([ path, Component ]) => <PrivateRoute component={Component} path={path} key={path} />
             )}
             <NotFound default />
           </Router>
@@ -54,7 +55,7 @@ export function App(serverData) {
         <Footer />
 
         <aside>
-          <dialog aria-modal="true" id="modal-dialog" tabindex="-1"></dialog>
+          <dialog aria-modal="true" id="modal-dialog" tabIndex="-1"></dialog>
         </aside>
       </ErrorBoundary>
     </LocationProvider>

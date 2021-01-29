@@ -1,8 +1,21 @@
 {
   "extends": [ "stylelint-config-standard", "stylelint-config-recess-order" ],
+  "plugins": [
+    "stylelint-magic-numbers"
+  ],
   "rules": {
     "color-hex-length": null,
-    "indentation": 2
+    "indentation": 2,
+
+    "magic-numbers/magic-colors": [ true ],
+    "magic-numbers/magic-numbers": [
+      true,
+      {
+        "acceptedNumbers": [ 0 ],
+        "acceptedValues": [ "100%" ],
+        "severity": "error"
+      }
+    ]
   }
 }
 

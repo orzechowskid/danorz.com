@@ -9,8 +9,8 @@ function Footer() {
     <footer className={styles.footer}>
       <nav className={layoutStyles.layout}>
         <ul>
-          <li>Home</li>
-          <li>Blog</li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/blog">Blog</a></li>
         </ul>
       </nav>
     </footer>

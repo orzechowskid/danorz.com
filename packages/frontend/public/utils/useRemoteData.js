@@ -1,36 +1,63 @@
+import * as types from '~/types';
+
 import {
   useEffect,
   useState
 } from 'preact/hooks';
 
-import * as types from '../types';
-
-const API_ROOT = `api/1`;
+import {
+  getData,
+  postData
+} from '~/utils/api';
 
 /**
  * @param {string} apiEndpoint
- * @return {types.RemoteData<T>}
+ * @return {types.RemoteData<T>?}
  * @template T
  */
-function useRemoteData(apiEndpoint) {
-  /** @type {types.LocalState<T[]>} */
+function useGetData(apiEndpoint) {
+  /** @type {types.LocalState<types.RemoteData<T>>} */
   const [ data, setData ] = useState();
 
-  useEffect(function() {
-    async function doFetch() {
-      const response = await window.fetch(`${process.env.API_URL}/${API_ROOT}/${apiEndpoint}`);
-      /** @type {T[]} */
-      const json = await response.json();
+  useEffect(function onMount() {
+    async function doGet() {
+      /** @type {types.RemoteData<T>} */
+      const json = await getData(apiEndpoint);
 
       setData(json);
     }
 
-    doFetch();
-  }, []);
+    doGet();
+  }, [ apiEndpoint ]);
+
+  return data;
+}
+
+/**
+ * @param {string} apiEndpoint
+ * @param {T} payload
+ * @return {types.RemoteData<T>?}
+ * @template T
+ */
+function usePostData(apiEndpoint, payload) {
+  /** @type {types.LocalState<types.RemoteData<T>>} */
+  const [ data, setData ] = useState();
+
+  useEffect(function onMount() {
+    async function doPost() {
+      /** @type {types.RemoteData<T>} */
+      const json = await postData(apiEndpoint, payload);
+
+      setData(json);
+    }
+
+    doPost();
+  }, [ apiEndpoint, payload ]);
 
   return data;
 }
 
 export {
-  useRemoteData
+  useGetData,
+  usePostData
 };

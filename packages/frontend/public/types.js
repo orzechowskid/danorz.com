@@ -1,7 +1,6 @@
-import 'preact';
-
+/* this doesn't reeeeally return an Element but it's a good hint for now */
 /**
- * @typedef {function(Props): preact.VNode} Component
+ * @typedef {function(Props): Element?} Component
  * @template Props
  */
 
@@ -67,6 +66,13 @@ import 'preact';
  * @property {string[]} [tags]
  * @property {string} text
  * @property {string} title
+ */
+
+/**
+ * @typedef {Object} AnalyticsEvent
+ * @property {string} eventType
+ * @property {string} [eventAction]
+ * @property {string} [eventContext]
  */
 
 export {};

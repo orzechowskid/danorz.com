@@ -1,5 +1,6 @@
 {
   "env": {
+    "es6": true,
     "node": true
   },
   "extends": [
@@ -20,6 +21,7 @@
     "no-unused-vars": [ "warn", {
       "varsIgnorePattern": "types"
     } ],
+    "prefer-destructuring": "off",
 
     "import/named": "warn",
     "import/no-extraneous-dependencies": [ "warn", {

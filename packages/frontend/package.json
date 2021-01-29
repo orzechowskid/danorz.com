@@ -23,6 +23,7 @@
     "stylelint": "^13.8.0",
     "stylelint-config-recess-order": "^2.3.0",
     "stylelint-config-standard": "^20.0.0",
+    "stylelint-magic-numbers": "^1.0.2",
     "stylelint-order": "^4.1.0",
     "wmr": "^1.1.0"
   },
@@ -31,11 +32,10 @@
     "react-dom": "preact/compat"
   },
   "dependencies": {
-    "intl-messageformat": "^9.4.0",
-    "markdown-to-jsx": "^7.1.0",
-    "preact": "^10.5.7",
+    "intl-messageformat": "^9.4.3",
+    "markdown-to-jsx": "^7.1.1",
+    "preact": "^10.5.11",
     "preact-iso": "^0.3.0",
-    "reselect": "^4.0.0",
     "unistore": "^3.5.2"
   }
 }

@@ -1,11 +1,37 @@
+/* stylelint-disable magic-numbers/magic-numbers, magic-numbers/magic-colors */
+
 :root {
-  --background-primary: #4f6272;
-  --background-secondary: #404e5c;
-  --foreground-primary: #acc18a;
-  --foreground-secondary: #dafeb7;
-  --text-normal: #222222;
-  --text-inverted: #fafafa;
-  --severity-info: lightblue;
-  --severity-warning: gold;
-  --severity-danger: firebrick;
+  --border-color-blockquote: #d0d0e0;
+  --border-radius-code-block: 2px;
+  --border-width-blockquote: 4px;
+  --box-shadow-header: 0 4px 8px #f0f0f0;
+  --color-body-copy: #222222;
+  --color-code-block-background: #f0f0fa;
+  --color-footer-background: #4f6272;
+  --color-footer-foreground: #fafafa;
+  --color-header: #222222;
+  --color-input-background: #ffffff;
+  --color-link: #2c2ce0;
+  --color-link-visited: #7939a0;
+  --color-page-background: #fafafa;
+  --color-severity-info: lightblue;
+  --color-severity-warning: gold;
+  --color-severity-danger: firebrick;
+  --font-family-body-copy: 'Inter', sans-serif;
+  --font-size-body-copy: 18px;
+  --font-size-feeditem-byline: 18px;
+  --font-size-logotype: 24px;
+  --font-weight-body-copy: 300;
+  --font-weight-feeditem-byline: 300;
+  --font-weight-headers: 500;
+  --font-weight-link: 500;
+  --gutter-base-unit: 8px;
+  --gutter-xs: calc(var(--gutter-base-unit) / 4);
+  --gutter-sm: calc(var(--gutter-base-unit) * 1);
+  --gutter-md: calc(var(--gutter-base-unit) * 2);
+  --gutter-lg: calc(var(--gutter-base-unit) * 4);
+  --gutter-xl: calc(var(--gutter-base-unit) * 8);
+  --line-height-body-copy: 1.5;
+  --line-height-footer-nav: 1.5;
+  --width-big-enough: 900px;
 }

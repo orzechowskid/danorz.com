@@ -1,9 +1,11 @@
-@import '../theme.css';
-
 .header {
   position: sticky;
   top: 0;
-  font-size: 24px;
-  color: var(--foreground-primary);
-  background: var(--background-primary);
+  padding: var(--gutter-md) 0;
+  margin-bottom: var(--gutter-md);
+  font-size: var(--font-size-logotype);
+  color: var(--color-header);
+  background: var(--color-page-background);
+  border-bottom: transparent;
+  box-shadow: var(--box-shadow-header);
 }

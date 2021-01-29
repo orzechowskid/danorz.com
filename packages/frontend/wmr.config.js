@@ -22,3 +22,18 @@ export async function start(config) {
     })
   ];
 }
+
+export async function build(config) {
+  config.plugins = [
+    ...config.plugins,
+    replace({
+      'process.env.API_URL': JSON.stringify(process.env.API_URL)
+    }),
+    alias({
+      entries: [{
+        find: '~',
+        replacement: path.resolve(`./public`)
+      }]
+    })
+  ];
+}

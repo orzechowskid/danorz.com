@@ -36,8 +36,8 @@ function PrivateRoute(props) {
 
   useEffect(function componentDidMount() {
     if (!state.isSignedIn) {
-      window.history.pushState(undefined, ``, `/blog`);
-      route(`/blog`);
+      window.history.pushState(undefined, ``, `/`);
+      route(`/`);
     }
   }, []);
 

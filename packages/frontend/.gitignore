@@ -1,2 +1,6 @@
 dist
 .cache
+.log
+.projectile
+node_modules
+*~

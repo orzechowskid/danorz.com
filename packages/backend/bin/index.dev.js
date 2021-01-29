@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import http from 'http';
 
 import dotenv from 'dotenv';

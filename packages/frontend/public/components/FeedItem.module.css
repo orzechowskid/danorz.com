@@ -1,0 +1,24 @@
+.byline {
+  margin-top: var(--gutter-sm);
+  font-size: var(--font-size-feeditem-byline);
+  font-weight: var(--font-weight-feeditem-byline);
+}
+
+.tagList,
+.tagList li {
+  display: inline;
+}
+
+.tagList li:not(:last-child)::after {
+  margin-right: var(--gutter-xs);
+  content: ',';
+}
+
+header {
+  margin-bottom: var(--gutter-lg);
+}
+
+address {
+  display: inline;
+  font-style: unset;
+}

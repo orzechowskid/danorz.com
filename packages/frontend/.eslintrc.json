@@ -13,6 +13,7 @@
     "project": [ "./tsconfig.json" ]
   },
   "plugins": [
+    "import",
     "react"
   ],
   "rules": {
@@ -41,6 +42,7 @@
     "import/no-nodejs-modules": "error",
     "import/no-self-import": "error",
     "import/no-unresolved": "error",
+    "import/no-unused-modules": "error",
     "import/no-webpack-loader-syntax": "error",
     "import/prefer-default-export": "off",
 
@@ -62,7 +64,7 @@
     "import/resolver": {
       "@orzechowskid/eslint-import-resolver-parcel": {
         "fileExtensions": [ ".js" ],
-        "rootDir": "public",
+        "rootDir": "public"
       }
     },
     "react": {
