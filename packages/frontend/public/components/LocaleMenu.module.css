@@ -1,0 +1,24 @@
+.localeMenuHeader {
+  text-align: center;
+  filter: grayscale();
+}
+
+.speechBubble {
+  position: relative;
+  bottom: var(--gutter-md);
+}
+
+.localeOption {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: var(--gutter-sm);
+}
+
+.localeOption span {
+  position: absolute;
+
+  /* one-off */
+  /* stylelint-disable-next-line magic-numbers/magic-numbers */
+  left: 60%;
+}

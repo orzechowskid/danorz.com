@@ -1,13 +1,18 @@
-import Layout from './Layout';
+
+import SiteMenu from './SiteMenu';
 
 import styles from './Header.module.css';
+import layoutStyles from './Layout.module.css';
 
 function Header() {
   return (
-    <header id="header" className={styles.header}>
-      <Layout>
-        header
-      </Layout>
+    <header
+      className={`${layoutStyles.layout} ${styles.header}`}
+      id="header"
+    >
+      <h1>header</h1>
+
+      <SiteMenu />
     </header>
   );
 }

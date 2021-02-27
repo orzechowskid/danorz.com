@@ -1,16 +1,17 @@
+import * as types from '~/types';
+
 import IntlMessageFormat from 'intl-messageformat';
 import {
   useCallback
 } from 'preact/hooks';
 
 import {
-  useGlobalState
-} from '../state/globalState';
-import {
+  selectDictionary,
   selectLocale
-} from '../state/selectors';
-
-import * as types from '../types';
+} from '~/state/i18n';
+import {
+  useSelectors
+} from '~/utils/useGlobalState';
 
 /**
  * @param {string} locale
@@ -35,9 +36,9 @@ export function datestring(locale, value, args = {}) {
  * @returns {string}
  */
 function number(locale, value) {
-    return new IntlMessageFormat(`{x, number}`, locale).format({
-        x: value
-    });
+  return new IntlMessageFormat(`{x, number}`, locale).format({
+    x: value
+  });
 }
 
 /**
@@ -58,12 +59,27 @@ function timestamp(locale, value, args = {}) {
 
 /**
  * @param {string} locale
+ * @param {Object} dictionary
  * @param {string} key
  * @param {Object} [values={}]
  * @return {string}
  */
-export function translate(locale, key, values = {}) {
-  const str = `${locale}:${key}`;
+export function translate(locale, dictionary, key, values = {}) {
+  if (!dictionary) {
+    return ``;
+  }
+
+  const [
+    namespace,
+    realKey
+  ] = key.split(`:`);
+  const str = dictionary?.[namespace]?.[realKey];
+
+  if (!str) {
+    console.warn(`no entry in ${locale} dictionary found for ${namespace || '<undefined>'}:${realKey || '<undefined>'}`);
+
+    return key;
+  }
 
   return new IntlMessageFormat(str, locale).format(values);
 }
@@ -80,9 +96,11 @@ export function translate(locale, key, values = {}) {
  * @return {I18nFunctions}
  */
 function useI18n() {
-  const [{
+  const {
+    dictionary,
     locale
-  }] = useGlobalState({
+  } = useSelectors({
+    dictionary: selectDictionary,
     locale: selectLocale
   });
   const date = useCallback(
@@ -94,8 +112,8 @@ function useI18n() {
     [ locale ]
   );
   const t = useCallback(
-    (...args) => translate(locale, ...args),
-    [ locale ]
+    (...args) => translate(locale, dictionary, ...args),
+    [ locale, dictionary ]
   );
   const time = useCallback(
     (...args) => timestamp(locale, ...args),

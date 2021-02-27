@@ -2,6 +2,8 @@ import express from 'express';
 
 import analyticsRoutes from './analyticsRoutes';
 import blogRoutes from './blogRoutes';
+import envRoutes from './envRoutes';
+import i18nRoutes from './i18nRoutes';
 import privateRoutes from './privateRoutes';
 
 function factory(dbConnection) {
@@ -21,6 +23,8 @@ function factory(dbConnection) {
 
   router.use(`/analytics`, analyticsRoutes);
   router.use(`/blog`, blogRoutes);
+  router.use(`/env`, envRoutes);
+  router.use(`/i18n`, i18nRoutes);
   router.use(`/my`, privateRoutes);
 
   return router;

@@ -1,0 +1,28 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": "../../.eslintrc.json",
+  "plugins": ["import", "jsdoc"],
+  "rules": {
+    "no-case-declarations": "off",
+    "no-return-assign": ["error", "except-parens"],
+    "no-shadow": ["warn", {
+      "builtinGlobals": true
+    }],
+    "no-underscore-dangle": "off",
+    "no-unused-vars": ["warn", {
+      "varsIgnorePattern": "^_.+$"
+    }],
+    "import/named": "warn",
+    "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off",
+  },
+  "settings": {
+    "import/resolver": {
+      "parcel": {
+        "rootDir": "src"
+      }
+    }
+  }
+}

@@ -17,12 +17,21 @@
     "react"
   ],
   "rules": {
+    "brace-style": [
+      "error", 
+      "stroustrup", {
+        "allowSingleLine": true
+      } ],
+    "curly": "error",
     "no-case-declarations": "off",
     "no-const-assign": "error",
     "no-multi-assign": "off",
     "no-return-assign": [ "error", "except-parens" ],
     "no-shadow": [
       "warn", {
+        "allow": [
+          "name"
+        ],
         "builtinGlobals": true
       } ],
     "no-underscore-dangle": "off",
@@ -31,6 +40,11 @@
         "varsIgnorePattern": "types"
       } ],
     "prefer-const": "warn",
+    "prefer-destructuring": [
+      "warn", {
+        "array": false,
+        "object": true
+      } ],
 
     "import/default": "error",
     "import/named": "error",

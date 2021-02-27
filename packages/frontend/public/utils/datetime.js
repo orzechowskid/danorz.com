@@ -1,19 +1,19 @@
 /**
  * @param {string} id
- * @return {Date}
+ * @return {number?}
  */
 function mongoIdToTimestamp(id) {
   if (!id) {
-    throw new Error(`no id provided`);
+    return;
   }
 
   const rawDate = parseInt(id.slice(0, 8), 16);
 
   if (Number.isNaN(rawDate)) {
-    return undefined;
+    return;
   }
 
-  return new Date(parseInt(id.slice(0, 8), 16) * 1000);
+  return new Date(parseInt(id.slice(0, 8), 16) * 1000).getTime();
 }
 
 export {

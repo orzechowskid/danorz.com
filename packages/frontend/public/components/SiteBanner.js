@@ -4,8 +4,9 @@ import {
 } from 'preact/hooks';
 
 import {
-  useGlobalState
-} from '~/state/globalState';
+  useActionCreators,
+  useSelectors
+} from '~/utils/useGlobalState';
 import {
   selectBannerDismissable,
   selectBannerId,
@@ -48,19 +49,20 @@ async function dismissBanner(appState, bannerId) {
 
 /** @type {types.Component<undefined>} */
 function SiteBanner() {
-  const [{
+  const {
     bannerDismissable,
     bannerId,
     bannerSeverity,
     bannerText,
     dismissed
-  }, actions ] = useGlobalState({
+  } = useSelectors({
     bannerDismissable: selectBannerDismissable,
     bannerId: selectBannerId,
     bannerSeverity: selectBannerSeverity,
     bannerText: selectBannerText,
     dismissed: selectHasDismissedBanner
-  }, {
+  });
+  const actions = useActionCreators({
     dismissBanner,
     fetchBanner
   });

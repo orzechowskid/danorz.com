@@ -8,32 +8,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export async function start(config) {
-  config.plugins = [
-    ...config.plugins,
-    replace({
-      'process.env.API_URL': JSON.stringify(process.env.API_URL)
-    }),
-    alias({
-      entries: [{
-        find: '~',
-        replacement: path.resolve(`./public`)
-      }]
-    })
-  ];
-}
-
-export async function build(config) {
-  config.plugins = [
-    ...config.plugins,
-    replace({
-      'process.env.API_URL': JSON.stringify(process.env.API_URL)
-    }),
-    alias({
-      entries: [{
-        find: '~',
-        replacement: path.resolve(`./public`)
-      }]
-    })
-  ];
+export default function(config) {
+  config.plugins.push({
+    name: `root-resolve`,
+    resolveId(spec, importer) {
+      return spec.startsWith(`~/`)
+        ? path.resolve(config.cwd, spec.slice(2))
+        : null;
+    }
+  });
 }

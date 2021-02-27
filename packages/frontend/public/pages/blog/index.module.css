@@ -1,0 +1,8 @@
+.page {
+  display: flex;
+}
+
+.busy {
+  margin: auto;
+  align-self: center;
+}

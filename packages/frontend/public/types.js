@@ -20,11 +20,20 @@
 
 /**
  * @typedef {Object} I18nState
+ * @property {Object} dictionaries
  * @property {string} locale
+ * @property {Object} supportedLocales
+ */
+
+/**
+ * @typedef {Object} AppInfoState
+ * @property {string} clientVersion
+ * @property {string} serverVersion
  */
 
 /**
  * @typedef {Object} AppState
+ * @property {AppInfoState} appInfo
  * @property {BannerState} banner
  * @property {I18nState} i18n
  * @property {SessionState} session
@@ -36,7 +45,8 @@
  */
 
 /**
- * @typedef {(AppState, ...) => Promise.<{[x:string]:T}>} ActionCreator
+ * @typedef {(state: AppState, ...) => Promise.<Object.<string,T>>} ActionCreator
+ * @template {string} S
  * @template T
  */
 
@@ -60,9 +70,22 @@
  */
 
 /**
+ * @typedef {Object} FeedItem
+ * @property {boolean} full
+ */
+
+/**
+ * @typedef {Object} BlogPostComment
+ * @property {string} _id
+ * @property {string} gravatarHash
+ * @property {string} name
+ * @property {string} text
+ */
+
+/**
  * @typedef {Object} BlogPost
  * @property {string} _id
- * @property {Comment[]} comments
+ * @property {BlogPostComment[]} comments
  * @property {string[]} [tags]
  * @property {string} text
  * @property {string} title
@@ -73,6 +96,12 @@
  * @property {string} eventType
  * @property {string} [eventAction]
  * @property {string} [eventContext]
+ */
+
+/**
+ * @typedef {Object} PreactRef
+ * @property {T} current
+ * @template T
  */
 
 export {};

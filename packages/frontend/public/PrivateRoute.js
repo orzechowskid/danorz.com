@@ -2,12 +2,12 @@ import {
   useEffect
 } from 'preact/hooks';
 import {
-  useLoc
+  useLocation
 } from 'preact-iso/router';
 
 import {
-  useGlobalState
-} from './state/globalState';
+  useSelectors
+} from './utils/useGlobalState';
 import {
   selectSignedIn
 } from './state/session';
@@ -29,19 +29,21 @@ function PrivateRoute(props) {
     query,
     route,
     url
-  } = useLoc();
-  const [ state ] = useGlobalState({
+  } = useLocation();
+  const {
+    isSignedIn
+  } = useSelectors({
     isSignedIn: selectSignedIn
   });
 
   useEffect(function componentDidMount() {
-    if (!state.isSignedIn) {
+    if (!isSignedIn) {
       window.history.pushState(undefined, ``, `/`);
       route(`/`);
     }
   }, []);
 
-  if (!state.isSignedIn) {
+  if (!isSignedIn) {
     return null;
   }
 

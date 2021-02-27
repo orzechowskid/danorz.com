@@ -1,9 +1,10 @@
-/* stylelint-disable magic-numbers/magic-numbers, magic-numbers/magic-colors */
+/* stylelint-disable magic-numbers/magic-numbers */
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  font-family: var(--font-family-default);
   line-height: 1;
   list-style-type: none;
   border-spacing: 0;
@@ -27,20 +28,51 @@ a:visited {
   color: var(--color-link-visited);
 }
 
-body {
+button {
+  padding: var(--gutter-md);
+  border: var(--border-button);
+}
+
+button:focus {
+  box-shadow: var(--box-shadow-menu-trigger);
+}
+
+form[data-active] input[data-input-touched]:not(:focus):invalid {
+  outline: var(--outline-input-invalid);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-header);
+  font-weight: var(--font-weight-header);
+}
+
+input {
+  background-color: var(--color-input-background);
+}
+
+input:invalid {
+  box-shadow: none;
+}
+
+input[type="text"] {
+  letter-spacing: 0.5px;
+  border: var(--border-text-input);
+}
+
+input[type="password"] {
+  letter-spacing: 4px;
+  border: var(--border-text-input);
+}
+
+#app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: var(--font-family-body-copy);
   font-size: var(--font-size-body-copy);
   font-weight: var(--font-weight-body-copy);
   line-height: var(--line-height-body-copy);
   color: var(--color-body-copy);
   background-color: var(--color-page-background);
-}
-
-input {
-  background-color: var(--color-input-background);
 }
 
 main {
@@ -52,4 +84,8 @@ main {
 
 p {
   line-height: var(--line-height-body-copy);
+}
+
+time {
+  display: block;
 }

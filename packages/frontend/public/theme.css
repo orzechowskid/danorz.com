@@ -2,10 +2,15 @@
 
 :root {
   --border-color-blockquote: #d0d0e0;
+  --border-button: 1px solid #f0f0f0;
   --border-radius-code-block: 2px;
+  --border-text-input: 1px solid #f0f0f0;
   --border-width-blockquote: 4px;
-  --box-shadow-header: 0 4px 8px #f0f0f0;
+  --box-shadow-header: 0 10px 8px -8px #e0e0e0;
+  --box-shadow-menu-trigger: 0 0 3px 3px #e0e0e0;
   --color-body-copy: #222222;
+  --color-busy-indicator-background: #f0f0f0;
+  --color-busy-indicator-foreground: #4f6272;
   --color-code-block-background: #f0f0fa;
   --color-footer-background: #4f6272;
   --color-footer-foreground: #fafafa;
@@ -13,17 +18,23 @@
   --color-input-background: #ffffff;
   --color-link: #2c2ce0;
   --color-link-visited: #7939a0;
+  --color-modal-background: rgba(0, 0, 0, 0.5);
   --color-page-background: #fafafa;
   --color-severity-info: lightblue;
   --color-severity-warning: gold;
   --color-severity-danger: firebrick;
+  --color-version-info: #a0a0a0;
+  --font-family-default: 'Inter', sans-serif;
   --font-family-body-copy: 'Inter', sans-serif;
+  --font-family-header: 'Inter', sans-serif;
   --font-size-body-copy: 18px;
   --font-size-feeditem-byline: 18px;
   --font-size-logotype: 24px;
+  --font-size-site-menu: 16px;
+  --font-size-site-menu-trigger: 24px;
   --font-weight-body-copy: 300;
   --font-weight-feeditem-byline: 300;
-  --font-weight-headers: 500;
+  --font-weight-header: 300;
   --font-weight-link: 500;
   --gutter-base-unit: 8px;
   --gutter-xs: calc(var(--gutter-base-unit) / 4);
@@ -33,5 +44,6 @@
   --gutter-xl: calc(var(--gutter-base-unit) * 8);
   --line-height-body-copy: 1.5;
   --line-height-footer-nav: 1.5;
-  --width-big-enough: 900px;
+  --line-height-menu-trigger: 24px;
+  --outline-input-invalid: 2px solid firebrick;
 }

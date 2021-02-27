@@ -1,0 +1,24 @@
+.signInForm > * ~ * {
+  display: block;
+  margin-top: var(--gutter-md);
+}
+
+.signInForm label > span {
+  padding-left: var(--gutter-sm);
+}
+
+.signInForm input {
+  display: block;
+  width: 100%;
+
+  /* needed for LastPass? */
+  /* stylelint-disable-next-line magic-numbers/magic-numbers */
+  min-width: 100px;
+  padding: var(--gutter-sm);
+  margin-top: var(--gutter-sm);
+}
+
+.signInForm button {
+  display: block;
+  width: 100%;
+}

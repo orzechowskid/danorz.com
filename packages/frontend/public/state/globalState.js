@@ -1,50 +1,31 @@
-import {
-  useEffect,
-  useState
-} from 'preact/hooks';
-import createStore from 'unistore';
+import * as types from '~/types';
 
 import {
-  mapObjectValues
-} from '../utils/helpers';
+  initialState as bannerState
+} from './banner';
+import {
+  initialState as i18nState
+} from './i18n';
+import {
+  initialState as sessionState
+} from './session';
 
-import * as types from '../types';
+/** @type {types.AppInfoState} */
+const appInfoState = {
+  clientVersion: `1.0.0`,
+  serverVersion: `1.0.0`
+};
 
-let store;
+/** @type {types.Selector<string>} */
+export const selectAppClientVersion = (appState) => appState.appInfo.clientVersion;
 
-function selectPartialState(state, selectors) {
-  return mapObjectValues(selectors, (sel) => sel(state));
-}
+/** @type {types.Selector<string>} */
+export const selectAppServerVersion = (appState) => appState.appInfo.serverVersion;
 
-function createGlobalState(initialState) {
-  store = createStore(initialState);
-}
-
-/** @typedef {function(...):any} BoundActionCreator */
-
-/**
- * @param {Object.<string,types.Selector<any>>} [selectors]
- * @param {Object.<string,types.ActionCreator<any>>} [actionCreators]
- * @return {[Object.<string,any>, Object.<string,BoundActionCreator>]} selected values, and bound action creators
- */
-function useGlobalState(selectors = {}, actionCreators = {}) {
-  const [ selectedState, setSelectedState ] = useState(selectPartialState(store.getState(), selectors));
-  const boundActions = mapObjectValues(actionCreators, (a) => store.action(a));
-
-  useEffect(() => {
-    function listener(newState) {
-      setSelectedState(selectPartialState(newState, selectors));
-    }
-
-    store.subscribe(listener);
-
-    return () => store.unsubscribe(listener);
-  }, []);
-
-  return [ selectedState, boundActions ];
-}
-
-export {
-  createGlobalState,
-  useGlobalState
+/** @type {types.AppState} */
+export const initialState = {
+  appInfo: appInfoState,
+  banner: bannerState,
+  i18n: i18nState,
+  session: sessionState
 };

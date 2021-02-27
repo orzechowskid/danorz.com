@@ -1,6 +1,9 @@
 import * as types from '~/types';
 
-import Busy from '~/components/Busy';
+import {
+  useLoc
+} from 'preact-iso/router';
+
 import {
   usePageLoadTracker
 } from '~/utils/usePageLoadTracker';
@@ -11,33 +14,34 @@ import {
 import {
   useGetData
 } from '~/utils/useRemoteData';
-import Feed from './components/Feed';
+import SinglePost from './components/SinglePost';
 
-import styles from './index.module.css';
 import layoutStyles from '../../components/Layout.module.css';
 
-/** @type {types.Component<void>} */
-function Blog() {
+function BlogPost() {
+  const {
+    path
+  } = useLoc();
   /** @type {types.RemoteData<types.BlogPost>} */
-  const posts = useGetData(`blog/posts`);
+  const posts = useGetData(path);
 
   usePageMeta({
     description: `blog post`
   });
-  usePageTitle(function() {
-    return `Blog`;
-  }, []);
+  usePageTitle(function setTitle() {
+    return posts?.data[0]?.title
+      ?? `Blog`;
+  }, [ posts ]);
   usePageLoadTracker([ !!posts?.data ]);
 
   return (
-    <div className={`${layoutStyles.layout} ${styles.page}`}>
-      {!posts && (
-        <Busy className={styles.busy} />
-      )}
-
-      <Feed posts={posts?.data ?? []} />
+    <div className={layoutStyles.layout}>
+      <SinglePost
+        full
+        item={posts?.data?.[0]}
+      />
     </div>
   );
 }
 
-export default Blog;
+export default BlogPost;

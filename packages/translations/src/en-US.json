@@ -1,0 +1,127 @@
+{
+  "common": {
+    "emailAddress": "Email address",
+    "new": "New",
+    "password": "Password",
+    "search": "Search",
+    "title": "Title"
+  },
+  "AccountMenu": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "siteOptions": "Site options",
+    "triggerLabel": "show/hide account menu"
+  },
+  "Blog": {
+    "noPosts": "No posts yet.  Maybe you should write one!",
+    "searchTags": "Search posts by tag"
+  },
+  "BlogComments": {
+    "comments": "comments",
+    "comment-counter": "{commentCount, plural, =1 {# comment} other {# comments} }",
+    "noComments": "comments are disabled for this post"
+  },
+  "BlogPageActions": {
+    "create-post": "Add a new blog post"
+  },
+  "BlogPost": {
+    "add-comment": "add comment...",
+    "author": "author",
+    "published-on": "publish date",
+    "tags": "tags",
+    "comment-count": "comments",
+    "comment-counter": "{commentCount, plural, =1 {# comment} other {# comments} }"
+  },
+  "Header": {
+    "header-navigation": "header navigation"
+  },
+  "Input": {
+    "required": "required"
+  },
+  "LocaleMenu": {
+    "label": "current locale"
+  },
+  "MobileMenuTrigger": {
+    "title": "show site menus"
+  },
+  "NewBlogCommentDialog": {
+    "confirm-dismiss": "Are you sure you want to discard this comment?",
+    "note": "[GitHub-style Markdown](https://guides.github.com/features/mastering-markdown/#syntax) is supported",
+    "title": "Add new comment"
+  },
+  "NewPostDialog": {
+    "addNewPost": "Add new post",
+    "cancel": "Never mind",
+    "confirm-dismiss": "Are you sure you want to discard this post?",
+    "emailAddress": "your email address",
+    "error-not-signed-in": "You must be signed in to create a new post.",
+    "password": "your site password",
+    "post-body": "What's on your mind?",
+    "previewPost": "Preview post",
+    "tagDescription": "enter one or more tags, separated by spaces",
+    "tags": "Tags",
+    "tags-description": "comma-separated list",
+    "title": "Enter a title for your post"
+  },
+  "Page": {
+    "About": "About",
+    "Blog": "Blog",
+    "Photos": "Photos",
+    "PrivateHome": "Your Home",
+    "PublicHome": "Home",
+    "settings": "Settings"
+  },
+  "Pager": {
+    "currentPage": "Page {currentPage, number} of {pageCount, number}",
+    "newer": "Newer",
+    "newest": "Newest",
+    "older": "Older",
+    "oldest": "Oldest"
+  },
+  "PublicHome": {
+    "description-about": "Who do you think you are, anyway?",
+    "description-blog": "Irregularly-updated notes, mostly to myself",
+    "description-photos": "I sometimes take photos"
+  },
+  "Settings": {
+    "settings.about": "About Me settings",
+    "settings.about.image": "header image",
+    "blog": "Blog settings",
+    "blog.allowComments": "Allow others to comment on your blog posts",
+    "blog.repostNew": "Publish new blog posts to other services",
+    "settings.gallery": "Photo gallery settings"
+  },
+  "SettingsPageActions": {
+    "save-settings": "Save changes"
+  },
+  "SignInForm": {
+    "cancel": "Never mind",
+    "password": "Password",
+    "please-wait": "Please wait...",
+    "sign-in": "Sign in",
+    "username": "Username",
+    "username-placeholder": "username or email address"
+  },
+  "SiteMenu": {
+    "client-version": "Client version {version}",
+    "current-locale": "Language and locale",
+    "hello": "Hello",
+    "password": "Password",
+    "server-version": "Server version {version}",
+    "sign-in": "Sign in",
+    "signInDescription": "So you can do things",
+    "sign-out": "Sign out",
+    "signOutDescription": "See you next time!",
+    "site-nav": "site navigation menu",
+    "username": "Username"
+  },
+  "SocialSuggestions": {
+    "noSuggestions": "no suggestions right now; please try again in a little while."
+  },
+  "TagSearchPanel": {
+    "cancel": "Never mind",
+    "find": "Find",
+    "placeholder": "Enter a tag",
+    "title": "Tag"
+  }
+}

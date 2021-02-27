@@ -6,13 +6,14 @@
   "rules": {
     "color-hex-length": null,
     "indentation": 2,
+    "selector-list-comma-newline-after": "off",
 
     "magic-numbers/magic-colors": [ true ],
     "magic-numbers/magic-numbers": [
       true,
       {
         "acceptedNumbers": [ 0 ],
-        "acceptedValues": [ "100%" ],
+        "acceptedValues": [ "100%", "1fr" ],
         "severity": "error"
       }
     ]

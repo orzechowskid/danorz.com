@@ -1,0 +1,20 @@
+{
+  "BlogPost": {
+    "comment-count": "comentarios",
+    "comment-counter": "{commentCount, plural, =1 {# comentario} other {# comentarios} }"
+  },
+  "Page": {
+    "About": "Sobre mí",
+    "Blog": "Blog",
+    "Gallery": "Galería",
+    "PrivateHome": "Inicio",
+    "PublicHome": "Inicio"
+  },
+  "SiteMenu": {
+    "current-locale": "Idioma",
+    "hello": "Hola",
+    "password": "Contraseña",
+    "sign-in": "Identificarse",
+    "username": "Nombre"
+  }
+}

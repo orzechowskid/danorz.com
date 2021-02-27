@@ -7,6 +7,10 @@ class DBConnection {
     this.connection = connection;
   }
 
+  getBlogPost(...args) {
+    return Posts.getPost(...args);
+  }
+
   getBlogPosts(...args) {
     return Posts.getPosts(...args);
   }
