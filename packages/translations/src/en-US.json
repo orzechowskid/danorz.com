@@ -102,6 +102,9 @@
     "username": "Username",
     "username-placeholder": "username or email address"
   },
+  "SiteBanner": {
+    "dismiss": "Dismiss banner"
+  },
   "SiteMenu": {
     "client-version": "Client version {version}",
     "current-locale": "Language and locale",
@@ -113,6 +116,7 @@
     "sign-out": "Sign out",
     "signOutDescription": "See you next time!",
     "site-nav": "site navigation menu",
+    "trigger-label": "show site menu",
     "username": "Username"
   },
   "SocialSuggestions": {

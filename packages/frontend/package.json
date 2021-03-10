@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "wmr build --prerender",
-    "start": "wmr"
+    "start": "wmr --port 8099"
   },
   "keywords": [],
   "author": "",
@@ -18,15 +18,15 @@
     "@rollup/plugin-node-resolve": "^11.2.0",
     "@rollup/plugin-replace": "^2.3.4",
     "dotenv": "^8.2.0",
-    "eslint": "^7.16.0",
+    "eslint": "^7.21.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.21.5",
-    "stylelint": "^13.8.0",
+    "stylelint": "^13.12.0",
     "stylelint-config-recess-order": "^2.3.0",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-magic-numbers": "^1.0.2",
     "stylelint-order": "^4.1.0",
-    "wmr": "^1.1.0"
+    "wmr": "^1.3.2"
   },
   "alias": {
     "react": "preact/compat",
@@ -39,7 +39,7 @@
     "@react-aria/overlays": "^3.6.0",
     "@react-aria/utils": "^3.6.0",
     "@react-stately/overlays": "^3.1.1",
-    "intl-messageformat": "^9.4.3",
+    "intl-messageformat": "^9.5.2",
     "markdown-to-jsx": "^7.1.1",
     "md5.js": "^1.3.5",
     "preact": "^10.5.12",

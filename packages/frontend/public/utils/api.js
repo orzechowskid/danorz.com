@@ -1,29 +1,106 @@
 import * as types from '~/types';
 
-const API_HOST = process.env.API_URL;
-const API_PATH = `api/1`;
-
-/** @typedef {'GET'|'POST'|'PUT'} HttpMethod */
+const API_PATH = `/api/1`;
 
 /**
  * @param {string} apiEndpoint
- * @param {HttpMethod} method
- * @param {T} [payload]
- * @param {Object} [opts] - extra `window.fetch` options
+ * @param {RequestInit} [opts] - extra `window.fetch` options
+ * @return {Promise<Response>}
+ */
+async function rawFetch(apiEndpoint, opts={}) {
+  return window.fetch(`${API_PATH}/${apiEndpoint}`, opts);
+}
+
+/**
+ * fetches JSON data from API endpoint
+ *
+ * @param {string} apiEndpoint
+ * @param {Object} [opts]
  * @return {Promise<types.RemoteData<T>>}
  * @template T
  */
-async function doFetch(apiEndpoint, method, payload, opts={}) {
+async function getData(apiEndpoint, opts = {}) {
   try {
-    const response = await window.fetch(`${API_HOST}/${API_PATH}/${apiEndpoint}`, {
-      body: payload,
-      method,
+    const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
+      method: `GET`,
+      ...opts
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    return response.json();
+  }
+  catch (ex) {
+    return {
+      data: [],
+      metadata: {
+        count: -1,
+        error: ex.message
+      }
+    };
+  }
+}
+
+/**
+ * posts JSON data to API endpoint
+ *
+ * @param {string} apiEndpoint
+ * @param {T} payload
+ * @param {RequestInit} [opts]
+ * @returns {Promise<types.RemoteData<T>>}
+ * @template T
+ */
+async function postData(apiEndpoint, payload, opts = {}) {
+  try {
+    const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': `application/json`
+      },
+      method: `POST`,
       ...opts
     });
     const json = await response.json();
 
     return json;
-  } catch (ex) {
+  }
+  catch (ex) {
+    return {
+      data: [],
+      metadata: {
+        count: -1,
+        error: ex.message
+      }
+    };
+  }
+}
+
+/**
+ * puts JSON data to API endpoint
+ *
+ * @param {String} apiEndpoint
+ * @param {T} payload
+ * @param {RequestInit} [opts]
+ * @return {Promise<types.RemoteData<T>>}
+ * @template T
+ */
+async function putData(apiEndpoint, payload, opts = {}) {
+  try {
+    const response = window.fetch(`${API_PATH}/${apiEndpoint}`, {
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': `application/json`
+      },
+      method: `PUT`,
+      ...opts
+    });
+    const json = await response.json();
+
+    return json;
+  }
+  catch (ex) {
     return {
       data: [],
       metadata: {
@@ -36,92 +113,18 @@ async function doFetch(apiEndpoint, method, payload, opts={}) {
 
 /**
  * @param {string} apiEndpoint
- * @param {HttpMethod} method
- * @param {Object} [opts] - extra `window.fetch` options
- * @return {Promise<Response>}
+ * @return {Promise<void>}
  */
-async function doRawFetch(apiEndpoint, method, opts={}) {
-  return window.fetch(`${API_HOST}/${API_PATH}/${apiEndpoint}`, {
-    method,
-    ...opts
-  });
-}
-
-/**
- * fetches JSON data from API endpoint
- *
- * @param {string} apiEndpoint
- * @return {Promise<types.RemoteData<T>>}
- * @template T
- */
-async function getData(apiEndpoint) {
-  return doFetch(apiEndpoint, `GET`);
-}
-
-/**
- * posts JSON data to API endpoint
- *
- * @param {string} apiEndpoint
- * @param {T} payload
- * @returns {Promise<types.RemoteData<T>>}
- * @template T
- */
-async function postData(apiEndpoint, payload) {
-  return doFetch(apiEndpoint, `POST`, payload, {
-    headers: {
-      'Content-Type': `application/json`
-    }
-  });
-}
-
-/**
- * puts JSON data to API endpoint
- *
- * @param {String} apiEndpoint
- * @param {T} payload
- * @return {Promise<types.RemoteData<T>>}
- * @template T
- */
-async function putData(apiEndpoint, payload) {
-  return doFetch(apiEndpoint, `PUT`, payload, {
-    headers: {
-      'Content-Type': `application/json`
-    }
-  });
-}
-
-/**
- * requests data from API endpoint and returns the fetch object with no processing
- *
- * @param {String} apiEndpoint
- * @param {Object} [opts] - extra `window.fetch` options
- * @return {Promise<Response>}
- */
-function rawGetData(apiEndpoint, opts={}) {
-  return doRawFetch(apiEndpoint, `GET`, opts);
-}
-
-/**
- * writes data to API endpoint and returns the fetch object with no processing
- *
- * @param {String} apiEndpoint
- * @param {Object} payload
- * @param {Object} [opts] - extra `window.fetch` options
- * @return {Promise<Response>}
- */
-function rawPostData(apiEndpoint, payload, opts={}) {
-  return doRawFetch(apiEndpoint, `POST`, payload, {
-    headers: {
-      'Content-Type': `application/json`
-    },
-    ...opts
+async function deleteData(apiEndpoint) {
+  return window.fetch(`${API_PATH}/${apiEndpoint}`, {
+    method: `DELETE`
   });
 }
 
 export {
+  deleteData,
   getData,
   postData,
   putData,
-  rawGetData,
-  rawPostData
+  rawFetch
 };

@@ -17,7 +17,6 @@ import {
 import PrivateRoute from './PrivateRoute';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import SiteBanner from './components/SiteBanner';
 import NotFound from './pages/not-found';
 import {
   initialState
@@ -30,16 +29,26 @@ import {
   selectSupportedLocales
 } from './state/i18n';
 import {
-  createGlobalState, useActionCreators, useSelectors
+  doGetExistingSession,
+  selectPreferredLocale
+} from './state/session';
+import {
+  createGlobalState,
+  useActionCreators,
+  useSelectors
 } from './utils/useGlobalState';
 
 import './theme.css';
 import './global.css';
 
+const Blog = lazy(() => import('./pages/blog/index.js'));
+const BlogPost = lazy(() => import('./pages/blog/index.js'));
+
 /** @type {Object.<string,types.Component>} */
 const publicRoutes = {
-  '/blog': lazy(() => import('./pages/blog/index.js')),
-  '/blog/posts/:id': lazy(() => import('./pages/blog/post.js'))
+  '/blog': Blog,
+  '/blog/posts/:id': BlogPost,
+  '/home': Blog
 };
 
 const privateRoutes = {
@@ -55,57 +64,52 @@ function onNavigate() {
   }, 0);
 }
 
-function useLocaleSetup() {
+function useAppSetup() {
   const {
     locale,
+    preferredLocale,
     supportedLocales
   } = useSelectors({
     locale: selectLocale,
+    preferredLocale: selectPreferredLocale,
     supportedLocales: selectSupportedLocales
   });
   const actions = useActionCreators({
+    doGetExistingSession,
     doSetDictionary,
     doSetLocale,
     doSetSupportedLocales
   });
 
-  useEffect(function getSupportedLocales() {
+  useEffect(function requestAllData() {
     actions.doSetSupportedLocales();
+    actions.doGetExistingSession();
   }, []);
 
-  useEffect(function setInitialLocale() {
-    if (Object.entries(supportedLocales).length === 0) {
+  useEffect(function setLocaleFromUserPreferences() {
+    if (!preferredLocale || Object.entries(supportedLocales).length === 0) {
       return;
     }
 
-    const initialLocale = navigator?.language;
+    actions.doSetLocale(preferredLocale);
+  }, [ supportedLocales, preferredLocale ]);
 
-    actions.doSetLocale(
-      supportedLocales[initialLocale]
-        ? initialLocale
-        : `en-US`
-    );
-  }, [ supportedLocales ]);
-
-  useEffect(function fetchDictionary() {
-    if (!locale) {
+  useEffect(function loadDictionaryForCurrentLocale() {
+    if (!locale || Object.entries(supportedLocales).length === 0) {
       return;
     }
 
     actions.doSetDictionary(locale);
-  }, [ locale ]);
-
+  }, [ supportedLocales, locale ]);
 }
 
 function App() {
-  useLocaleSetup();
+  useAppSetup();
 
   return (
     <>
       <div id="app">
         <a id="skip-link" href="#main">skip to content</a>
-
-        <SiteBanner />
 
         <Header />
 

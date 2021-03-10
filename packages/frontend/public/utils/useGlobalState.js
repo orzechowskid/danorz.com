@@ -53,7 +53,6 @@ function useSelectors(selectors = {}) {
 
   useEffect(function onMount() {
     function listener(newState) {
-      console.log('state changed: updating', Object.keys(selectors));
       setState(selectPartialState(newState, selectors));
     }
 

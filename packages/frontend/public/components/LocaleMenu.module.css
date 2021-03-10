@@ -3,22 +3,17 @@
   filter: grayscale();
 }
 
-.speechBubble {
+.localeMenuHeader span + span {
   position: relative;
   bottom: var(--gutter-md);
 }
 
-.localeOption {
-  position: relative;
-  display: block;
-  width: 100%;
-  margin-top: var(--gutter-sm);
+.localeMenu fieldset label {
+  display: flex;
+  gap: var(--gutter-md);
+  align-items: center;
 }
 
-.localeOption span {
-  position: absolute;
-
-  /* one-off */
-  /* stylelint-disable-next-line magic-numbers/magic-numbers */
-  left: 60%;
+.localeMenu fieldset label + label {
+  margin-top: var(--gutter-md);
 }

@@ -33,9 +33,11 @@ import {
   selectSupportedLocales
 } from '~/state/i18n';
 import {
+  doSignOut,
   selectSignedIn
 } from '~/state/session';
 import {
+  useActionCreators,
   useSelectors
 } from '~/utils/useGlobalState';
 import {
@@ -92,6 +94,9 @@ function SiteMenuContents(props) {
     serverVersion: selectAppServerVersion,
     supportedLocales: selectSupportedLocales
   });
+  const actions = useActionCreators({
+    doSignOut
+  });
 
   return (
     <div
@@ -120,7 +125,7 @@ function SiteMenuContents(props) {
               <button>
                 {t(`Page:settings`)}
               </button>
-              <button>
+              <button onClick={actions.doSignOut}>
                 {t(`SiteMenu:sign-out`)}
               </button>
             </>
@@ -174,7 +179,7 @@ function SiteMenu() {
         {...buttonProps}
         {...triggerProps}
         ref={triggerElRef}
-        aria-label={t('site-menu')}
+        aria-label={t('SiteMenu:trigger-label')}
         className={styles.menuTrigger}
       >
         <span className={styles.menuTriggerIcon}>

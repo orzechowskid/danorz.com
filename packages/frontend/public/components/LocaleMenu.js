@@ -6,12 +6,17 @@ import {
   selectSupportedLocales
 } from '~/state/i18n';
 import {
+  doSetUserPreferredLocale
+} from '~/state/session';
+import {
   useActionCreators,
   useSelectors
 } from '~/utils/useGlobalState';
 import {
   useI18n
 } from '~/utils/useI18n';
+
+import Input from '~/components/Input';
 
 import styles from './LocaleMenu.module.css';
 
@@ -33,46 +38,48 @@ function LocaleMenu(props) {
     supportedLocales: selectSupportedLocales
   });
   const actions = useActionCreators({
-    doSetLocale
+    doSetLocale,
+    doSetUserPreferredLocale
   });
   const {
     t
   } = useI18n();
 
+  function updateLocale(nextLocale) {
+    actions.doSetLocale(nextLocale);
+    actions.doSetUserPreferredLocale(nextLocale);
+  }
+
   return (
-    <div className={className}>
+    <form className={`${styles.localeMenu} ${className}`}>
       <div
-        className={`${styles.siteMenuHeader} ${styles.localeMenuHeader}`}
+        className={styles.localeMenuHeader}
         role="presentation"
       >
         <span>🌐</span>
-        <span className={styles.speechBubble}>💬</span>
+        <span>💬</span>
       </div>
 
-      <ol
+      <fieldset
         aria-label={t(`LocaleMenu:label`)}
         className={styles.localeMenu}
         id="locale-menu"
       >
-        {Object.entries(supportedLocales).map(([locale, localeText]) => (
-          <li
-            key={locale}
-            role="menuitem"
-          >
-            <button
+        {Object.entries(supportedLocales).map(([ locale, localeText ]) => (
+          <label key={locale}>
+            <Input
+              checked={locale.toLowerCase() === currentLocale.toLowerCase()}
               className={styles.localeOption}
-              onClick={() => actions.doSetLocale(locale)}
-            >
-              {localeText}
-
-              {locale === currentLocale && (
-                <span>✓</span>
-              )}
-            </button>
-          </li>
+              name="locale"
+              onClick={() => updateLocale(locale)}
+              type="radio"
+              value={locale}
+            />
+            {localeText}
+          </label>
         ))}
-      </ol>
-    </div>
+      </fieldset>
+    </form>
   );
 }
 

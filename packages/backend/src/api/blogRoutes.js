@@ -31,7 +31,7 @@ router.get(`/posts/:id`, async function getSingleBlogPost(req, res, next) {
   let err = null;
 
   try {
-    const response = await db.getBlogPost({
+    const response = await db.getBlogPosts({
       which: {
         _id: req.params.id
       }

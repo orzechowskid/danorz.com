@@ -7,7 +7,8 @@ import {
   initialState as i18nState
 } from './i18n';
 import {
-  initialState as sessionState
+  initialState as sessionState,
+  name as sessionName
 } from './session';
 
 /** @type {types.AppInfoState} */
@@ -27,5 +28,5 @@ export const initialState = {
   appInfo: appInfoState,
   banner: bannerState,
   i18n: i18nState,
-  session: sessionState
+  [sessionName]: sessionState
 };

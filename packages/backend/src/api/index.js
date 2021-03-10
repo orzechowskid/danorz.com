@@ -1,27 +1,19 @@
 import express from 'express';
 
 import analyticsRoutes from './analyticsRoutes';
+import authRoutes from './authRoutes';
 import blogRoutes from './blogRoutes';
 import envRoutes from './envRoutes';
 import i18nRoutes from './i18nRoutes';
 import privateRoutes from './privateRoutes';
 
-function factory(dbConnection) {
-  const router = express();
-
-  router.use(function addDB(req, res, next) {
-    res.locals.db = dbConnection;
-
-    next();
-  });
-
-  router.use(function noCors(req, res, next) {
-    res.header(`Access-Control-Allow-Headers`, `Content-Type`); // todo: wildcard?
-    res.header(`Access-Control-Allow-Origin`, `*`);
-    next();
+function factory() {
+  const router = express.Router({
+    mergeParams: true
   });
 
   router.use(`/analytics`, analyticsRoutes);
+  router.use(`/auth`, authRoutes);
   router.use(`/blog`, blogRoutes);
   router.use(`/env`, envRoutes);
   router.use(`/i18n`, i18nRoutes);

@@ -16,6 +16,8 @@
 /**
  * @typedef {Object} SessionState
  * @property {boolean} isSignedIn
+ * @property {string} name
+ * @property {string} preferredLocale
  */
 
 /**
@@ -45,7 +47,7 @@
  */
 
 /**
- * @typedef {(state: AppState, ...) => Promise.<Object.<string,T>>} ActionCreator
+ * @typedef {(state: AppState, ...) => (Promise.<Record.<S,T>> | undefined)} ActionCreator
  * @template {string} S
  * @template T
  */

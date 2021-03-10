@@ -37,7 +37,7 @@
     "no-underscore-dangle": "off",
     "no-unused-vars": [
       "warn", {
-        "varsIgnorePattern": "types"
+        "varsIgnorePattern": "(types)|(^_)"
       } ],
     "prefer-const": "warn",
     "prefer-destructuring": [

@@ -5,8 +5,10 @@ import {
 } from 'reselect';
 
 import {
-  rawGetData
+  rawFetch
 } from '~/utils/api';
+
+const name = `i18n`;
 
 /** @type {types.I18nState} */
 export const initialState = {
@@ -16,22 +18,23 @@ export const initialState = {
 };
 
 /** @type {types.Selector<string>} */
-export const selectLocale = (state) => state.i18n.locale?.toLocaleLowerCase();
+export const selectLocale = createSelector(
+  (state) => state[name].locale,
+  () => navigator?.language,
+  (appLocale, browserLocale) => (appLocale || browserLocale || `en-us`).toLowerCase()
+);
 
 /** @type {types.Selector<Object>} */
-export const selectSupportedLocales = (state) => state.i18n.supportedLocales;
+export const selectSupportedLocales = (state) => state[name].supportedLocales;
 
 /** @type {types.Selector<Object>} */
-export const selectDictionaries = (state) => state.i18n.dictionaries
+export const selectDictionaries = (state) => state[name].dictionaries
 
 /** @type {types.Selector<Object>} */
 export const selectDictionary = createSelector(
   selectLocale,
   selectDictionaries,
-  (locale, dictionaries) => {
-    console.log(dictionaries, locale);
-    return dictionaries[locale];
-  }
+  (locale, dictionaries) => dictionaries[locale]
 );
 
 /**
@@ -39,9 +42,11 @@ export const selectDictionary = createSelector(
  * @param {string} newLocale
  */
 export function doSetLocale(appState, newLocale) {
+  document.documentElement.lang = newLocale.split(`-`)[0].toLowerCase();
+
   return {
     i18n: {
-      ...appState.i18n,
+      ...appState[name],
       locale: newLocale
     }
   };
@@ -49,12 +54,14 @@ export function doSetLocale(appState, newLocale) {
 
 /** @type {types.ActionCreator<types.I18nState>} */
 export async function doSetSupportedLocales(appState) {
-  const response = await rawGetData(`i18n/locales`);
+  const response = await rawFetch(`i18n/locales`, {
+    method: `GET`
+  });
   const { locales } = await response.json();
 
   return {
     i18n: {
-      ...appState.i18n,
+      ...appState[name],
       supportedLocales: locales
     }
   }
@@ -67,19 +74,21 @@ export async function doSetSupportedLocales(appState) {
 export async function doSetDictionary(appState, locale) {
   const dictionaries = selectDictionaries(appState);
 
-  if (dictionaries[locale]) {
+  if (dictionaries[locale.toLowerCase()]) {
     return;
   }
 
-  const response = await rawGetData(`i18n/locales/${locale}/dictionary`);
+  const response = await rawFetch(`i18n/locales/${locale}/dictionary`, {
+    method: `GET`
+  });
   const dictionary = await response.json();
 
   return {
-    i18n: {
-      ...appState.i18n,
+    [name]: {
+      ...appState[name],
       dictionaries: {
-        ...appState.i18n.dictionaries,
-        [locale]: dictionary
+        ...appState[name].dictionaries,
+        [locale.toLowerCase()]: dictionary
       }
     }
   };

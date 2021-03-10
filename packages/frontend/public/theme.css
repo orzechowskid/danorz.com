@@ -3,11 +3,14 @@
 :root {
   --border-color-blockquote: #d0d0e0;
   --border-button: 1px solid #f0f0f0;
+  --border-radio-button: 2px solid #808080;
   --border-radius-code-block: 2px;
+  --border-radius-radio-button: 50%;
   --border-text-input: 1px solid #f0f0f0;
   --border-width-blockquote: 4px;
-  --box-shadow-header: 0 10px 8px -8px #e0e0e0;
+  --box-shadow-header: 0 3px 3px -3px #e0e0e0;
   --box-shadow-menu-trigger: 0 0 3px 3px #e0e0e0;
+  --box-shadow-radio-button: 0 0 4px 4px #d0d0d0;
   --color-body-copy: #222222;
   --color-busy-indicator-background: #f0f0f0;
   --color-busy-indicator-foreground: #4f6272;
@@ -20,6 +23,7 @@
   --color-link-visited: #7939a0;
   --color-modal-background: rgba(0, 0, 0, 0.5);
   --color-page-background: #fafafa;
+  --color-radio-button-tick: steelblue;
   --color-severity-info: lightblue;
   --color-severity-warning: gold;
   --color-severity-danger: firebrick;
@@ -27,11 +31,16 @@
   --font-family-default: 'Inter', sans-serif;
   --font-family-body-copy: 'Inter', sans-serif;
   --font-family-header: 'Inter', sans-serif;
+  --font-family-default: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Inter", "Helvetica", "Arial", sans-serif;
+  --font-family-header: var(--font-family-default);
+  --font-family-body-copy: var(--font-family-default);
+  --font-size-banner-dismiss: 30px;
   --font-size-body-copy: 18px;
   --font-size-feeditem-byline: 18px;
   --font-size-logotype: 24px;
   --font-size-site-menu: 16px;
   --font-size-site-menu-trigger: 24px;
+  --font-weight-banner-dismiss: 600;
   --font-weight-body-copy: 300;
   --font-weight-feeditem-byline: 300;
   --font-weight-header: 300;
@@ -42,8 +51,10 @@
   --gutter-md: calc(var(--gutter-base-unit) * 2);
   --gutter-lg: calc(var(--gutter-base-unit) * 4);
   --gutter-xl: calc(var(--gutter-base-unit) * 8);
+  --height-radio-button: 24px;
   --line-height-body-copy: 1.5;
   --line-height-footer-nav: 1.5;
   --line-height-menu-trigger: 24px;
   --outline-input-invalid: 2px solid firebrick;
+  --width-radio-button: var(--height-radio-button);
 }

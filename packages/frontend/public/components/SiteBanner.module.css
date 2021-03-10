@@ -1,29 +1,31 @@
 .siteBanner {
-  padding: 8px;
+  padding: var(--gutter-sm);
 }
 
 .bannerContents {
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
 .dismissTrigger {
-  font-size: 24px;
-  font-weight: 600;
+  padding: var(--gutter-sm);
+  font-size: var(--font-size-banner-dismiss);
+  font-weight: var(--font-weight-banner-dismiss);
   color: unset;
   background-color: transparent;
   border: 0;
 }
 
-.info {
-  background-color: var(--severity-info);
+.siteBanner[data-severity="info"] {
+  background-color: var(--color-severity-info);
 }
 
-.warning {
-  background-color: var(--severity-warning);
+.siteBanner[data-severity="warning"] {
+  background-color: var(--color-severity-warning);
 }
 
-.danger {
+.siteBanner[data-severity="danger"] {
   color: var(--text-inverted);
-  background-color: var(--severity-danger);
+  background-color: var(--color-severity-danger);
 }

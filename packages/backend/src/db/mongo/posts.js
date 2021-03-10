@@ -98,40 +98,6 @@ export async function addPost(dbQuery) {
 }
 
 /** @type {types.DBQueryFunction<types.BlogPost>} */
-export async function getPost(dbQuery) {
-  const {
-    which
-  } = dbQuery;
-  const findArgs = which && which._id
-        ? { _id: which._id }
-        : {};
-
-  try {
-    const dataQuery = Post.find(findArgs)
-          .limit(1)
-          .lean()
-          .exec();
-
-    const data = [].concat(await dataQuery);
-
-    return {
-      data,
-      metadata: {
-        total: data.length
-      }
-    };
-  }
-  catch (ex) {
-    return {
-      data: [],
-      metadata: {
-        error: ex.message
-      }
-    };
-  }
-}
-
-/** @type {types.DBQueryFunction<types.BlogPost>} */
 export async function getPosts(dbQuery) {
   const {
     count = 1,

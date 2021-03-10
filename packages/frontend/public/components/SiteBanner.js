@@ -69,7 +69,6 @@ function SiteBanner() {
   const {
     t
   } = useI18n();
-  const className = `${styles.siteBanner} ${styles[bannerSeverity]}`;
 
   function onDismissBanner() {
     actions.dismissBanner(bannerId);
@@ -82,13 +81,17 @@ function SiteBanner() {
   }
 
   return (
-    <div id="site-banner" className={className}>
+    <div
+      className={styles.siteBanner}
+      data-severity={bannerSeverity}
+      id="site-banner"
+    >
       <Layout className={styles.bannerContents}>
         <Markdown>{bannerText}</Markdown>
 
         {bannerDismissable && (
           <button
-            aria-label={t(`dismiss {banner}`, { banner: `this thing` })}
+            aria-label={t(`SiteBanner:dismiss`)}
             className={styles.dismissTrigger}
             onClick={onDismissBanner}
           >

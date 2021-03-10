@@ -5,6 +5,8 @@ import {
   useState
 } from 'preact/hooks';
 
+import RadioButton from './inputs/RadioButton';
+
 function Input(props) {
   const {
     onFocus
@@ -15,14 +17,24 @@ function Input(props) {
     setTouched(true);
     onFocus?.();
   }, []);
+  const inputProps = {
+    ...props,
+    'data-input-touched': touched || undefined,
+    onFocus: preOnFocus
+  }
 
-  return (
-    <input
-      {...props}
-      data-input-touched={touched || undefined}
-      onFocus={preOnFocus}
-    />
-  );
+  switch (props.type) {
+    case `radio`: {
+      return (
+        <RadioButton {...props} />
+      );
+    }
+    default: {
+      return (
+        <input {...inputProps} />
+      );
+    }
+  }
 }
 
 export default Input;

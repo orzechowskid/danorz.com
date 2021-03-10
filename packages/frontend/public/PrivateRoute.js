@@ -36,10 +36,12 @@ function PrivateRoute(props) {
     isSignedIn: selectSignedIn
   });
 
+  console.log({isSignedIn});
   useEffect(function componentDidMount() {
     if (!isSignedIn) {
-      window.history.pushState(undefined, ``, `/`);
-      route(`/`);
+      console.log(`not signed in`);
+      window.history.pushState(undefined, ``, `/home`);
+      route(`/home`);
     }
   }, []);
 

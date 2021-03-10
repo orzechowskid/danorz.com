@@ -1,18 +1,45 @@
+import connectMongo from 'connect-mongo';
+import session from 'express-session';
 import mongoose from 'mongoose';
 
 import * as Posts from './posts';
+import * as User from './user';
+
+function serializeUser() {
+  return User.serializeUser();
+}
+
+function deserializeUser() {
+  return User.deserializeUser();
+}
+
+function createPassportStrategy() {
+  return User.createPassportStrategy();
+}
 
 class DBConnection {
-  constructor(connection) {
-    this.connection = connection;
+  constructor() {
+    this.serializeUser = serializeUser;
+    this.deserializeUser = deserializeUser;
+    this.createPassportStrategy = createPassportStrategy;
+
+    this.getBlogPosts = Posts.getPosts;
+
+    this.createUser = User.createUser;
+    this.getUser = User.getUser;
+    this.updateUser = User.updateUser;
   }
 
-  getBlogPost(...args) {
-    return Posts.getPost(...args);
-  }
+  getSessionStore() {
+    if (!this.mongoStore) {
+      const MongoStore = connectMongo(session);
 
-  getBlogPosts(...args) {
-    return Posts.getPosts(...args);
+      this.mongoStore = new MongoStore({
+        mongooseConnection: mongoose.connections[0]
+      });
+    }
+
+    return this.mongoStore;
   }
 }
 
@@ -23,28 +50,25 @@ async function init() {
     throw new Error(`missing mongo user/pass or db uri`);
   }
 
-  const connection = await new Promise(function getConnection(res, rej) {
-    const auth = {
-      password: process.env.DB_PASS,
-      user: process.env.DB_USER
-    };
-    const connectionInstance = mongoose.createConnection(
-      process.env.DB_URI, {
-        auth,
-        useFindAndModify: false,
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      }
-    );
+  const auth = {
+    password: process.env.DB_PASS,
+    user: process.env.DB_USER
+  };
 
-    connectionInstance.once(`open`, async function onConnect() {
-      console.info(`connected to database`);
-      Posts.init(connectionInstance);
-      res(new DBConnection(connectionInstance));
-    });
-  });
+  const connection = await mongoose.connect(
+    process.env.DB_URI, {
+      auth,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
+  );
 
-  return connection;
+  Posts.init(connection);
+  User.init(connection);
+
+  return new DBConnection();
 }
 
 export {

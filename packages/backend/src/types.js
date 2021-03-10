@@ -13,6 +13,13 @@
  */
 
 /**
+ * @typedef {Object} User
+ * @property {string} emailAddress
+ * @property {string} name
+ * @property {Object} permissions
+ */
+
+/**
  * @typedef {Object} DBQuery
  * @property {number} [count] return this many things upon read
  * @property {T} [data] create/update body
@@ -52,7 +59,11 @@
 
 /**
  * @typedef {Object} DBConnection
+ * @property {Object} connection
+ * @property {(id: string) => Object} deserializeUser
  * @property {DBQueryFunction<BlogPost>} getBlogPosts
+ * @property {DBQueryFunction<User>} getUser
+ * @property {(user: Object) => string} serializeUser
  */
 
 export {};
