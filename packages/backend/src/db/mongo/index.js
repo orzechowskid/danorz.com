@@ -2,8 +2,10 @@ import connectMongo from 'connect-mongo';
 import session from 'express-session';
 import mongoose from 'mongoose';
 
-import * as Posts from './posts';
-import * as User from './user';
+import * as Content from './content.js';
+import * as LinkPreview from './linkpreview.js';
+import * as Posts from './posts.js';
+import * as User from './user.js';
 
 function serializeUser() {
   return User.serializeUser();
@@ -22,6 +24,12 @@ class DBConnection {
     this.serializeUser = serializeUser;
     this.deserializeUser = deserializeUser;
     this.createPassportStrategy = createPassportStrategy;
+
+    this.getContent = Content.getContent;
+
+    this.createLinkPreview = LinkPreview.createLinkPreview;
+    this.deleteLinkPreview = LinkPreview.deleteLinkPreview;
+    this.getLinkPreview = LinkPreview.getLinkPreview;
 
     this.getBlogPosts = Posts.getPosts;
 
@@ -44,19 +52,19 @@ class DBConnection {
 }
 
 async function init() {
-  if (!process.env.DB_PASS
-      || !process.env.DB_USER
-      || !process.env.DB_URI) {
+  if (!process.env.WEB_BACKEND_DB_PASS
+      || !process.env.WEB_BACKEND_DB_USER
+      || !process.env.WEB_BACKEND_DB_URI) {
     throw new Error(`missing mongo user/pass or db uri`);
   }
 
   const auth = {
-    password: process.env.DB_PASS,
-    user: process.env.DB_USER
+    password: process.env.WEB_BACKEND_DB_PASS,
+    user: process.env.WEB_BACKEND_DB_USER
   };
 
   const connection = await mongoose.connect(
-    process.env.DB_URI, {
+    process.env.WEB_BACKEND_DB_URI, {
       auth,
       useCreateIndex: true,
       useFindAndModify: false,
@@ -65,6 +73,8 @@ async function init() {
     }
   );
 
+  Content.init(connection);
+  LinkPreview.init(connection);
   Posts.init(connection);
   User.init(connection);
 

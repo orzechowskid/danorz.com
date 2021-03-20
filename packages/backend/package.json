@@ -5,12 +5,10 @@
   "engines": {
     "node": "^14.0.0"
   },
-  "main": "index.js",
-  "module": "src/index.js",
+  "main": "bin/index.js",
   "scripts": {
     "build:docker": "./scripts/docker/build.sh",
-    "start": "node-hot ./bin/index.dev.js --config webpack.config.dev.js",
-    "start:docker": "docker run --env-file .env --net=host danorz-backend"
+    "start": "node-hot ./bin/index.dev.js --config webpack.config.dev.js"
   },
   "keywords": [],
   "author": "",
@@ -20,18 +18,19 @@
     "connect-mongo": "^3.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "mongoose": "^5.11.19",
+    "link-preview-js": "^2.1.6",
+    "mongoose": "^5.12.0",
     "passport": "^0.4.1",
     "passport-local-mongoose": "^6.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.8",
+    "@babel/core": "^7.13.10",
     "dotenv": "^8.2.0",
     "esm": "^3.2.25",
-    "node-hot-loader": "^1.21.2",
+    "node-hot-loader": "^1.21.3",
     "progress-bar-webpack-plugin": "^2.1.0",
     "source-map-support": "^0.5.19",
-    "webpack": "^5.24.4",
+    "webpack": "^5.26.0",
     "webpack-cli": "^4.5.0",
     "webpack-node-externals": "^2.5.2"
   }

@@ -1,63 +1,86 @@
-import * as types from '~/types';
-
 import {
+  useCallback,
   useEffect,
   useState
 } from 'preact/hooks';
+import useSWR from 'swr';
+
+import * as types from '~/types.js';
 
 import {
-  getData,
-  postData
-} from '~/utils/api';
+  rawRequest
+} from './api';
 
 /**
- * @param {string} apiEndpoint
- * @return {types.RemoteData<T>?}
- * @template T
+ * @typedef {Object} RemoteDataOpts
+ * @property {string} apiEndpoint
+ * @property {Object} getOpts
+ * @property {boolean} [getOpts.immediate]
+ * @property {Object} setOpts
  */
-function useGetData(apiEndpoint) {
-  /** @type {types.LocalState<types.RemoteData<T>>} */
-  const [ data, setData ] = useState();
-
-  useEffect(function onMount() {
-    async function doGet() {
-      /** @type {types.RemoteData<T>} */
-      const json = await getData(apiEndpoint);
-
-      setData(json);
-    }
-
-    doGet();
-  }, [ apiEndpoint ]);
-
-  return data;
-}
 
 /**
- * @param {string} apiEndpoint
- * @param {T} payload
- * @return {types.RemoteData<T>?}
- * @template T
+ * @typedef {Object} RemoteDataResult
  */
-function usePostData(apiEndpoint, payload) {
-  /** @type {types.LocalState<types.RemoteData<T>>} */
-  const [ data, setData ] = useState();
 
-  useEffect(function onMount() {
-    async function doPost() {
-      /** @type {types.RemoteData<T>} */
-      const json = await postData(apiEndpoint, payload);
+/**
+ * @param {RemoteDataOpts} opts
+ * @return {RemoteDataResult}
+ */
+function useRemoteData(opts) {
+  const {
+    apiEndpoint,
+    getOpts = {},
+    setOpts = {}
+  } = opts;
+  /** @type {types.LocalState<Object>} */
+  const [ remoteData, setRemoteData ] = useState();
+  /** @type {types.LocalState<boolean>} */
+  const [ immediate, setImmediate ] = useState(getOpts.immediate ?? true);
+  const {
+    once,
+    ...otherGetOpts
+  } = getOpts;
+  const getKey = useCallback(function getKey() {
+    return immediate && apiEndpoint;
+  }, [ immediate ]);
+  const isPaused = useCallback(function isPaused() {
+    return remoteData && !once;
+  }, [ remoteData ]);
+  function go(...argz) {
+    console.log(argz);
+  };
+  const swrGetOpts = {
+    isPaused,
+    ...otherGetOpts
+  };
+  const {
+    data,
+    error,
+    isValidating,
+    mutate
+  } = useSWR(getKey, rawRequest, swrGetOpts);
+  const doGet = useCallback(function doGet() {
+    setImmediate(true);
+  }, []);
+  const doSet = useCallback(function doSet() {
+  }, []);
 
-      setData(json);
-    }
+  useEffect(function onRemoteData() {
+    setRemoteData(data);
+  }, [ data ]);
 
-    doPost();
-  }, [ apiEndpoint, payload ]);
-
-  return data;
+  return {
+    doGet,
+    doSet,
+    error,
+    result: remoteData
+  };
 }
+
+function useGetData() {}
 
 export {
-  useGetData,
-  usePostData
+  useRemoteData,
+  useGetData
 };

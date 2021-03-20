@@ -1,11 +1,10 @@
-import * as types from '../types';
-
 import express from 'express';
 import passport from 'passport';
 
+import * as types from '../types.js';
 import {
   ensureSignedIn
-} from './utils';
+} from './utils.js';
 
 const router = express();
 

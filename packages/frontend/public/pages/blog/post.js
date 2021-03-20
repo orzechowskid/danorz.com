@@ -1,27 +1,27 @@
-import * as types from '~/types';
-
 import {
-  useLoc
+  useLocation
 } from 'preact-iso/router';
+
+import * as types from '~/types.js';
 
 import {
   usePageLoadTracker
-} from '~/utils/usePageLoadTracker';
+} from '~/utils/usePageLoadTracker.js';
 import {
   usePageMeta,
   usePageTitle
-} from '~/utils/usePageTitle';
+} from '~/utils/usePageTitle.js';
 import {
   useGetData
-} from '~/utils/useRemoteData';
-import SinglePost from './components/SinglePost';
+} from '~/utils/useRemoteData.js';
+import SinglePost from './components/SinglePost.js';
 
 import layoutStyles from '../../components/Layout.module.css';
 
 function BlogPost() {
   const {
     path
-  } = useLoc();
+  } = useLocation();
   /** @type {types.RemoteData<types.BlogPost>} */
   const posts = useGetData(path);
 

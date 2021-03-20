@@ -5,7 +5,6 @@
 
 .markdown code {
   padding: var(--gutter-xs);
-  background: var(--color-code-block-background);
 }
 
 .markdown > pre > code {

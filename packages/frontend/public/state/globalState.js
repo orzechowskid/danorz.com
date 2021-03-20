@@ -1,15 +1,15 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
 import {
   initialState as bannerState
-} from './banner';
+} from './banner.js';
 import {
   initialState as i18nState
-} from './i18n';
+} from './i18n.js';
 import {
   initialState as sessionState,
   name as sessionName
-} from './session';
+} from './session.js';
 
 /** @type {types.AppInfoState} */
 const appInfoState = {

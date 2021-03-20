@@ -1,11 +1,11 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
 import {
   useCallback,
   useState
 } from 'preact/hooks';
 
-import RadioButton from './inputs/RadioButton';
+import RadioButton from './inputs/RadioButton.js';
 
 function Input(props) {
   const {

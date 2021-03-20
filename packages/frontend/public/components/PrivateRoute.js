@@ -5,14 +5,14 @@ import {
   useLocation
 } from 'preact-iso/router';
 
+import * as types from '~/types.js';
+
 import {
   useSelectors
-} from './utils/useGlobalState';
+} from '~/utils/useGlobalState.js';
 import {
   selectSignedIn
-} from './state/session';
-
-import * as types from './types';
+} from '~/state/session.js';
 
 /**
  * @typedef {Object} PrivateRouteProps
@@ -36,7 +36,7 @@ function PrivateRoute(props) {
     isSignedIn: selectSignedIn
   });
 
-  console.log({isSignedIn});
+  console.log(`PrivateRoute:`, {isSignedIn});
   useEffect(function componentDidMount() {
     if (!isSignedIn) {
       console.log(`not signed in`);

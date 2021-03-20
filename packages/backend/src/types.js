@@ -13,10 +13,21 @@
  */
 
 /**
+ * @typedef {Object} LinkPreview
+ * @property {string} url
+ */
+
+/**
  * @typedef {Object} User
  * @property {string} emailAddress
  * @property {string} name
  * @property {Object} permissions
+ */
+
+/**
+ * @typedef {Object} Content
+ * @property {string} name
+ * @property {string} text
  */
 
 /**

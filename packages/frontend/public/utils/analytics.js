@@ -1,8 +1,8 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
 import {
   postData
-} from './api';
+} from './api.js';
 
 /**
  * @param {types.AnalyticsEvent} eventData

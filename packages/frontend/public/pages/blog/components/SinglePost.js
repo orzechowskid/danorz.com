@@ -1,15 +1,15 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
-import Markdown from '~/components/Markdown';
+import Markdown from '~/components/Markdown.js';
 import {
   mongoIdToTimestamp
-} from '~/utils/datetime';
+} from '~/utils/datetime.js';
 import {
   gravatarHashToUrl
-} from '~/utils/helpers';
+} from '~/utils/helpers.js';
 import {
   useI18n
-} from '~/utils/useI18n';
+} from '~/utils/useI18n.js';
 
 import styles from './SinglePost.module.css';
 
@@ -24,7 +24,7 @@ function TagList(props) {
 
   return (
     <ul
-      aria-label={t(`tags`)}
+      aria-label={t(`BlogPost:tags`)}
       className={styles.tagList}
     >
       {tags.map(
@@ -48,6 +48,7 @@ function SingleComment(props) {
   } = props;
   const {
     date,
+    t,
     time
   } = useI18n();
   const timestamp = new Date(mongoIdToTimestamp(_id));
@@ -56,7 +57,7 @@ function SingleComment(props) {
     <section className={styles.comment}>
       <span className={styles.commentIcon}>
         <img
-          alt=""
+          alt={t(`BlogPost:avatar-alt`)}
           src={gravatarHashToUrl(gravatarHash)}
         />
       </span>
@@ -88,7 +89,7 @@ function Comments(props) {
   return (
     <>
       <h3 className={styles.commentsHeader}>
-        {t(`{numComments, plural, =1 {# comment} other {# comments} }`, { numComments: num(comments.length) })}
+        {t(`BlogPost:comment-counter`, { numComments: num(comments.length) })}
       </h3>
 
       <ol className={styles.comments}>
@@ -177,7 +178,7 @@ function FeedItem(props) {
             <Comments comments={comments} />
           </footer>
         ) : (
-          <a href={`/blog/posts/${_id}#comments`}>{t(`{numComments, plural, =1 {# comment} other {# comments} }`, { numComments: num(comments.length) })}</a>
+          <a href={`/blog/posts/${_id}#comments`}>{t(`BlogPost:comment-counter`, { commentCount: num(comments.length) })}</a>
         )}
     </article>
   );

@@ -1,8 +1,19 @@
-import * as types from '~/types';
-
 import MarkdownToJsx from 'markdown-to-jsx';
 
+import * as types from '~/types.js';
+
+import LinkPreview from '~/components/LinkPreview.js';
+import {
+  preprocess
+} from '~/utils/markdown.js';
+
 import styles from './Markdown.module.css';
+
+/**
+ * @typedef {Object} MarkdownProps
+ * @property {string} children
+ * @property {string} [className]
+ */
 
 function A(props) {
   return (
@@ -14,30 +25,25 @@ function A(props) {
   );
 }
 
-/**
- * @typedef {Object} MarkdownProps
- * @property {string} children
- * @property {string} [className]
- */
-
 /** @type {types.Component<MarkdownProps>} */
 function Markdown(props) {
   const {
     children = ``,
     className = ``
   } = props;
-  //  const
+  const text = preprocess(children);
 
   return (
     <MarkdownToJsx
       className={`${styles.markdown} ${className}`}
       options={{
         overrides: {
-          a: A
+          a: A,
+          'md-preview': LinkPreview
         }
       }}
     >
-      {children}
+      {text}
     </MarkdownToJsx>
   );
 }

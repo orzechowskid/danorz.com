@@ -3,10 +3,12 @@ import {
   useEffect
 } from 'preact/hooks';
 
+import * as types from '~/types.js';
+
 import {
   useActionCreators,
   useSelectors
-} from '~/utils/useGlobalState';
+} from '~/utils/useGlobalState.js';
 import {
   selectBannerDismissable,
   selectBannerId,
@@ -14,15 +16,13 @@ import {
   selectBannerText,
   selectDismissedBanners,
   selectHasDismissedBanner
-} from '~/state/banner';
+} from '~/state/banner.js';
 import {
   useI18n
-} from '~/utils/useI18n';
-import Layout from './Layout';
+} from '~/utils/useI18n.js';
+import Layout from './Layout.js';
 
 import styles from './SiteBanner.module.css';
-
-import * as types from '../types';
 
 /** @type {types.ActionCreator<types.BannerState> */
 async function fetchBanner() {

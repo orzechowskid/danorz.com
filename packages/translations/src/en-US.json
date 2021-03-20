@@ -6,6 +6,9 @@
     "search": "Search",
     "title": "Title"
   },
+  "About": {
+    "title": "About"
+  },
   "AccountMenu": {
     "signIn": "Sign in",
     "signOut": "Sign out",
@@ -16,21 +19,21 @@
     "noPosts": "No posts yet.  Maybe you should write one!",
     "searchTags": "Search posts by tag"
   },
-  "BlogComments": {
-    "comments": "comments",
-    "comment-counter": "{commentCount, plural, =1 {# comment} other {# comments} }",
-    "noComments": "comments are disabled for this post"
-  },
   "BlogPageActions": {
     "create-post": "Add a new blog post"
   },
   "BlogPost": {
     "add-comment": "add comment...",
     "author": "author",
+    "avatar-alt": "icon of author",
+    "comments": "comments",
+    "comment-counter": "{commentCount, plural, =1 {# comment} other {# comments} }",
+    "noComments": "comments are disabled for this post",
     "published-on": "publish date",
-    "tags": "tags",
-    "comment-count": "comments",
-    "comment-counter": "{commentCount, plural, =1 {# comment} other {# comments} }"
+    "tags": "tags"
+  },
+  "EditButton": {
+    "title": "Edit"
   },
   "Header": {
     "header-navigation": "header navigation"

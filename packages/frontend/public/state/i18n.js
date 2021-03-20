@@ -1,12 +1,12 @@
-import * as types from '../types';
-
 import {
   createSelector
 } from 'reselect';
 
+import * as types from '~/types.js';
+
 import {
   rawFetch
-} from '~/utils/api';
+} from '~/utils/api.js';
 
 const name = `i18n`;
 

@@ -1,10 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import http from 'http';
+import path from 'path';
 
 import dotenv from 'dotenv';
 import sourceMapSupport from 'source-map-support';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, `../../..`, `.env.local`) });
 sourceMapSupport.install();
 
 async function go() {
@@ -12,14 +13,14 @@ async function go() {
   const app = await appFactory();
   const server = http.createServer(app);
 
-  server.listen(process.env.PORT);
+  server.listen(process.env.WEB_BACKEND_PORT);
 
   await new Promise(function(res, rej) {
     server.once(`error`, rej);
     server.once(`listening`, res);
   });
 
-  console.info(`server listening on ${process.env.PORT}`);
+  console.info(`server listening on ${process.env.WEB_BACKEND_PORT}`);
 
   if (module.hot) {
     let currentApp = app;

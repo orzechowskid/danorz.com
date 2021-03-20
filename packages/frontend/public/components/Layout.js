@@ -1,6 +1,6 @@
-import styles from './Layout.module.css';
+import * as types from '~/types.js';
 
-import * as types from '~/types';
+import styles from './Layout.module.css';
 
 function Layout(props) {
   const {

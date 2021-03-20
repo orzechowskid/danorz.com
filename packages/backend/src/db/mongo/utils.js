@@ -1,6 +1,4 @@
-import * as types from '../../types';
-
-
+import * as types from '../../types.js';
 
 /**
  * @param {import('mongoose').Model} model

@@ -1,6 +1,6 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
-import SinglePost from './SinglePost';
+import SinglePost from './SinglePost.js';
 
 import styles from './Feed.module.css';
 

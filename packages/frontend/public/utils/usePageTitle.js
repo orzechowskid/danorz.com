@@ -2,10 +2,6 @@ import {
   useEffect
 } from 'preact/hooks';
 
-import {
-  useGetData
-} from '~/utils/useRemoteData';
-
 /**
  * @param {() => string} pageTitleFn
  * @param {Object[]} [deps]
@@ -18,10 +14,13 @@ function usePageTitle(pageTitleFn, deps = []) {
   }, deps);
 }
 
-function usePageMeta(pageMetadata) {
-  const envData = useGetData(`env`);
-
+/**
+ * @param {() => Object.<string,string>} pageMetadataFn
+ * @param {Object[]} [deps]
+ */
+function usePageMeta(pageMetadataFn, deps = []) {
   useEffect(function setPageMeta() {
+    const pageMetadata = pageMetadataFn();
     // console.log(envData);
 
     // TODO: there are probably some pre-canned meta tags which should be present on
@@ -45,7 +44,7 @@ function usePageMeta(pageMetadata) {
         document.querySelector(`meta[name=${k}]`)?.remove();
       });
     };
-  }, [ envData, pageMetadata ]);
+  }, deps);
 }
 
 export {

@@ -1,6 +1,6 @@
 import http from 'http';
 
-import appFactory from '../src/index';
+import appFactory from '../src/index.js';
 
 async function go() {
   const app = await appFactory();

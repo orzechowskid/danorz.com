@@ -1,6 +1,5 @@
-
-import SiteBanner from './SiteBanner';
-import SiteMenu from './SiteMenu';
+import SiteBanner from './SiteBanner.js';
+import SiteMenu from './SiteMenu.js';
 
 import styles from './Header.module.css';
 import layoutStyles from './Layout.module.css';

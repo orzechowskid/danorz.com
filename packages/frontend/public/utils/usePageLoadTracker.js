@@ -5,7 +5,7 @@ import {
 
 import {
   firePageView
-} from '~/utils/analytics';
+} from '~/utils/analytics.js';
 
 /**
  * @param {boolean[]} [doneConditions]

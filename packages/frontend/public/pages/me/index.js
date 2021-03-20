@@ -1,17 +1,14 @@
-import Button from '../../shared/Button';
+import * as types from '../../types.js';
 
-import Feed from './components/Feed';
-
+import layoutStyles from '../../components/Layout.module.css';
 import styles from './index.module.css';
-
-import * as types from '../../types';
 
 /** @type {types.Component<undefined>} */
 function PrivateHome() {
   return (
-    <div className={styles.container}>
+    <div className={layoutStyles.layout}>
       <div className={styles.feed}>
-        <Feed />
+        <span>Feed</span>
       </div>
 
       <aside className={styles.otherStuff}>

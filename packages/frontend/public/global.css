@@ -37,6 +37,11 @@ button:focus {
   box-shadow: var(--box-shadow-menu-trigger);
 }
 
+code {
+  font-family: var(--font-family-code);
+  background: var(--color-code-block-background);
+}
+
 form[data-active] input[data-input-touched]:not(:focus):invalid {
   outline: var(--outline-input-invalid);
 }
@@ -44,6 +49,14 @@ form[data-active] input[data-input-touched]:not(:focus):invalid {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-family-header);
   font-weight: var(--font-weight-header);
+}
+
+h1 {
+  margin: var(--gutter-md) 0;
+}
+
+h2 {
+  margin: var(--gutter-md) 0;
 }
 
 input {
@@ -62,6 +75,12 @@ input[type="text"] {
 input[type="password"] {
   letter-spacing: 4px;
   border: var(--border-text-input);
+}
+
+md-preview {
+  display: block;
+  padding: 16px;
+  background-color: tomato;
 }
 
 #app {

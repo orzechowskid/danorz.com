@@ -1,11 +1,11 @@
-import * as types from '../../types';
+import * as types from '../../types.js';
 
 import mongoose from 'mongoose';
 import mongoosePassportPlugin from 'passport-local-mongoose';
 
 import {
   runStandardGetQuery
-} from './utils';
+} from './utils.js';
 
 const opts = {
   strict: `throw`

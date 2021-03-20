@@ -1,9 +1,8 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
-import FeedItem from '~/components/FeedItem';
 import {
   useGetData
-} from '~/utils/useRemoteData';
+} from '~/utils/useRemoteData.js';
 
 /** @type {types.Component<undefined>} */
 function Feed() {
@@ -16,7 +15,7 @@ function Feed() {
 
       {posts?.data.map(
         (post) => (
-          <FeedItem key={post._id} {...post} />
+          <div key={post._id} {...post} />
         )
       ) ?? ''}
     </>

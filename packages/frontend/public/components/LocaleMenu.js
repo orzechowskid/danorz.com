@@ -1,22 +1,21 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
+import Input from '~/components/Input.js';
 import {
   doSetLocale,
   selectLocale,
   selectSupportedLocales
-} from '~/state/i18n';
+} from '~/state/i18n.js';
 import {
   doSetUserPreferredLocale
-} from '~/state/session';
+} from '~/state/session.js';
 import {
   useActionCreators,
   useSelectors
-} from '~/utils/useGlobalState';
+} from '~/utils/useGlobalState.js';
 import {
   useI18n
-} from '~/utils/useI18n';
-
-import Input from '~/components/Input';
+} from '~/utils/useI18n.js';
 
 import styles from './LocaleMenu.module.css';
 

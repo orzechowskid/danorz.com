@@ -1,17 +1,17 @@
-import * as types from '~/types';
-
 import IntlMessageFormat from 'intl-messageformat';
 import {
   useCallback
 } from 'preact/hooks';
 
+import * as types from '~/types.js';
+
 import {
   selectDictionary,
   selectLocale
-} from '~/state/i18n';
+} from '~/state/i18n.js';
 import {
   useSelectors
-} from '~/utils/useGlobalState';
+} from '~/utils/useGlobalState.js';
 
 /**
  * @param {string} locale

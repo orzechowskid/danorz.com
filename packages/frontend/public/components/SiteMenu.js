@@ -1,5 +1,3 @@
-import * as types from '~/types';
-
 import {
   useButton
 } from '@react-aria/button';
@@ -21,28 +19,30 @@ import {
   useRef
 } from 'preact/hooks';
 
-import LocaleMenu from '~/components/LocaleMenu';
-import ModalDialog from '~/components/ModalDialog';
-import SignInForm from '~/components/SignInForm';
+import * as types from '~/types.js';
+
+import LocaleMenu from '~/components/LocaleMenu.js';
+import ModalDialog from '~/components/ModalDialog.js';
+import SignInForm from '~/components/SignInForm.js';
 import {
   selectAppClientVersion,
   selectAppServerVersion
-} from '~/state/globalState';
+} from '~/state/globalState.js';
 import {
   selectLocale,
   selectSupportedLocales
-} from '~/state/i18n';
+} from '~/state/i18n.js';
 import {
   doSignOut,
   selectSignedIn
-} from '~/state/session';
+} from '~/state/session.js';
 import {
   useActionCreators,
   useSelectors
-} from '~/utils/useGlobalState';
+} from '~/utils/useGlobalState.js';
 import {
   useI18n
-} from '~/utils/useI18n';
+} from '~/utils/useI18n.js';
 
 import styles from './SiteMenu.module.css';
 

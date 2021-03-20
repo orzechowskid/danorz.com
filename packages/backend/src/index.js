@@ -5,10 +5,10 @@ import passport from 'passport';
 
 import {
   factory as apiRouterFactory
-} from './api';
+} from './api/index.js';
 import {
   initDB
-} from './db/index';
+} from './db/index.js';
 
 const ABOUT_ONE_MONTH_IN_MS = 1000 * 86400 * 30;
 
@@ -16,7 +16,7 @@ async function factory() {
   const db = await initDB();
   const app = express();
 
-  app.use((req, res, next) => { console.log(req.method, req.path); next(); });
+  app.use((req, res, next) => { console.log(req.method, req.path, req.query); next(); });
   app.use(function addDb(req, res, next) {
     res.locals.db = db;
 
@@ -28,7 +28,7 @@ async function factory() {
     name: `session`,
     resave: false,
     saveUninitialized: false,
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.WEB_BACKEND_SESSION_SECRET,
     store: db.getSessionStore()
   }));
   app.use(passport.initialize());

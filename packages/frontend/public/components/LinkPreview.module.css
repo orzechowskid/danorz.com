@@ -1,0 +1,57 @@
+.linkPreview {
+  display: block;
+  max-width: var(--max-width-link-preview);
+  margin: var(--gutter-md) auto;
+  border-radius: var(--border-radius-link-preview);
+  box-shadow: var(--box-shadow-menu-trigger);
+}
+
+.linkPreview a {
+  display: grid;
+  grid-template-areas:
+    "img img"
+    "logo title"
+    "logo url";
+  grid-template-columns: max-content 1fr;
+  grid-gap: var(--gutter-sm);
+  padding: var(--gutter-sm);
+  color: inherit;
+}
+
+.linkPreview a:focus {
+  text-decoration: none;
+  outline: var(--outline-link-preview-focus);
+}
+
+.linkPreview a:visited {
+  color: inherit;
+}
+
+.linkPreview .media {
+  grid-area: img;
+  max-width: 100%;
+  border-radius: var(--border-radius-link-preview);
+}
+
+.linkPreview .logo {
+  grid-area: logo;
+  align-self: center;
+  width: var(--width-link-preview-favicon);
+  height: var(--width-link-preview-favicon);
+}
+
+.linkPreview .title {
+  grid-area: title;
+  overflow: hidden;
+  font-weight: var(--font-weight-link-preview-title);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.linkPreview .url {
+  grid-area: url;
+  overflow: hidden;
+  font-size: var(--font-size-link-preview-description);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

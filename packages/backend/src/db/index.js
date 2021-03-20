@@ -1,8 +1,8 @@
-import * as types from '../types';
+import * as types from '../types.js';
 
 import {
   init
-} from './mongo';
+} from './mongo/index.js';
 
 /**
  * @return {Promise<types.DBConnection>}

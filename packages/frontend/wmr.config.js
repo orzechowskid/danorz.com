@@ -4,6 +4,7 @@ import path from 'path';
 
 import alias from '@rollup/plugin-alias';
 import replace from '@rollup/plugin-replace';
+import nomodule from '@wmr-plugins/nomodule';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,4 +18,5 @@ export default function(config) {
         : null;
     }
   });
+  nomodule(config);
 }

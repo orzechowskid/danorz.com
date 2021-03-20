@@ -2,7 +2,7 @@ import {
   createSelector
 } from 'reselect';
 
-import * as types from '../types';
+import * as types from '~/types.js';
 
 export const initialState = {};
 

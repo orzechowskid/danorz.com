@@ -1,17 +1,17 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
-import Busy from '~/components/Busy';
+import Busy from '~/components/Busy.js';
 import {
   usePageLoadTracker
-} from '~/utils/usePageLoadTracker';
+} from '~/utils/usePageLoadTracker.js';
 import {
   usePageMeta,
   usePageTitle
-} from '~/utils/usePageTitle';
+} from '~/utils/usePageTitle.js';
 import {
   useGetData
-} from '~/utils/useRemoteData';
-import Feed from './components/Feed';
+} from '~/utils/useRemoteData.js';
+import Feed from './components/Feed.js';
 
 import styles from './index.module.css';
 import layoutStyles from '../../components/Layout.module.css';
@@ -21,10 +21,12 @@ function Blog() {
   /** @type {types.RemoteData<types.BlogPost>} */
   const posts = useGetData(`blog/posts`);
 
-  usePageMeta({
-    description: `blog post`
-  });
-  usePageTitle(function() {
+  usePageMeta(function setPageMeta() {
+    return {
+      description: `latest blog posts`
+    };
+  }, []);
+  usePageTitle(function setPageTitle() {
     return `Blog`;
   }, []);
   usePageLoadTracker([ !!posts?.data ]);

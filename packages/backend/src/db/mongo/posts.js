@@ -1,13 +1,14 @@
-import * as types from '../../types';
+import * as types from '../../types.js';
 
 import mongoose from 'mongoose';
 
 import {
   CommentModel,
   CommentSchema
-} from './comments';
+} from './comments.js';
 
 const opts = {
+  collection: `posts`,
   strict: `throw`
 };
 

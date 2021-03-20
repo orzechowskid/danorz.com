@@ -1,23 +1,23 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
 import {
   useCallback,
   useState
 } from 'preact/hooks';
 
-import Input from '~/components/Input';
+import Input from '~/components/Input.js';
 import {
   doSignIn
-} from '~/state/session';
+} from '~/state/session.js';
 import {
   getFormData
-} from '~/utils/helpers';
+} from '~/utils/helpers.js';
 import {
   useActionCreators
-} from '~/utils/useGlobalState';
+} from '~/utils/useGlobalState.js';
 import {
   useI18n
-} from '~/utils/useI18n';
+} from '~/utils/useI18n.js';
 
 import styles from './SignInForm.module.css';
 

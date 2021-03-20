@@ -1,12 +1,10 @@
-import * as types from './types';
-
 import 'preact/devtools';
 
 import {
   useEffect
 } from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
-import lazy, {
+import {
   ErrorBoundary
 } from 'preact-iso/lazy';
 import {
@@ -14,46 +12,61 @@ import {
   Router
 } from 'preact-iso/router';
 
-import PrivateRoute from './PrivateRoute';
-import Footer from './components/Footer';
-import Header from './components/Header';
-import NotFound from './pages/not-found';
+import * as types from './types.js';
+
+import PrivateRoute from './components/PrivateRoute.js';
+import Footer from './components/Footer.js';
+import Header from './components/Header.js';
+import About from './pages/about/index.js';
+import Blog from './pages/blog/index.js';
+import BlogPost from './pages/blog/post.js';
+import Home from './pages/home/index.js';
+import Me from './pages/me/index.js';
+import NotFound from './pages/not-found/index.js';
 import {
   initialState
-} from './state/globalState';
+} from './state/globalState.js';
 import {
   doSetDictionary,
   doSetLocale,
   doSetSupportedLocales,
   selectLocale,
   selectSupportedLocales
-} from './state/i18n';
+} from './state/i18n.js';
 import {
   doGetExistingSession,
   selectPreferredLocale
-} from './state/session';
+} from './state/session.js';
 import {
   createGlobalState,
   useActionCreators,
   useSelectors
-} from './utils/useGlobalState';
+} from './utils/useGlobalState.js';
 
 import './theme.css';
 import './global.css';
 
-const Blog = lazy(() => import('./pages/blog/index.js'));
-const BlogPost = lazy(() => import('./pages/blog/index.js'));
-
-/** @type {Object.<string,types.Component>} */
 const publicRoutes = {
+  '*': NotFound,
+  '/': Home,
+  '/about': About,
   '/blog': Blog,
-  '/blog/posts/:id': BlogPost,
-  '/home': Blog
+  '/blog/posts/:postId': BlogPost
 };
 
 const privateRoutes = {
-  '/me': lazy(() => import('./pages/me/index.js'))
+  '/me': Me
 };
+
+const routes = [
+  ...Object.entries(publicRoutes).map(
+    ([ path, C ]) => <C key={path} path={path} />
+  ),
+  ...Object.entries(privateRoutes).map(
+    ([ path, C ]) => <PrivateRoute key={path} component={C} path={path} />
+  ),
+  <NotFound key="404" default />
+];
 
 function onNavigate() {
   /* Router.onLoadEnd() gets called before the router re-renders upon route change */
@@ -81,7 +94,7 @@ function useAppSetup() {
     doSetSupportedLocales
   });
 
-  useEffect(function requestAllData() {
+  useEffect(function requestInitialAppData() {
     actions.doSetSupportedLocales();
     actions.doGetExistingSession();
   }, []);
@@ -114,19 +127,13 @@ function App() {
         <Header />
 
         <main id="main">
-          <ErrorBoundary>
-            <LocationProvider>
+          <LocationProvider>
+            <ErrorBoundary>
               <Router onLoadEnd={onNavigate}>
-                {Object.entries(publicRoutes).map(
-                  ([ path, C ]) => <C path={path} key={path} />
-                )}
-                {Object.entries(privateRoutes).map(
-                  ([ path, C ]) => <PrivateRoute component={C} path={path} key={path} />
-                )}
-                <NotFound default />
+                {routes}
               </Router>
-            </LocationProvider>
-          </ErrorBoundary>
+            </ErrorBoundary>
+          </LocationProvider>
         </main>
 
         <Footer />

@@ -1,16 +1,16 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
 import {
   deleteData,
   getData,
   postData,
   putData
-} from '~/utils/api';
+} from '~/utils/api.js';
 
 export const name = `session`;
 
 export const initialState = {
-  isSignedIn: false,
+  isSignedIn: undefined,
   name: undefined
 };
 

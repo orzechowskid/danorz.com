@@ -1,4 +1,4 @@
-import * as types from '~/types';
+import * as types from '~/types.js';
 
 const API_PATH = `/api/1`;
 
@@ -9,6 +9,27 @@ const API_PATH = `/api/1`;
  */
 async function rawFetch(apiEndpoint, opts={}) {
   return window.fetch(`${API_PATH}/${apiEndpoint}`, opts);
+}
+
+async function rawRequest(apiEndpoint, opts = {}) {
+  try {
+    const response = await rawFetch(apiEndpoint, opts);
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    return response.json();
+  }
+  catch (ex) {
+    return {
+      data: [],
+      metadata: {
+        count: -1,
+        error: ex.message
+      }
+    };
+  }
 }
 
 /**
@@ -121,10 +142,36 @@ async function deleteData(apiEndpoint) {
   });
 }
 
+/**
+ * @param {types.RemoteData<T>} apiResponse
+ * @return {string|T[]|T}
+ * @template T
+ */
+function unwrap(apiResponse) {
+  if (!apiResponse) {
+    return undefined;
+  }
+
+  const {
+    data,
+    metadata
+  } = apiResponse;
+
+  if (metadata.error) {
+    return metadata.error;
+  }
+
+  return metadata.total === 1
+    ? data[0]
+    : data;
+}
+
 export {
   deleteData,
   getData,
   postData,
   putData,
-  rawFetch
+  rawFetch,
+  rawRequest,
+  unwrap
 };

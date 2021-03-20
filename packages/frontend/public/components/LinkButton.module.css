@@ -1,0 +1,6 @@
+.linkButton {
+  padding: 0;
+  color: var(--color-link);
+  background-color: transparent;
+  border: 0;
+}

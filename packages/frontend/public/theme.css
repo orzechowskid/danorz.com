@@ -5,6 +5,7 @@
   --border-button: 1px solid #f0f0f0;
   --border-radio-button: 2px solid #808080;
   --border-radius-code-block: 2px;
+  --border-radius-link-preview: 2px;
   --border-radius-radio-button: 50%;
   --border-text-input: 1px solid #f0f0f0;
   --border-width-blockquote: 4px;
@@ -28,6 +29,7 @@
   --color-severity-warning: gold;
   --color-severity-danger: firebrick;
   --color-version-info: #a0a0a0;
+  --font-family-code: monospace;
   --font-family-default: 'Inter', sans-serif;
   --font-family-body-copy: 'Inter', sans-serif;
   --font-family-header: 'Inter', sans-serif;
@@ -37,7 +39,9 @@
   --font-size-banner-dismiss: 30px;
   --font-size-body-copy: 18px;
   --font-size-feeditem-byline: 18px;
+  --font-size-link-preview-description: 16px;
   --font-size-logotype: 24px;
+  --font-size-page-edit-button: 16px;
   --font-size-site-menu: 16px;
   --font-size-site-menu-trigger: 24px;
   --font-weight-banner-dismiss: 600;
@@ -45,6 +49,7 @@
   --font-weight-feeditem-byline: 300;
   --font-weight-header: 300;
   --font-weight-link: 500;
+  --font-weight-link-preview-title: 600;
   --gutter-base-unit: 8px;
   --gutter-xs: calc(var(--gutter-base-unit) / 4);
   --gutter-sm: calc(var(--gutter-base-unit) * 1);
@@ -55,6 +60,9 @@
   --line-height-body-copy: 1.5;
   --line-height-footer-nav: 1.5;
   --line-height-menu-trigger: 24px;
+  --max-width-link-preview: 50%;
   --outline-input-invalid: 2px solid firebrick;
+  --outline-link-preview-focus: 1px solid var(--color-link);
+  --width-link-preview-favicon: 32px;
   --width-radio-button: var(--height-radio-button);
 }

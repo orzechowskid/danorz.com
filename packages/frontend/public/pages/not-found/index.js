@@ -1,6 +1,6 @@
 import {
   usePageTitle
-} from '~/utils/usePageTitle';
+} from '~/utils/usePageTitle.js';
 
 import layoutStyles from '~/components/Layout.module.css';
 
