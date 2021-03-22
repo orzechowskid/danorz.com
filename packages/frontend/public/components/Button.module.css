@@ -1,0 +1,16 @@
+.button[aria-pressed="true"] {
+  background-color: var(--color-toggle-button-pressed);
+  box-shadow: var(--box-shadow-toggle-button-pressed);
+}
+
+.button[aria-pressed="true"]:focus {
+  box-shadow: var(--box-shadow-toggle-button-pressed), var(--box-shadow-menu-trigger);
+}
+
+.button[aria-pressed="true"] > * {
+  position: relative;
+  /* stylelint-disable magic-numbers/magic-numbers */
+  top: 2px;
+  left: 2px;
+  /* stylelint-enable magic-numbers/magic-numbers */
+}

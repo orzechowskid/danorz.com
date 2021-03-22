@@ -1,6 +1,16 @@
+import styles from './Button.module.css';
+
 function Button(props) {
+  const {
+    className = ``,
+    ...otherProps
+  } = props;
+
   return (
-    <button {...props} />
+    <button
+      className={`${styles.button} ${className}`}
+      {...otherProps}
+    />
   );
 }
 

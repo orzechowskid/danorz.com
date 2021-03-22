@@ -81,6 +81,11 @@
     "older": "Older",
     "oldest": "Oldest"
   },
+  "PageActions": {
+    "cancel-button": "Cancel",
+    "preview-button": "Preview",
+    "save-button": "Save"
+  },
   "PublicHome": {
     "description-about": "Who do you think you are, anyway?",
     "description-blog": "Irregularly-updated notes, mostly to myself",

@@ -1,37 +1,43 @@
-import LinkButton from '~/components/LinkButton';
-import {
-  useI18n
-} from '~/utils/useI18n';
-
 import styles from './PageTitleContainer.module.css';
 
-/**
- * @typedef {Object} PageTitleContainerProps
- * @property {() => void} onEdit
- * @property {string} title
- */
-
-/** @type {types.Component<PageTitleContainerProps>} */
-function PageTitleContainer(props) {
+function PageTitle(props) {
   const {
-    onEdit,
-    title
+    children
   } = props;
-  const {
-    t
-  } = useI18n();
 
   return (
-    <div className={styles.pageTitleContainer}>
-      <h2 className={styles.pageTitle}>{title}</h2>
-      <LinkButton
-        className={styles.editButton}
-        onClick={onEdit}
-      >
-        {t(`EditButton:title`)}
-      </LinkButton>
+    <h2>{children}</h2>
+  );
+}
+
+function PageActions(props) {
+  const {
+    children
+  } = props;
+
+  return (
+    <div>
+      {children}
     </div>
   );
 }
+
+/** @type {types.Component<>} */
+function PageTitleContainer(props) {
+  const {
+    children
+  } = props;
+
+  return (
+    <div className={styles.pageTitleContainer}>
+      {children}
+    </div>
+  );
+}
+
+export {
+  PageActions,
+  PageTitle
+};
 
 export default PageTitleContainer;

@@ -143,6 +143,19 @@ async function deleteData(apiEndpoint) {
 }
 
 /**
+ * @param {T|T[]} data
+ * @param {types.RemoteData<T>} apiResponse
+ * @return {types.RemoteData<T>}
+ * @template T
+ */
+function wrap(data, apiResponse) {
+  return {
+    ...apiResponse,
+    data: !!data.length && typeof data !== `string` ? data : [ data ]
+  };
+}
+
+/**
  * @param {types.RemoteData<T>} apiResponse
  * @return {string|T[]|T}
  * @template T
@@ -156,6 +169,10 @@ function unwrap(apiResponse) {
     data,
     metadata
   } = apiResponse;
+
+  if (!metadata) {
+    return undefined;
+  }
 
   if (metadata.error) {
     return metadata.error;
@@ -173,5 +190,6 @@ export {
   putData,
   rawFetch,
   rawRequest,
-  unwrap
+  unwrap,
+  wrap
 };

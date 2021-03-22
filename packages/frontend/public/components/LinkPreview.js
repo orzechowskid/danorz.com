@@ -18,7 +18,7 @@ function LinkPreview(props) {
     url
   } = props;
   const {
-    result
+    data
   } = useRemoteData({
     apiEndpoint: `linkpreview?url=${encodeURIComponent(url)}`,
     getOpts: {
@@ -30,7 +30,7 @@ function LinkPreview(props) {
     images,
     title,
     url: linkUrl
-  } = result?.data[0]?.metadata ?? {};
+  } = data?.[0]?.metadata ?? {};
 
   return (
     <div className={styles.linkPreview}>

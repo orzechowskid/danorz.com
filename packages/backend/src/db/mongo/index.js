@@ -26,6 +26,7 @@ class DBConnection {
     this.createPassportStrategy = createPassportStrategy;
 
     this.getContent = Content.getContent;
+    this.updateContent = Content.updateContent;
 
     this.createLinkPreview = LinkPreview.createLinkPreview;
     this.deleteLinkPreview = LinkPreview.deleteLinkPreview;
