@@ -77,21 +77,10 @@ input[type="password"] {
   border: var(--border-text-input);
 }
 
+/* stylelint-disable-next-line selector-type-no-unknown */
 md-preview {
   display: block;
   padding: 16px;
-  background-color: tomato;
-}
-
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  font-size: var(--font-size-body-copy);
-  font-weight: var(--font-weight-body-copy);
-  line-height: var(--line-height-body-copy);
-  color: var(--color-body-copy);
-  background-color: var(--color-page-background);
 }
 
 main {
@@ -105,6 +94,23 @@ p {
   line-height: var(--line-height-body-copy);
 }
 
+textarea {
+  font-family: var(--font-family-code);
+  letter-spacing: 0.5px;
+  border: var(--border-text-input);
+}
+
 time {
   display: block;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-size: var(--font-size-body-copy);
+  font-weight: var(--font-weight-body-copy);
+  line-height: var(--line-height-body-copy);
+  color: var(--color-body-copy);
+  background-color: var(--color-page-background);
 }

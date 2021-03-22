@@ -2,6 +2,7 @@
   display: block;
   max-width: var(--max-width-link-preview);
   margin: var(--gutter-md) auto;
+  background-color: var(--color-page-background);
   border-radius: var(--border-radius-link-preview);
   box-shadow: var(--box-shadow-menu-trigger);
 }

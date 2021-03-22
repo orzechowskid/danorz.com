@@ -1,6 +1,14 @@
 /* stylelint-disable magic-numbers/magic-numbers, magic-numbers/magic-colors */
 
 :root {
+  --background-unsaved-changes:
+    repeating-linear-gradient(
+      45deg,
+      #fff0f0,
+      #fff0f0 15px,
+      var(--color-page-background) 15px,
+      var(--color-page-background) 30px
+    );
   --border-color-blockquote: #d0d0e0;
   --border-button: 1px solid #f0f0f0;
   --border-radio-button: 2px solid #808080;
@@ -12,6 +20,7 @@
   --box-shadow-header: 0 3px 3px -3px #e0e0e0;
   --box-shadow-menu-trigger: 0 0 3px 3px #e0e0e0;
   --box-shadow-radio-button: 0 0 4px 4px #d0d0d0;
+  --box-shadow-toggle-button-pressed: inset 2px 2px 0 0 #e0e0e0;
   --color-body-copy: #222222;
   --color-busy-indicator-background: #f0f0f0;
   --color-busy-indicator-foreground: #4f6272;
@@ -28,6 +37,7 @@
   --color-severity-info: lightblue;
   --color-severity-warning: gold;
   --color-severity-danger: firebrick;
+  --color-toggle-button-pressed: #f0f0f0;
   --color-version-info: #a0a0a0;
   --font-family-code: monospace;
   --font-family-default: 'Inter', sans-serif;

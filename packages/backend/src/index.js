@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
@@ -16,13 +15,12 @@ async function factory() {
   const db = await initDB();
   const app = express();
 
-  app.use((req, res, next) => { console.log(req.method, req.path, req.query); next(); });
+  app.use(express.json());
   app.use(function addDb(req, res, next) {
     res.locals.db = db;
 
     next();
   });
-  app.use(bodyParser.json());
   app.set(`trust proxy`, 1);
   app.use(session({
     name: `session`,
@@ -36,6 +34,8 @@ async function factory() {
   passport.use(db.createPassportStrategy());
   passport.serializeUser(db.serializeUser());
   passport.deserializeUser(db.deserializeUser());
+
+  app.use((req, res, next) => { console.log(req.method, req.path, req.query, req.body); next(); });
 
   app.use(`/api/1`, apiRouterFactory(db));
 

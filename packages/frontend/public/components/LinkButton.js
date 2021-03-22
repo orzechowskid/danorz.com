@@ -1,5 +1,7 @@
 import * as types from '~/types.js';
 
+import Button from '~/components/Button.js';
+
 import styles from './LinkButton.module.css';
 
 /**
@@ -17,7 +19,7 @@ function LinkButton(props) {
   } = props;
 
   return (
-    <button
+    <Button
       className={`${styles.linkButton} ${className}`}
       {...otherProps}
     />
