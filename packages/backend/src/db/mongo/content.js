@@ -39,7 +39,6 @@ export async function updateContent(dbQuery) {
   let total = -1;
   let error;
 
-  console.log({data, which});
   try {
     const response = await Content.findOneAndUpdate(which, { $set: data }, { lean: true, new: true }).exec();
 
