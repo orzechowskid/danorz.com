@@ -1,8 +1,9 @@
 .page {
   display: flex;
+  flex-direction: column;
 }
 
 .busy {
-  margin: auto;
   align-self: center;
+  margin: auto;
 }

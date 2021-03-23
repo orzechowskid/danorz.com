@@ -3,6 +3,8 @@
 }
 
 .byline {
+  display: flex;
+  grid-gap: var(--gutter-sm);
   margin-top: var(--gutter-sm);
   font-size: var(--font-size-feeditem-byline);
   font-weight: var(--font-weight-feeditem-byline);

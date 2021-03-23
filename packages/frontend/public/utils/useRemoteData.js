@@ -22,17 +22,6 @@ import {
  */
 
 /**
- * @typedef {Object} RemoteDataResult
- * @property {Object} data
- * @property {string} localError
- * @property {Object} metadata
- * @property {(arg0: Object) => void} doCreate
- * @property {(arg0: Object) => void} doDelete
- * @property {() => void} doGet
- * @property {(arg0: Object) => void} doUpdate
- */
-
-/**
  * @param {RemoteDataOpts} opts
  * @return {RemoteDataResult}
  */

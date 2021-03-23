@@ -17,8 +17,10 @@
     "triggerLabel": "show/hide account menu"
   },
   "Blog": {
+    "description": "latest blog posts",
     "noPosts": "No posts yet.  Maybe you should write one!",
-    "searchTags": "Search posts by tag"
+    "searchTags": "Search posts by tag",
+    "title": "Blog"
   },
   "BlogPageActions": {
     "create-post": "Add a new blog post"

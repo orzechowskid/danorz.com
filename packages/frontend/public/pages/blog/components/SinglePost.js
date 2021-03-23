@@ -147,17 +147,14 @@ function Timestamp(props) {
 /** @type {types.Component<types.BlogPost>} */
 function FeedItem(props) {
   const {
-    full,
-    item
-  } = props;
-  const {
     _id,
     author,
     comments = [],
+    full,
     tags = [],
     text,
     title
-  } = item;
+  } = props;
   const {
     num,
     t
