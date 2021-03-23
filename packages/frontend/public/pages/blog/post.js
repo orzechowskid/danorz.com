@@ -38,7 +38,6 @@ function BlogPost() {
     apiEndpoint: path.slice(1)
   });
 
-  console.log({data, localError, metadata, path});
   usePageMeta(function setPageMeta() {
     return {
       description: t(`BlogPost:description`)

@@ -89,7 +89,7 @@ function Comments(props) {
   return (
     <>
       <h3 className={styles.commentsHeader}>
-        {t(`BlogPost:comment-counter`, { numComments: num(comments.length) })}
+        {t(`BlogPost:comment-counter`, { commentCount: num(comments.length) })}
       </h3>
 
       <ol className={styles.comments}>
