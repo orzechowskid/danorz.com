@@ -18,11 +18,12 @@ function usePageLoadTracker(doneConditions = []) {
       return;
     }
 
-    if (!doneConditions.length || doneConditions.filter(Boolean).length) {
+    if (doneConditions.every(Boolean)) {
       doneRef.current = true;
 
       firePageView();
 
+      // TODO: move this somewhere else so we're not mixing concerns
       if (window.location.hash) {
         document.querySelector(window.location.hash)?.scrollIntoView();
       }

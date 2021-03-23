@@ -35,10 +35,7 @@ function About() {
     localError,
     metadata
   } = useRemoteData({
-    apiEndpoint: `content/bio`,
-    putOpts: {
-      method: `PUT`
-    }
+    apiEndpoint: `content/bio`
   });
   const page = `About`;
   const pageTitle = t(`${page}:title`);

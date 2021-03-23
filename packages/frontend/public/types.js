@@ -72,6 +72,18 @@
  */
 
 /**
+ * @typedef {Object} RemoteDataResult
+ * @property {T[]} data
+ * @property {string} localError
+ * @property {Object} metadata
+ * @property {(arg0: Object) => void} doCreate
+ * @property {(arg0: Object) => void} doDelete
+ * @property {() => void} doGet
+ * @property {(arg0: Object) => void} doUpdate
+ * @template T
+ */
+
+/**
  * @typedef {Object} FeedItem
  * @property {boolean} full
  */

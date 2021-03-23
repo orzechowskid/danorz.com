@@ -81,7 +81,14 @@ export function translate(locale, dictionary, key, values = {}) {
     return key;
   }
 
-  return new IntlMessageFormat(str, locale).format(values);
+  try {
+    return new IntlMessageFormat(str, locale).format(values);
+  }
+  catch (ex) {
+    console.warn(ex);
+
+    return key;
+  }
 }
 
 /**
