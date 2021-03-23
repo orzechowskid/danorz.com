@@ -79,9 +79,9 @@ function About() {
   }, [ pageTitle ]);
   usePageMeta(function setPageMetaTags() {
     return {
-      description: `about me`
+      description: t(`About:description`)
     }
-  }, []);
+  }, [ t ]);
 
   return (
     <div className={`${layoutStyles.layout}`}>
