@@ -9,10 +9,10 @@ async function go() {
   await new Promise(function(res, rej) {
     server.once(`error`, rej);
     server.once(`listening`, res);
-    server.listen(process.env.PORT);
+    server.listen(process.env.WEB_BACKEND_PORT);
   });
 
-  console.info(`server listening on ${process.env.PORT}`);
+  console.info(`server listening on ${process.env.WEB_BACKEND_PORT}`);
 }
 
 go().catch(function onError(err) {
