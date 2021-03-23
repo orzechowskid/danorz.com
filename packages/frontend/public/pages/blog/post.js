@@ -4,6 +4,10 @@ import {
 
 import * as types from '~/types.js';
 
+import Busy from '~/components/Busy.js';
+import {
+  useI18n
+} from '~/utils/useI18n.js';
 import {
   usePageLoadTracker
 } from '~/utils/usePageLoadTracker.js';
@@ -12,7 +16,7 @@ import {
   usePageTitle
 } from '~/utils/usePageTitle.js';
 import {
-  useGetData
+  useRemoteData
 } from '~/utils/useRemoteData.js';
 import SinglePost from './components/SinglePost.js';
 
@@ -22,24 +26,40 @@ function BlogPost() {
   const {
     path
   } = useLocation();
-  /** @type {types.RemoteData<types.BlogPost>} */
-  const posts = useGetData(path);
-
-  usePageMeta({
-    description: `blog post`
+  const {
+    t
+  } = useI18n();
+  /** @type {types.RemoteDataResult<types.BlogPost>} */
+  const {
+    data,
+    localError,
+    metadata
+  } = useRemoteData({
+    apiEndpoint: path.slice(1)
   });
+
+  console.log({data, localError, metadata, path});
+  usePageMeta(function setPageMeta() {
+    return {
+      description: t(`BlogPost:description`)
+    };
+  }, [ t ]);
   usePageTitle(function setTitle() {
-    return posts?.data[0]?.title
-      ?? `Blog`;
-  }, [ posts ]);
-  usePageLoadTracker([ !!posts?.data ]);
+    return data[0]?.title
+      ?? t(`BlogPost:description`);
+  }, [ data, t ]);
+  usePageLoadTracker([ metadata.count !== undefined ]);
 
   return (
     <div className={layoutStyles.layout}>
-      <SinglePost
-        full
-        item={posts?.data?.[0]}
-      />
+      {data[0] ? (
+        <SinglePost
+          full
+          {...data[0]}
+        />
+      ) : (
+        <Busy />
+      )}
     </div>
   );
 }

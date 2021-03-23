@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState
 } from 'preact/hooks';
 import useSWR from 'swr';
@@ -34,9 +35,11 @@ function useRemoteData(opts) {
     updateOpts = {}
   } = opts;
   /** @type {types.LocalState<types.RemoteData<Object>>} */
-  const [ remoteData, setRemoteData ] = useState();
+  const [ remoteData, setRemoteData ] = useState({ data: [], metadata: {} });
   /** @type {types.LocalState<boolean>} */
   const [ immediate, setImmediate ] = useState(getOpts.immediate ?? true);
+  /** @type {types.PreactRef<number>} */
+  const fetched = useRef(0);
   const {
     once,
     ...otherGetOpts
@@ -45,8 +48,8 @@ function useRemoteData(opts) {
     return immediate && apiEndpoint;
   }, [ apiEndpoint, immediate ]);
   const isPaused = useCallback(function isPaused() {
-    return remoteData && !once;
-  }, [ once, remoteData ]);
+    return (fetched.current > 0) && !once;
+  }, [ fetched.current, once ]);
   const swrGetOpts = {
     isPaused,
     ...otherGetOpts
@@ -140,17 +143,22 @@ function useRemoteData(opts) {
   }, [ getKey ]);
 
   useEffect(function onRemoteData() {
+    if (!data) {
+      return;
+    }
+
+    fetched.current += 1;
     setRemoteData(data);
-  }, [ data ]);
+  }, [ data, fetched.current ]);
 
   return {
-    data: remoteData?.data,
+    data: remoteData.data,
     doCreate,
     doDelete,
     doGet,
     doUpdate,
     localError: error,
-    metadata: remoteData?.metadata
+    metadata: remoteData.metadata
   };
 }
 
