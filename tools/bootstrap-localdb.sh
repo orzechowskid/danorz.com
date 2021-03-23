@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_IMAGE=danorz-localdb
+DOCKER_IMAGE=dockersite_db_1
 DOCKER_LOCALDB_USER=mongouser
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DB_DIR=$SCRIPT_DIR/localdb/.storage
@@ -27,7 +27,11 @@ mkdir -p $DB_DIR
 # initialize db with known creds
 CONTAINER_ID=`docker run -itd --rm --net=host -v $DB_DIR:/data/db -e MONGO_INITDB_ROOT_USERNAME=$DB_ROOT_USER -e MONGO_INITDB_ROOT_PASSWORD=$DB_ROOT_PASS $DOCKER_IMAGE`
 sleep 3
+
+# seed db with some sample data
+# TODO
+
 # TODO: this should really use /docker-entrypoint-initdb.d
-docker exec -it stoic_allen mongo --eval "db.getSiblingDB('alewife-cms').createUser({ user: \"$DB_USER\", pwd: \"$DB_PASS\", roles:['dbOwner']})"
+docker exec -it $DOCKER_IMAGE mongo --eval "db.getSiblingDB('alewife-cms').createUser({ user: \"$DB_USER\", pwd: \"$DB_PASS\", roles:['dbOwner']})"
 docker stop $CONTAINER_ID
 
