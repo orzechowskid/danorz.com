@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "index.js",
   "scripts": {
     "build": "wmr build --prerender",
     "start": "wmr --port 8099"
