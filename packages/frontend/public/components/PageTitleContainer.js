@@ -1,3 +1,10 @@
+import {
+  selectSignedIn
+} from '~/state/session';
+import {
+  useSelectors
+} from '~/utils/useGlobalState';
+
 import styles from './PageTitleContainer.module.css';
 
 function PageTitle(props) {
@@ -14,10 +21,15 @@ function PageActions(props) {
   const {
     children
   } = props;
+  const {
+    isSignedIn
+  } = useSelectors({
+    isSignedIn: selectSignedIn
+  });
 
   return (
-    <div>
-      {children}
+    <div aria-live="polite">
+      {isSignedIn ? children : null}
     </div>
   );
 }

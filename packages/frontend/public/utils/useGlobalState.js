@@ -17,7 +17,7 @@ function selectPartialState(state, selectors) {
 }
 
 function createGlobalState(initialState) {
-  window.store = store = createStore(initialState);
+  store = createStore(initialState);
 }
 
 /** @typedef {function(...):any} BoundActionCreator */
