@@ -6,12 +6,18 @@ import {
   postData,
   putData
 } from '~/utils/api.js';
+import {
+  getStoredValue,
+  setStoredValue
+} from '~/utils/localStorage.js';
 
 export const name = `session`;
 
+/** @type {types.SessionState} */
 export const initialState = {
   isSignedIn: undefined,
-  name: undefined
+  name: undefined,
+  preferredLocale: getStoredValue(`session.preferredLocale`) || `en-US`
 };
 
 /** @type {types.Selector<string>} */
@@ -27,8 +33,6 @@ export async function doSignIn(appState, username, password) {
     password
   });
 
-  console.log({response});
-  console.log(response.metadata.error);
   return {
     [name]: {
       ...response.data[0],
@@ -77,6 +81,13 @@ export async function doSetUserPreferredLocale(appState, newLocale) {
       isSignedIn,
       ...currentState
     } = appState[name];
+
+    setStoredValue(`session.preferredLocale`, newLocale);
+
+    if (!isSignedIn) {
+      return;
+    }
+
     const response = await putData(`auth/session`, {
       ...currentState,
       preferredLocale: newLocale
