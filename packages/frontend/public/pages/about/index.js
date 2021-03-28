@@ -68,7 +68,7 @@ function About() {
     setPreviewMode(false);
   }, [ previewContents ]);
   const md = previewMode
-    ? previewContents
+       ? previewContents
     : pageContents;
 
   usePageTitle(function setPageTitle() {
