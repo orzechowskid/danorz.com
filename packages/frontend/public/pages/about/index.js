@@ -69,7 +69,7 @@ function About() {
   }, [ previewContents ]);
   const md = previewMode
         ? previewContents
-        : pageContents;
+         : pageContents;
 
   usePageTitle(function setPageTitle() {
     return pageTitle;
