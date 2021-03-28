@@ -6,12 +6,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "bootstrap": "./bootstrap.sh"
   },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^7.15.0",
     "eslint-plugin-import": "^2.22.1",
-    "lint-staged": "^10.5.4"
+    "lint-staged": "^10.5.4",
+    "simple-git-hooks": "^2.2.0"
   }
 }
