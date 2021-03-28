@@ -39,6 +39,10 @@
       "warn", {
         "allow": [ "_id" ]
       } ],
+    "no-warning-comments": [
+      "warn", {
+        "terms": [ "debug", "fixme", "todo" ]
+      } ],
     "operator-linebreak": "off",
     "prefer-arrow-callback": "off",
     "prefer-destructuring": [ "warn" ],
