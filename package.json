@@ -6,9 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "bootstrap": "./bootstrap.sh"
   },
-  "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
