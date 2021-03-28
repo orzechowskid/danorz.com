@@ -4,4 +4,4 @@
 export USERNAME=$USER
 export USERID=$(id -u)
 
-docker-compose --env-file=.env.local up
+docker-compose --env-file=.env.local up -d
