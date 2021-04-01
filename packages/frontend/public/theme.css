@@ -48,7 +48,10 @@
   --font-family-body-copy: var(--font-family-default);
   --font-size-banner-dismiss: 30px;
   --font-size-body-copy: 18px;
-  --font-size-feeditem-byline: 18px;
+  --font-size-feeditem-byline: 16px;
+  --font-size-h1: 48px;
+  --font-size-h2: 36px;
+  --font-size-h3: 24px;
   --font-size-link-preview-description: 16px;
   --font-size-logotype: 24px;
   --font-size-page-edit-button: 16px;

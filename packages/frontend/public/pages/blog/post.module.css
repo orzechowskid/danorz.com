@@ -1,0 +1,3 @@
+.post section > * ~ * {
+  margin-top: var(--gutter-lg);
+}

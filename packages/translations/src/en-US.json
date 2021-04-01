@@ -31,6 +31,7 @@
     "avatar-alt": "icon of author",
     "comments": "comments",
     "comment-counter": "{commentCount, plural, =1 {# comment} other {# comments} }",
+    "comment-link": "comments on this post",
     "description": "a single blog post",
     "noComments": "comments are disabled for this post",
     "published-on": "publish date",
