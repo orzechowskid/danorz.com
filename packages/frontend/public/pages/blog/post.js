@@ -43,7 +43,6 @@ function BlogPost() {
   /** @type {types.RemoteDataResult<types.BlogPost>} */
   const {
     data,
-    localError,
     metadata
   } = useRemoteData({
     apiEndpoint: path.slice(1)
