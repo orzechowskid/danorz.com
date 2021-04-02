@@ -4,7 +4,6 @@ import {
 
 import * as types from '~/types.js';
 
-import Busy from '~/components/Busy.js';
 import LinkButton from '~/components/LinkButton.js';
 import Markdown from '~/components/Markdown.js';
 import PageTitleContainer, {
@@ -30,7 +29,8 @@ import {
 import Byline from './components/Byline.js';
 import Comments from './components/Comments.js';
 
-import layoutStyles from '../../components/Layout.module.css';
+import busyStyles from '~/components/Busy.module.css';
+import layoutStyles from '~/components/Layout.module.css';
 import styles from './post.module.css';
 
 function BlogPost() {
@@ -43,7 +43,7 @@ function BlogPost() {
   /** @type {types.RemoteDataResult<types.BlogPost>} */
   const {
     data,
-    metadata
+    ready
   } = useRemoteData({
     apiEndpoint: path.slice(1)
   });
@@ -57,13 +57,14 @@ function BlogPost() {
     return data[0]?.title
       ?? t(`BlogPost:description`);
   }, [ data, t ]);
-  usePageLoadTracker([ metadata.count !== undefined ]);
+  usePageLoadTracker([ ready ]);
 
   return (
-    <div className={`${layoutStyles.layout} ${styles.post}`}>
-      {!data[0] ? (
-        <Busy />
-      ) : (
+    <div
+      aria-busy={!ready}
+      className={`${layoutStyles.layout} ${styles.post} ${busyStyles.busy}`}
+    >
+      {ready && (
         <>
           <PageTitleContainer>
             <PageTitle>
@@ -81,10 +82,11 @@ function BlogPost() {
             <header>
               <Byline author={data[0].author} tags={data[0].tags} timestamp={mongoIdToTimestamp(data[0]._id)} />
             </header>
+            <a href="#comments">skip to comments</a>
             <Markdown>
               {data[0].text}
             </Markdown>
-            <footer>
+            <footer id="comments">
               <Comments comments={data[0].comments} />
             </footer>
           </section>

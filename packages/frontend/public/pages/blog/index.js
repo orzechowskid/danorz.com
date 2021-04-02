@@ -1,6 +1,5 @@
 import * as types from '~/types.js';
 
-import Busy from '~/components/Busy.js';
 import LinkButton from '~/components/LinkButton.js';
 import Markdown from '~/components/Markdown.js';
 import PageTitleContainer, {
@@ -23,8 +22,9 @@ import {
 } from '~/utils/useRemoteData.js';
 import Byline from './components/Byline.js';
 
+import busyStyles from '~/components/Busy.module.css';
+import layoutStyles from '~/components/Layout.module.css';
 import styles from './index.module.css';
-import layoutStyles from '../../components/Layout.module.css';
 
 /** @type {types.Component<void>} */
 function Blog() {
@@ -33,7 +33,8 @@ function Blog() {
     data,
     doUpdate,
     localError,
-    metadata
+    metadata,
+    ready
   } = useRemoteData({
     apiEndpoint: `blog/posts`
   });
@@ -50,28 +51,40 @@ function Blog() {
   usePageTitle(function setPageTitle() {
     return pageTitle;
   }, [ pageTitle ]);
-  usePageLoadTracker([ metadata?.total !== undefined ]);
+  usePageLoadTracker([ ready ]);
+
   return (
-    <div className={`${layoutStyles.layout} ${styles.page}`}>
+    <div
+      aria-busy={!ready}
+      className={`${layoutStyles.layout} ${styles.page} ${busyStyles.busy}`}
+      role="feed"
+    >
       <PageTitleContainer>
         <PageTitle>
           {pageTitle}
         </PageTitle>
         <PageActions>
           <LinkButton
-            key="gnu"
+            key="new-post-action"
           >
-            <span>{t(`PageActions:new-button`)}</span>
+            <span>{t(`Blog:new-post-action`)}</span>
           </LinkButton>
         </PageActions>
       </PageTitleContainer>
-      {!data && <Busy />}
       {data?.map((post) => (
         <article
           key={post._id}
         >
           <header>
-            <h3>{post.title}</h3>
+            <h3>
+              <a
+                aria-label={t(`BlogPost:title-link`)}
+                className="unstyled"
+                href={`/blog/posts/${post._id}`}
+              >
+                {post.title}
+              </a>
+            </h3>
             <Byline author={post.author} tags={post.tags} timestamp={mongoIdToTimestamp(post._id)} />
           </header>
           <Markdown>
@@ -80,7 +93,7 @@ function Blog() {
           <footer>
             <a
               aria-label={t(`BlogPost:comment-link`)}
-              href={`blog/posts/${post._id}`}
+              href={`blog/posts/${post._id}#comments`}
             >
               {t(`BlogPost:comment-counter`, { commentCount: post.comments.length })}
             </a>

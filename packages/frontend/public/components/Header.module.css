@@ -1,6 +1,8 @@
 .header {
   position: sticky;
   top: 0;
+  /* stylelint-disable-next-line magic-numbers/magic-numbers */
+  z-index: 1;
   margin-bottom: var(--gutter-md);
   font-size: var(--font-size-logotype);
   color: var(--color-header);

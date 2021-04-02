@@ -29,25 +29,27 @@ function SingleComment(props) {
   const timestamp = new Date(mongoIdToTimestamp(_id));
 
   return (
-    <section className={styles.comment}>
-      <span className={styles.commentIcon}>
-        <img
-          alt={t(`BlogPost:avatar-alt`)}
-          src={gravatarHashToUrl(gravatarHash)}
-        />
-      </span>
-      <div className={styles.commentByline}>
-        <div>
-          {name}
+    <article className={styles.comment}>
+      <header>
+        <span className={styles.commentIcon}>
+          <img
+            alt={t(`BlogPost:avatar-alt`)}
+            src={gravatarHashToUrl(gravatarHash)}
+          />
+        </span>
+        <div className={styles.commentByline}>
+          <div>
+            {name}
+          </div>
+          <time dateTime={timestamp.toISOString()}>
+            {time(timestamp)}&nbsp;{date(timestamp)}
+          </time>
         </div>
-        <time dateTime={timestamp.toISOString()}>
-          {time(timestamp)}&nbsp;{date(timestamp)}
-        </time>
-      </div>
+      </header>
       <Markdown className={styles.commentText}>
         {text}
       </Markdown>
-    </section>
+    </article>
   );
 }
 

@@ -18,6 +18,7 @@
   },
   "Blog": {
     "description": "latest blog posts",
+    "new-post-action": "New post",
     "noPosts": "No posts yet.  Maybe you should write one!",
     "searchTags": "Search posts by tag",
     "title": "Blog"
@@ -35,7 +36,8 @@
     "description": "a single blog post",
     "noComments": "comments are disabled for this post",
     "published-on": "publish date",
-    "tags": "tags"
+    "tags": "tags",
+    "title-link": "direct link to this post"
   },
   "EditButton": {
     "title": "Edit"

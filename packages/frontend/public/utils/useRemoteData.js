@@ -24,7 +24,7 @@ import {
 
 /**
  * @param {RemoteDataOpts} opts
- * @return {RemoteDataResult}
+ * @return {types.RemoteDataResult}
  */
 function useRemoteData(opts) {
   const {
@@ -158,7 +158,8 @@ function useRemoteData(opts) {
     doGet,
     doUpdate,
     localError: error,
-    metadata: remoteData.metadata
+    metadata: remoteData.metadata,
+    ready: remoteData.metadata.error !== undefined || remoteData.metadata.total !== undefined
   };
 }
 
