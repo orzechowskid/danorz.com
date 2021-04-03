@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useState
 } from 'preact/hooks';
@@ -67,6 +68,9 @@ function BlogPost() {
   const [ postTitle, setPostTitle ] = useState(title);
   /** @type {types.LocalState<boolean>} */
   const [ editMode, setEditMode ] = useState(false);
+  const onEdit = useCallback(function onEdit() {
+    setEditMode(true);
+  }, [ ]);
 
   useEffect(function onData() {
     setPostTags(tags);
@@ -101,6 +105,7 @@ function BlogPost() {
           <PageActions>
             <LinkButton
               key="e"
+              onClick={onEdit}
             >
               <span>{t(`PageActions:edit-button`)}</span>
             </LinkButton>

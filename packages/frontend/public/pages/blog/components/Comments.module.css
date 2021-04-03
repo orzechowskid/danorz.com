@@ -6,3 +6,7 @@
   grid-template-columns: max-content 1fr;
   grid-gap: var(--gutter-md) var(--gutter-md);
 }
+
+.comments article + article {
+  margin-top: var(--gutter-lg);
+}

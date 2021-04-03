@@ -53,7 +53,7 @@ function SingleComment(props) {
   );
 }
 
-/** @type {types.Component<{comments: [types.BlogPostComment]}>} */
+/** @type {types.Component<{comments: types.BlogPostComment[]}>} */
 function Comments(props) {
   const {
     comments = []
@@ -64,21 +64,15 @@ function Comments(props) {
   } = useI18n();
 
   return (
-    <>
+    <section className={styles.comments}>
       <h3 className={styles.commentsHeader}>
         {t(`BlogPost:comment-counter`, { commentCount: num(comments.length) })}
       </h3>
 
-      <ol className={styles.comments}>
-        {comments?.map(
-          (c) => (
-            <li key={c._id}>
-              <SingleComment {...c} />
-            </li>
-          )
-        )}
-      </ol>
-    </>
+      {comments.map(
+        (c) => <SingleComment key={c._id} {...c} />
+      )}
+    </section>
   );
 }
 
