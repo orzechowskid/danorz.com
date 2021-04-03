@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
 DOCKER_IMAGE=dockersite_db_1
 DOCKER_LOCALDB_USER=mongouser
@@ -8,6 +8,7 @@ DB_ROOT_USER=mongoadmin
 DB_ROOT_PASS=secret
 DB_USER=localdbuser
 DB_PASS=keyboardcat123
+DB_DATABASE=alewife-cms
 
 cleanup () {
     docker container rm $DOCKER_IMAGE
@@ -28,10 +29,11 @@ mkdir -p $DB_DIR
 CONTAINER_ID=`docker run -d --net=host -v $DB_DIR:/data/db -e MONGO_INITDB_ROOT_USERNAME=$DB_ROOT_USER -e MONGO_INITDB_ROOT_PASSWORD=$DB_ROOT_PASS $DOCKER_IMAGE`
 sleep 3
 
-# seed db with some sample data
-# TODO
-
+# seed db with a user and some sample data
 # TODO: this should really use /docker-entrypoint-initdb.d
-docker exec -it $CONTAINER_ID mongo -u $DB_ROOT_USER -p $DB_ROOT_PASS --eval "db.getSiblingDB('alewife-cms').createUser({ user: \"$DB_USER\", pwd: \"$DB_PASS\", roles:['dbOwner']})"
-#docker stop $CONTAINER_ID
-docker ps
+cp -r $SCRIPT_DIR/localdb/data $DB_DIR/dump
+docker exec -it $CONTAINER_ID mongo -u $DB_ROOT_USER -p $DB_ROOT_PASS --eval "db.getSiblingDB(\"$DB_DATABASE\").createUser({ user: \"$DB_USER\", pwd: \"$DB_PASS\", roles:['dbOwner']})"
+docker exec -it $CONTAINER_ID mongorestore -h 127.0.0.1 -p 27017 -u $DB_USER -p $DB_PASS -d $DB_DATABASE /data/db/dump
+rm -rf $DB_DIR/dump
+
+docker stop $CONTAINER_ID
