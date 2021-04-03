@@ -47,6 +47,10 @@ code {
   background: var(--color-code-block-background);
 }
 
+dialog {
+  z-index: 1;
+}
+
 form[data-active] input[data-input-touched]:not(:focus):invalid {
   outline: var(--outline-input-invalid);
 }
