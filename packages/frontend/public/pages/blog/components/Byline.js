@@ -18,7 +18,7 @@ function TagList(props) {
       aria-label={t(`BlogPost:tags`)}
       className={styles.tagList}
     >
-      {tags.map(
+      {tags?.map(
         (tag) => (
           <li key={tag}>
             <a key={tag} href={`/blog/tag/${tag}`}>{tag}</a>
@@ -36,6 +36,10 @@ function Timestamp(props) {
   const {
     date
   } = useI18n();
+
+  if (!timestamp) {
+    return <time />;
+  }
 
   return (
     <time dateTime={new Date(timestamp).toISOString()}>

@@ -1,4 +1,8 @@
 import {
+  useEffect,
+  useState
+} from 'preact/hooks';
+import {
   useLocation
 } from 'preact-iso/router';
 
@@ -47,6 +51,28 @@ function BlogPost() {
   } = useRemoteData({
     apiEndpoint: path.slice(1)
   });
+  const {
+    _id,
+    author,
+    comments,
+    tags,
+    text,
+    title
+  } = data[0] ?? {};
+  /** @type {types.LocalState<string[]>} */
+  const [ postTags, setPostTags ] = useState(tags);
+  /** @type {types.LocalState<string>} */
+  const [ postText, setPostText ] = useState(text);
+  /** @type {types.LocalState<string>} */
+  const [ postTitle, setPostTitle ] = useState(title);
+  /** @type {types.LocalState<boolean>} */
+  const [ editMode, setEditMode ] = useState(false);
+
+  useEffect(function onData() {
+    setPostTags(tags);
+    setPostText(text);
+    setPostTitle(title);
+  }, [ data[0] ]);
 
   usePageMeta(function setPageMeta() {
     return {
@@ -54,9 +80,8 @@ function BlogPost() {
     };
   }, [ t ]);
   usePageTitle(function setTitle() {
-    return data[0]?.title
-      ?? t(`BlogPost:description`);
-  }, [ data, t ]);
+    return postTitle;
+  }, [ postTitle ]);
   usePageLoadTracker([ ready ]);
 
   return (
@@ -64,34 +89,40 @@ function BlogPost() {
       aria-busy={!ready}
       className={`${layoutStyles.layout} ${styles.post} ${busyStyles.busy}`}
     >
-      {ready && (
-        <>
-          <PageTitleContainer>
-            <PageTitle>
-              {data[0].title}
-            </PageTitle>
-            <PageActions>
-              <LinkButton
-                key="e"
-              >
-                <span>{t(`PageActions:edit-button`)}</span>
-              </LinkButton>
-            </PageActions>
-          </PageTitleContainer>
-          <section>
-            <header>
-              <Byline author={data[0].author} tags={data[0].tags} timestamp={mongoIdToTimestamp(data[0]._id)} />
-            </header>
-            <a href="#comments">skip to comments</a>
-            <Markdown>
-              {data[0].text}
-            </Markdown>
-            <footer id="comments">
-              <Comments comments={data[0].comments} />
-            </footer>
-          </section>
-        </>
-      )}
+      <form>
+        <PageTitleContainer>
+          <PageTitle>
+            {editMode ? (
+              <input type="text" value={postTitle} />
+            ) : (
+              postTitle
+            )}
+          </PageTitle>
+          <PageActions>
+            <LinkButton
+              key="e"
+            >
+              <span>{t(`PageActions:edit-button`)}</span>
+            </LinkButton>
+          </PageActions>
+        </PageTitleContainer>
+        <section>
+          <header>
+            <Byline
+              author={author}
+              tags={postTags}
+              timestamp={mongoIdToTimestamp(_id)}
+            />
+          </header>
+          <a href="#comments">skip to comments</a>
+          <Markdown>
+            {postText}
+          </Markdown>
+          <footer id="comments">
+            <Comments comments={comments} />
+          </footer>
+        </section>
+      </form>
     </div>
   );
 }

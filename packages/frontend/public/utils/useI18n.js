@@ -17,7 +17,7 @@ import {
  * @param {string} locale
  * @param {Date} value
  * @param {object} [args]
- * @returns {string}
+ * @return {string}
  */
 export function datestring(locale, value, args = {}) {
   const {
@@ -33,7 +33,7 @@ export function datestring(locale, value, args = {}) {
  * Format the given number according to the rules of the given locale
  * @param {string} locale
  * @param {number} value
- * @returns {string}
+ * @return {string}
  */
 function number(locale, value) {
   return new IntlMessageFormat(`{x, number}`, locale).format({
@@ -45,7 +45,7 @@ function number(locale, value) {
  * @param {string} locale
  * @param {Date} value
  * @param {object} [args]
- * @returns {string}
+ * @return {string}
  */
 function timestamp(locale, value, args = {}) {
   const {
