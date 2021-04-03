@@ -48,7 +48,10 @@
   --font-family-body-copy: var(--font-family-default);
   --font-size-banner-dismiss: 30px;
   --font-size-body-copy: 18px;
-  --font-size-feeditem-byline: 18px;
+  --font-size-feeditem-byline: 16px;
+  --font-size-h1: 48px;
+  --font-size-h2: 36px;
+  --font-size-h3: 24px;
   --font-size-link-preview-description: 16px;
   --font-size-logotype: 24px;
   --font-size-page-edit-button: 16px;
@@ -73,6 +76,8 @@
   --max-width-link-preview: 50%;
   --outline-input-invalid: 2px solid firebrick;
   --outline-link-preview-focus: 1px solid var(--color-link);
+  --width-busy-indicator: 0.3em;
+  --width-busy-indicator-container: 4em;
   --width-link-preview-favicon: 32px;
   --width-radio-button: var(--height-radio-button);
 }

@@ -3,7 +3,7 @@ import {
   useState
 } from 'preact/hooks';
 
-import * as types from '~/types';
+import * as types from '~/types.js';
 
 import Markdown from '~/components/Markdown.js';
 import LinkButton from '~/components/LinkButton.js';

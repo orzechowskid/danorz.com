@@ -1,0 +1,8 @@
+.comments article header {
+  display: grid;
+  grid-template-areas:
+    "icon byline"
+    "icon text";
+  grid-template-columns: max-content 1fr;
+  grid-gap: var(--gutter-md) var(--gutter-md);
+}

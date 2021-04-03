@@ -1,9 +1,9 @@
 import {
   selectSignedIn
-} from '~/state/session';
+} from '~/state/session.js';
 import {
   useSelectors
-} from '~/utils/useGlobalState';
+} from '~/utils/useGlobalState.js';
 
 import styles from './PageTitleContainer.module.css';
 

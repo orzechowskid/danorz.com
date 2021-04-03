@@ -28,6 +28,11 @@ a:visited {
   color: var(--color-link-visited);
 }
 
+a.unstyled {
+  font-weight: inherit;
+  color: inherit;
+}
+
 button {
   padding: var(--gutter-md);
   border: var(--border-button);
@@ -53,10 +58,16 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   margin: var(--gutter-md) 0;
+  font-size: var(--font-size-h1);
 }
 
 h2 {
   margin: var(--gutter-md) 0;
+  font-size: var(--font-size-h2);
+}
+
+h3 {
+  font-size: var(--font-size-h3);
 }
 
 input {
