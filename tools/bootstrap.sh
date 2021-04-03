@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+# PWD is usually the repo root
+
 function message {
     echo
     echo $'\e[1;34m'$1$'\e[0m'
@@ -19,6 +21,8 @@ for i in `find ./packages -mindepth 1 -maxdepth 1`; do
 done
 
 message "bootstrapping local database..."
-#./bootstrap-localdb.sh
+pushd ./tools > /dev/null
+./bootstrap-localdb.sh
+popd
 
 message "all done 🚀"

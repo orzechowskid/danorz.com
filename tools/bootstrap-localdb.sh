@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 
 DOCKER_IMAGE=dockersite_db_1
 DOCKER_LOCALDB_USER=mongouser
