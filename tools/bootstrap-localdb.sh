@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 DOCKER_IMAGE=dockersite_db_1
 DOCKER_LOCALDB_USER=mongouser
@@ -25,13 +25,13 @@ rm -rf $DB_DIR
 mkdir -p $DB_DIR
 
 # initialize db with known creds
-CONTAINER_ID=`docker run -itd --rm --net=host -v $DB_DIR:/data/db -e MONGO_INITDB_ROOT_USERNAME=$DB_ROOT_USER -e MONGO_INITDB_ROOT_PASSWORD=$DB_ROOT_PASS $DOCKER_IMAGE`
+CONTAINER_ID=`docker run -d --net=host -v $DB_DIR:/data/db -e MONGO_INITDB_ROOT_USERNAME=$DB_ROOT_USER -e MONGO_INITDB_ROOT_PASSWORD=$DB_ROOT_PASS $DOCKER_IMAGE`
 sleep 3
 
 # seed db with some sample data
 # TODO
 
 # TODO: this should really use /docker-entrypoint-initdb.d
-docker exec -it $DOCKER_IMAGE mongo --eval "db.getSiblingDB('alewife-cms').createUser({ user: \"$DB_USER\", pwd: \"$DB_PASS\", roles:['dbOwner']})"
-docker stop $CONTAINER_ID
-
+docker exec -it $CONTAINER_ID mongo -u $DB_ROOT_USER -p $DB_ROOT_PASS --eval "db.getSiblingDB('alewife-cms').createUser({ user: \"$DB_USER\", pwd: \"$DB_PASS\", roles:['dbOwner']})"
+#docker stop $CONTAINER_ID
+docker ps
