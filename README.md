@@ -7,8 +7,7 @@
 - clone this repo
 - bootstrap the repo: `npm run bootstrap`
 - build some Docker images and run them in containers: `./up.sh`
-- start the backend: `cd packages/backend; npm run start`
-- (in a new terminal) start the frontend: `cd packages/frontend; npm run start`
+- start the frontend: `cd packages/frontend; npm run start`
 - (in your browser) visit http://localhost:8080
 
 # Provided for You

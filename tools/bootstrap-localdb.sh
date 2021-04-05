@@ -1,6 +1,6 @@
-#!/bin/bash -xe
+#!/bin/bash
 
-DOCKER_IMAGE=dockersite_db_1
+DOCKER_IMAGE=dockersite_db_bootstrap
 DOCKER_LOCALDB_USER=mongouser
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DB_DIR=$SCRIPT_DIR/localdb/.storage
@@ -37,3 +37,4 @@ docker exec -it $CONTAINER_ID mongorestore -h 127.0.0.1 -p 27017 -u $DB_USER -p 
 rm -rf $DB_DIR/dump
 
 docker stop $CONTAINER_ID
+docker image rm -f $DOCKER_IMAGE:latest
