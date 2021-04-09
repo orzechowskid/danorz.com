@@ -5,7 +5,6 @@
   "engines": {
     "node": "^14.0.0"
   },
-  "type": "module",
   "main": "bin/index.js",
   "scripts": {
     "build:docker": "./scripts/docker/build.sh",

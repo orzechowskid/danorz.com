@@ -5,7 +5,12 @@ FROM mhart/alpine-node:14
 
 WORKDIR /app
 
-COPY ./backend/package.json ./backend/package-lock.json ./
+# hot reloading (during development) does not work with ES modules so package.json
+# does not contain "type":"module", but we need it at runtime
+RUN apk add jq
+COPY ./backend/package-lock.json ./
+COPY ./backend/package.json ./package.json.orig
+RUN cat ./package.json.orig | jq '. + {type:"module"}' > ./package.json
 RUN npm ci
 
 FROM mhart/alpine-node:slim-14
