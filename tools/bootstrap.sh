@@ -22,7 +22,7 @@ done
 
 message "bootstrapping local database..."
 pushd ./tools > /dev/null
-./bootstrap-localdb.sh > /dev/null
+./bootstrap-localdb.sh 
 popd > /dev/null
 
 message "all done 🚀"

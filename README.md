@@ -12,4 +12,4 @@
 
 # Provided for You
 
-you can log in using a pre-set user with the username `r2d2` and password `starwars`
+you can log in to the webapp using a pre-set user with the username `r2d2` and password `starwars`
