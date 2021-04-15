@@ -4,6 +4,10 @@ import {
 
 import * as types from '~/types.js';
 
+import {
+  getStoredValue
+} from '~/utils/localStorage.js';
+
 export const initialState = {};
 
 /** @type {types.Selector<boolean>} */
@@ -16,7 +20,7 @@ export const selectBannerSeverity = (state) => state.banner.severity;
 export const selectBannerText = (state) => state.banner.text;
 
 /** @type {types.Selector<string[]> */
-export const selectDismissedBanners = () => JSON.parse(localStorage.getItem(`dismissedBanners`)) || [];
+export const selectDismissedBanners = () => getStoredValue(`dismissedBanners`) || [];
 
 /** @type {types.Selector<string>} */
 export const selectBannerId = (state) => state.banner.id;
