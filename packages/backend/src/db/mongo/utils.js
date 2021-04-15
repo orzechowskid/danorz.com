@@ -2,8 +2,9 @@ import * as types from '../../types.js';
 
 /**
  * @param {import('mongoose').Model} model
- * @param {types.DBQuery} dbQuery
+ * @param {types.DBQuery<T>} dbQuery
  * @return {types.DBQueryResult}
+ * @template T
  */
 async function runStandardGetQuery(model, dbQuery) {
   let data = null;

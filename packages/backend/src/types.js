@@ -33,9 +33,9 @@
 /**
  * @typedef {Object} DBQuery
  * @property {number} [count] return this many things upon read
- * @property {T} [data] create/update body
+ * @property {Partial<T>} [data] create/update body
  * @property {number} [start] start here upon read
- * @property {T} [which] only read/delete these things
+ * @property {Partial<T>} [which] only read/delete these things
  * @template T
  */
 

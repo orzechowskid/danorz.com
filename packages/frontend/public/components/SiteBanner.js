@@ -6,6 +6,9 @@ import {
 import * as types from '~/types.js';
 
 import {
+  setStoredValue
+} from '~/utils/localStorage.js';
+import {
   useActionCreators,
   useSelectors
 } from '~/utils/useGlobalState.js';
@@ -40,7 +43,7 @@ async function fetchBanner() {
 async function dismissBanner(appState, bannerId) {
   const dismissedBanners = selectDismissedBanners(appState);
 
-  localStorage.setItem(`dismissedBanners`, JSON.stringify([ ...dismissedBanners, bannerId ]));
+  setStoredValue(`dismissedBanners`, [ ...dismissedBanners, bannerId ]);
 
   return {
     banner: {}
