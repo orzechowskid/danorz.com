@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# PWD is usually the repo root
+# assumes PWD is the repo root
 
 function message {
     echo
@@ -24,5 +24,8 @@ message "bootstrapping local database..."
 pushd ./tools > /dev/null
 ./bootstrap-localdb.sh > /dev/null
 popd > /dev/null
+
+message "configuring git hooks..."
+cp tools/git-hooks/pre-commit .git/hooks
 
 message "all done 🚀"

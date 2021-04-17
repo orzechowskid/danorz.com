@@ -1,3 +1,7 @@
+.markdown {
+  line-height: var(--line-height-body-copy);
+}
+
 .markdown blockquote {
   padding: var(--gutter-sm);
   border-left: var(--border-width-blockquote) solid var(--border-color-blockquote);

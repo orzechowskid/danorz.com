@@ -3,15 +3,16 @@ import {
 } from 'preact/hooks';
 
 /**
- * @param {() => string} pageTitleFn
- * @param {Object[]} [deps]
+ * @param {string | (() => string)} pageTitleFn
  */
-function usePageTitle(pageTitleFn, deps = []) {
+function usePageTitle(pageTitle) {
   useEffect(function setPageTitle() {
-    if (pageTitleFn) {
-      document.title = pageTitleFn();
+    if (pageTitle) {
+      document.title = typeof pageTitle === `function`
+        ? pageTitle()
+        : pageTitle;
     }
-  }, deps);
+  }, [ pageTitle ]);
 }
 
 /**

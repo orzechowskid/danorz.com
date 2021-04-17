@@ -1,14 +1,3 @@
-import Md5 from 'blueimp-md5';
-
-/**
- * @param {string} email
- * @return {string}
- */
-function emailAddressToGravatarHash(email) {
-  console.log(Md5(email.trim().toLowerCase()));
-  return Md5(email.trim().toLowerCase());
-}
-
 /**
  * @param {string} hash
  * @param {number} [size=80]
@@ -44,7 +33,6 @@ function getFormData(formEl) {
 }
 
 export {
-  emailAddressToGravatarHash,
   getFormData,
   gravatarHashToUrl,
   mapObjectValues

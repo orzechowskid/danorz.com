@@ -14,8 +14,7 @@ import {
   usePageLoadTracker
 } from '~/utils/usePageLoadTracker.js';
 import {
-  usePageMeta,
-  usePageTitle
+  usePageMeta
 } from '~/utils/usePageTitle.js';
 import {
   useRemoteData
@@ -48,9 +47,6 @@ function Blog() {
       description: t(`Blog:description`)
     };
   }, [ t ]);
-  usePageTitle(function setPageTitle() {
-    return pageTitle;
-  }, [ pageTitle ]);
   usePageLoadTracker([ ready ]);
 
   return (
@@ -60,9 +56,7 @@ function Blog() {
       role="feed"
     >
       <PageTitleContainer>
-        <PageTitle>
-          {pageTitle}
-        </PageTitle>
+        <PageTitle title={pageTitle} />
         <PageActions>
           <LinkButton
             key="new-post-action"

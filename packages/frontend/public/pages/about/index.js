@@ -16,7 +16,6 @@ import {
 } from '~/utils/useI18n.js';
 import {
   usePageMeta,
-  usePageTitle
 } from '~/utils/usePageTitle.js';
 import {
   useRemoteData
@@ -71,9 +70,6 @@ function About() {
     ? previewContents
     : pageContents;
 
-  usePageTitle(function setPageTitle() {
-    return pageTitle;
-  }, [ pageTitle ]);
   usePageMeta(function setPageMetaTags() {
     return {
       description: t(`About:description`)
@@ -83,9 +79,7 @@ function About() {
   return (
     <div className={`${layoutStyles.layout}`}>
       <PageTitleContainer>
-        <PageTitle>
-          {pageTitle}
-        </PageTitle>
+        <PageTitle title={pageTitle} />
         <PageActions>
           {editMode ? (
             <>
