@@ -109,6 +109,10 @@ p {
   line-height: var(--line-height-body-copy);
 }
 
+pre code {
+  display: inline-block;
+}
+
 textarea {
   font-family: var(--font-family-code);
   letter-spacing: 0.5px;

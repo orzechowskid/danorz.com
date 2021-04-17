@@ -25,6 +25,12 @@ function A(props) {
   );
 }
 
+function Code(props) {
+  return props.children.includes(`\n`)
+    ? <pre><code {...props} /></pre>
+    : <code {...props} />;
+}
+
 /** @type {types.Component<MarkdownProps>} */
 function Markdown(props) {
   const {
@@ -39,6 +45,7 @@ function Markdown(props) {
       options={{
         overrides: {
           a: A,
+          code: Code,
           'md-preview': LinkPreview
         }
       }}
