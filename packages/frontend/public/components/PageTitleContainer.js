@@ -1,19 +1,35 @@
+import * as types from '~/types.js';
+
 import {
   selectSignedIn
 } from '~/state/session.js';
 import {
   useSelectors
 } from '~/utils/useGlobalState.js';
+import {
+  usePageTitle
+} from '~/utils/usePageTitle.js';
 
 import styles from './PageTitleContainer.module.css';
 
+/**
+ * @typedef {Object} PageTitleProps
+ * @property {string | (() => string)} title
+ */
+
+/** @type {types.Component<PageTitleProps>} */
 function PageTitle(props) {
   const {
-    children
+    title
   } = props;
+  const titleString = typeof title === `function`
+        ? title()
+        : title;
+
+  usePageTitle(titleString);
 
   return (
-    <h2>{children}</h2>
+    <h2>{titleString}</h2>
   );
 }
 

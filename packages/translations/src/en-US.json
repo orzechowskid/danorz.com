@@ -99,15 +99,8 @@
     "description-photos": "I sometimes take photos"
   },
   "Settings": {
-    "settings.about": "About Me settings",
-    "settings.about.image": "header image",
-    "blog": "Blog settings",
-    "blog.allowComments": "Allow others to comment on your blog posts",
-    "blog.repostNew": "Publish new blog posts to other services",
-    "settings.gallery": "Photo gallery settings"
-  },
-  "SettingsPageActions": {
-    "save-settings": "Save changes"
+    "description": "Configure your site",
+    "title": "Site Settings"
   },
   "SignInForm": {
     "cancel": "Never mind",

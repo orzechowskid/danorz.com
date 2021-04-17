@@ -25,8 +25,7 @@ import {
   usePageLoadTracker
 } from '~/utils/usePageLoadTracker.js';
 import {
-  usePageMeta,
-  usePageTitle
+  usePageMeta
 } from '~/utils/usePageTitle.js';
 import {
   useRemoteData
@@ -60,32 +59,18 @@ function BlogPost() {
     text,
     title
   } = data[0] ?? {};
-  /** @type {types.LocalState<string[]>} */
-  const [ postTags, setPostTags ] = useState(tags);
-  /** @type {types.LocalState<string>} */
-  const [ postText, setPostText ] = useState(text);
-  /** @type {types.LocalState<string>} */
-  const [ postTitle, setPostTitle ] = useState(title);
   /** @type {types.LocalState<boolean>} */
   const [ editMode, setEditMode ] = useState(false);
-  const onEdit = useCallback(function onEdit() {
+  const onEdit = useCallback(function onEdit(e) {
+    e.preventDefault();
     setEditMode(true);
   }, [ ]);
-
-  useEffect(function onData() {
-    setPostTags(tags);
-    setPostText(text);
-    setPostTitle(title);
-  }, [ data[0] ]);
 
   usePageMeta(function setPageMeta() {
     return {
       description: t(`BlogPost:description`)
     };
   }, [ t ]);
-  usePageTitle(function setTitle() {
-    return postTitle;
-  }, [ postTitle ]);
   usePageLoadTracker([ ready ]);
 
   return (
@@ -95,13 +80,7 @@ function BlogPost() {
     >
       <form>
         <PageTitleContainer>
-          <PageTitle>
-            {editMode ? (
-              <input type="text" value={postTitle} />
-            ) : (
-              postTitle
-            )}
-          </PageTitle>
+          <PageTitle title={title} />
           <PageActions>
             <LinkButton
               key="e"
@@ -115,13 +94,13 @@ function BlogPost() {
           <header>
             <Byline
               author={author}
-              tags={postTags}
+              tags={tags}
               timestamp={mongoIdToTimestamp(_id)}
             />
           </header>
           <a href="#comments">skip to comments</a>
           <Markdown>
-            {postText}
+            {text}
           </Markdown>
           <footer id="comments">
             <Comments comments={comments} />
