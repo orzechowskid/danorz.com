@@ -25,7 +25,6 @@ function PageTitle(props) {
   const titleString = typeof title === `function`
     ? title()
     : title;
-  console.error(`hello world`);
   usePageTitle(titleString);
 
   return (
