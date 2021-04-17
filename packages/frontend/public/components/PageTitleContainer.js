@@ -23,8 +23,8 @@ function PageTitle(props) {
     title
   } = props;
   const titleString = typeof title === `function`
-        ? title()
-        : title;
+    ? title()
+    : title; xx
 
   usePageTitle(titleString);
 
