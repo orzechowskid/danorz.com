@@ -24,7 +24,7 @@ function PageTitle(props) {
   } = props;
   const titleString = typeof title === `function`
     ? title()
-    : title; xx
+    : title; xxx
 
   usePageTitle(titleString);
 
