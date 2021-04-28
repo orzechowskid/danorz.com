@@ -13,7 +13,7 @@ function Header() {
       <SiteBanner />
 
       <div className={`${layoutStyles.layout} ${styles.headerContents}`}>
-        <h1>header</h1>
+        <h1>danorz dot com</h1>
 
         <SiteMenu />
       </div>

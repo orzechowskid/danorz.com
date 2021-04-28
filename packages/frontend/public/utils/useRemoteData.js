@@ -1,171 +1,166 @@
 import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState
+  useCallback
 } from 'preact/hooks';
 import useSWR from 'swr';
 
 import * as types from '~/types.js';
 
 import {
+  postData,
+  putData,
   rawRequest
 } from '~/utils/api.js';
+
+const ABOUT_ONE_MONTH_IN_MS = 1000 * 86400 * 30;
+
+function useCallbackFactory(fn, args) {
+  return useCallback(fn(...args), args);
+}
+
+/**
+ * @typedef {Object} SwrOpts
+ * @property {T} [data]
+ * @property {string} [error]
+ * @property {function} mutate
+ * @template T
+ */
+
+/**
+ * @typedef {Object} CreateOpts
+ * @property {boolean} [raw]
+ */
+
+/**
+ * @typedef {Object} DeleteOpts
+ * @property {boolean} [raw]
+ */
+
+/**
+ * @typedef {Object} GetOpts
+ * @property {boolean} [raw]
+ */
+
+/**
+ * @typedef {Object} UpdateOpts
+ * @property {boolean} [raw]
+ */
+
+/**
+ * @typedef {Object} RemoteDataOtherOpts
+ * @property {CreateOpts} createOpts
+ * @property {DeleteOpts} deleteOpts
+ * @property {GetOpts} getOpts
+ * @property {UpdateOpts} updateOpts
+ */
 
 /**
  * @typedef {Object} RemoteDataOpts
  * @property {string} apiEndpoint
- * @property {Object} createOpts
- * @property {Object} deleteOpts
- * @property {Object} getOpts
- * @property {boolean} [getOpts.immediate]
- * @property {Object} updateOpts
+ * @property {RemoteDataOtherOpts} opts
  */
 
-/**
- * @param {RemoteDataOpts} opts
- * @return {types.RemoteDataResult}
- */
-function useRemoteData(opts) {
+function useCreateData(cacheKey, swrOpts, createDataOpts) {
+  const {
+    mutate
+  } = swrOpts
   const {
     apiEndpoint,
-    createOpts = {},
-    deleteOpts = {},
-    getOpts = {},
-    updateOpts = {}
-  } = opts;
-  /** @type {types.LocalState<types.RemoteData<Object>>} */
-  const [ remoteData, setRemoteData ] = useState({ data: [], metadata: {} });
-  /** @type {types.LocalState<boolean>} */
-  const [ immediate, setImmediate ] = useState(getOpts.immediate ?? true);
-  /** @type {types.PreactRef<number>} */
-  const fetched = useRef(0);
-  const {
-    once,
-    ...otherGetOpts
-  } = getOpts;
-  const getKey = useCallback(function getKey() {
-    return immediate && apiEndpoint;
-  }, [ apiEndpoint, immediate ]);
-  const isPaused = useCallback(function isPaused() {
-    return (fetched.current > 0) && !once;
-  }, [ fetched.current, once ]);
-  const swrGetOpts = {
-    isPaused,
-    ...otherGetOpts
-  };
+    fetchOpts
+  } = createDataOpts;
+  const doCreate = useCallback(async function doCreate(next) {
+    /* step 1: optimistic local update */
+    // TODO: need api envelope
+    mutate(next, false);
+
+    /* step 2: make remote update */
+    const createEndpoint = apiEndpoint || cacheKey;
+    const response = await postData(createEndpoint, next, fetchOpts);
+
+    /* step 3: sync local data with remote */
+    mutate(response, false);
+  }, []);
+
+  return doCreate;
+}
+
+function getUpdateDataFunction(cacheKey, swrOpts, updateDataOpts) {
   const {
     data,
-    error,
     mutate
-  } = useSWR(getKey, rawRequest, swrGetOpts);
-  const doGet = useCallback(function doGet() {
-    setImmediate(true);
-  }, []);
-  const doUpdate = useCallback(async function doUpdate(newData) {
-    const {
-      headers: updateHeaders = {},
-      ...otherUpdateOpts
-    } = updateOpts;
-    const payload = [].concat(newData);
+  } = swrOpts
+  const {
+    apiEndpoint,
+    fetchOpts
+  } = updateDataOpts;
 
-    /* optimistic local update */
-    mutate({
-      data: payload,
-      metadata: {
-        ...remoteData.metadata,
-        total: payload.length
-      }
-    }, false);
+  return async function doUpdate(nextState) {
+    const next = typeof nextState === `function`
+      ? nextState(data?.data)
+      : nextState;
 
-    /* make api call */
-    const result = await rawRequest(getKey(), {
-      body: JSON.stringify(newData),
-      headers: {
-        'Content-Type': `application/json`,
-        ...updateHeaders
-      },
-      method: `PUT`,
-      ...otherUpdateOpts
-    });
+    /* step 1: optimistic local update */
+    mutate(
+      { ...data, data: next },
+      false
+    );
 
-    /* reconcile local data with remote */
-    mutate(result);
-  }, [ getKey, remoteData, updateOpts ]);
+    /* step 2: make remote update */
+    const updateEndpoint = apiEndpoint || cacheKey;
+    const response = await putData(updateEndpoint, next, fetchOpts);
 
-  const doCreate = useCallback(async function doCreate(newData) {
-    const {
-      headers: createHeaders = {},
-      ...otherCreateOpts
-    } = createOpts;
-
-    /* optimistic local update */
-    mutate({
-      data: [].concat(newData),
-      metadata: { total: 1 }
-    }, false);
-
-    /* make api call */
-    const result = await rawRequest(getKey(), {
-      body: JSON.stringify(newData),
-      headers: {
-        'Content-Type': `application/json`,
-        ...createHeaders
-      },
-      method: `POST`,
-      ...otherCreateOpts
-    });
-
-    /* reconcile local data with remote */
-    mutate(result);
-  }, [ getKey ]);
-
-  const doDelete = useCallback(async function doDelete() {
-    /* optimistic local update */
-    mutate({
-      data: [],
-      metadata: { total: 0 }
-    }, false);
-
-    /* make api call */
-    await rawRequest(getKey(), {
-      method: `DELETE`,
-      ...deleteOpts
-    });
-
-    /* reconcile local data with remote */
-    const result = await rawRequest(getKey(), {
-      method: `GET`,
-      ...getOpts
-    });
-
-    mutate(result);
-  }, [ getKey ]);
-
-  useEffect(function onRemoteData() {
-    if (!data) {
-      return;
-    }
-
-    fetched.current += 1;
-    setRemoteData(data);
-  }, [ data, fetched.current ]);
-
-  return {
-    data: remoteData.data,
-    doCreate,
-    doDelete,
-    doGet,
-    doUpdate,
-    localError: error,
-    metadata: remoteData.metadata,
-    ready: remoteData.metadata.error !== undefined || remoteData.metadata.total !== undefined
+    /* step 3: sync local data with remote */
+    mutate(response);
   };
 }
 
-function useGetData() {}
+/**
+ * @param {RemoteDataOpts} remoteDataOpts
+ * @return {types.RemoteDataResult}
+ */
+function useRemoteData(remoteDataOpts) {
+  const {
+    apiEndpoint,
+    opts = {}
+  } = remoteDataOpts;
+  const {
+    createOpts = {},
+    raw,
+    updateOpts = {},
+    ...userSwrOpts
+  } = opts;
+  const defaultSwrOpts = {
+    dedupingInterval: ABOUT_ONE_MONTH_IN_MS
+  };
+  const swrOpts = {
+    ...defaultSwrOpts,
+    ...userSwrOpts
+  };
+  const swr = useSWR(apiEndpoint, rawRequest, swrOpts);
+  const {
+    data: swrData,
+    error
+  } = swr;
+  const doCreate = useCreateData(apiEndpoint, swr, createOpts);
+  const doUpdate = useCallbackFactory(
+    getUpdateDataFunction,
+    [ apiEndpoint, swr, updateOpts ]
+  );
+  const data = raw
+    ? swrData
+    : (swrData?.data ?? []);
+  const metadata = raw
+    ? undefined
+    : (swrData?.metadata ?? {});
+
+  return {
+    data,
+    doCreate,
+    doUpdate,
+    error,
+    metadata
+  };
+}
 
 export {
-  useRemoteData,
-  useGetData
+  useRemoteData
 };

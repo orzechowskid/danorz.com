@@ -25,10 +25,7 @@ function PrivateRoute(props) {
     component: Component
   } = props;
   const {
-    path,
-    query,
-    route,
-    url
+    route
   } = useLocation();
   const {
     isSignedIn
@@ -36,14 +33,12 @@ function PrivateRoute(props) {
     isSignedIn: selectSignedIn
   });
 
-  console.log(`PrivateRoute:`, {isSignedIn});
   useEffect(function componentDidMount() {
-    if (!isSignedIn) {
-      console.log(`not signed in`);
+    if (isSignedIn === false) {
       window.history.pushState(undefined, ``, `/home`);
       route(`/home`);
     }
-  }, []);
+  }, [ isSignedIn ]);
 
   if (!isSignedIn) {
     return null;

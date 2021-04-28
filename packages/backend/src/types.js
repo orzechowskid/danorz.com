@@ -31,6 +31,12 @@
  */
 
 /**
+ * @typedef {Object} Settings
+ * @property {string} name
+ * @property {Object.<string,any>} values
+ */
+
+/**
  * @typedef {Object} DBQuery
  * @property {number} [count] return this many things upon read
  * @property {Partial<T>} [data] create/update body
@@ -73,6 +79,7 @@
  * @property {Object} connection
  * @property {(id: string) => Object} deserializeUser
  * @property {DBQueryFunction<BlogPost>} getBlogPosts
+ * @property {DBQueryFunction<Settings>} getSettings
  * @property {DBQueryFunction<User>} getUser
  * @property {(user: Object) => string} serializeUser
  */

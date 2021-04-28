@@ -15,7 +15,7 @@ import {
   useI18n
 } from '~/utils/useI18n.js';
 import {
-  usePageMeta,
+  usePageMeta
 } from '~/utils/usePageTitle.js';
 import {
   useRemoteData
@@ -30,16 +30,17 @@ function About() {
   } = useI18n();
   const {
     data,
+    doCreate,
     doUpdate,
-    localError,
+    error,
     metadata
   } = useRemoteData({
     apiEndpoint: `content/bio`
   });
   const page = `About`;
   const pageTitle = t(`${page}:title`);
-  const pageContents = data?.[0]?.text;
-  const error = localError || metadata?.error;
+  const pageContents = data[0]?.text;
+  const err = error || metadata.error;
   /** @type {types.LocalState<string>} */
   const [ previewContents, setPreviewContents ] = useState(pageContents);
   /** @type {types.LocalState<boolean>} */
@@ -49,6 +50,10 @@ function About() {
   const onEdit = useCallback(function onEdit() {
     setEditMode(true);
     setPreviewContents(pageContents);
+    setTimeout(function() {
+      // TODO: something else here?  setTimeout + querySelector is kinda gross
+      document.querySelector(`textarea`).focus();
+    }, 0);
   }, [ pageContents ]);
   const onPreview = useCallback(function onPreview() {
     setPreviewMode(!previewMode);
@@ -56,13 +61,19 @@ function About() {
   const onCancel = useCallback(function onCancel() {
     setEditMode(false);
     setPreviewMode(false);
+    setPreviewContents(pageContents);
   }, []);
   const onChange = useCallback(function onChange(e) {
     setPreviewContents(e.target.value);
   }, []);
   const onSubmit = useCallback(function onSubmit(e) {
     e.preventDefault();
-    doUpdate({ ...data[0], text: previewContents });
+    if (pageContents) {
+      doUpdate({...data[0], text: previewContents });
+    }
+    else {
+      doCreate({ name: `bio`, text: previewContents });
+    }
     setEditMode(false);
     setPreviewMode(false);
   }, [ previewContents ]);
@@ -115,7 +126,7 @@ function About() {
           )}
         </PageActions>
       </PageTitleContainer>
-      {error && <div>{error}</div>}
+      {err && <div>{err}</div>}
       {editMode ? (
         <form
           id={page}
@@ -133,7 +144,7 @@ function About() {
           )}
         </form>
       ) : (
-        <Markdown>{md}</Markdown>
+        <Markdown>{md || t(`About:no-content`)}</Markdown>
       )}
     </div>
   );

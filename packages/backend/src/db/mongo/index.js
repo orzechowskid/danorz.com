@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import * as Content from './content.js';
 import * as LinkPreview from './linkpreview.js';
 import * as Posts from './posts.js';
+import * as Settings from './settings.js';
 import * as User from './user.js';
 
 function serializeUser() {
@@ -25,6 +26,7 @@ class DBConnection {
     this.deserializeUser = deserializeUser;
     this.createPassportStrategy = createPassportStrategy;
 
+    this.createContent = Content.createContent;
     this.getContent = Content.getContent;
     this.updateContent = Content.updateContent;
 
@@ -33,6 +35,8 @@ class DBConnection {
     this.getLinkPreview = LinkPreview.getLinkPreview;
 
     this.getBlogPosts = Posts.getPosts;
+
+    this.getSettings = Settings.getSettings;
 
     this.createUser = User.createUser;
     this.getUser = User.getUser;
@@ -77,6 +81,7 @@ async function init() {
   Content.init(connection);
   LinkPreview.init(connection);
   Posts.init(connection);
+  Settings.init(connection);
   User.init(connection);
 
   return new DBConnection();

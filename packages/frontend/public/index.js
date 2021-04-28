@@ -23,25 +23,16 @@ import BlogPost from './pages/blog/post.js';
 import Home from './pages/home/index.js';
 import Me from './pages/me/index.js';
 import NotFound from './pages/not-found/index.js';
+import Settings from './pages/settings';
 import {
   initialState
 } from './state/globalState.js';
 import {
-  doSetDictionary,
-  doSetLocale,
-  doSetSupportedLocales,
-  selectLocale,
-  selectSupportedLocales
-} from './state/i18n.js';
-import {
-  doGetExistingSession,
-  selectPreferredLocale
-} from './state/session.js';
-import {
-  createGlobalState,
-  useActionCreators,
-  useSelectors
+  createGlobalState
 } from './utils/useGlobalState.js';
+import {
+  useRemoteData
+} from './utils/useRemoteData.js';
 
 import './theme.css';
 import './global.css';
@@ -55,7 +46,8 @@ const publicRoutes = {
 };
 
 const privateRoutes = {
-  '/me': Me
+  '/me': Me,
+  '/settings': Settings
 };
 
 const routes = [
@@ -77,48 +69,7 @@ function onNavigate() {
   }, 0);
 }
 
-function useAppSetup() {
-  const {
-    locale,
-    preferredLocale,
-    supportedLocales
-  } = useSelectors({
-    locale: selectLocale,
-    preferredLocale: selectPreferredLocale,
-    supportedLocales: selectSupportedLocales
-  });
-  const actions = useActionCreators({
-    doGetExistingSession,
-    doSetDictionary,
-    doSetLocale,
-    doSetSupportedLocales
-  });
-
-  useEffect(function requestInitialAppData() {
-    actions.doSetSupportedLocales();
-    actions.doGetExistingSession();
-  }, []);
-
-  useEffect(function setLocaleFromUserPreferences() {
-    if (!preferredLocale || Object.entries(supportedLocales).length === 0) {
-      return;
-    }
-
-    actions.doSetLocale(preferredLocale);
-  }, [ supportedLocales, preferredLocale ]);
-
-  useEffect(function loadDictionaryForCurrentLocale() {
-    if (!locale || Object.entries(supportedLocales).length === 0) {
-      return;
-    }
-
-    actions.doSetDictionary(locale);
-  }, [ supportedLocales, locale ]);
-}
-
 function App() {
-  useAppSetup();
-
   return (
     <>
       <div id="app">
@@ -144,7 +95,6 @@ function App() {
   );
 }
 
-createGlobalState(initialState);
 hydrate(<App />, document.body);
 
 export default App;

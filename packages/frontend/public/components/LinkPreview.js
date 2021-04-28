@@ -18,22 +18,21 @@ function LinkPreview(props) {
     url
   } = props;
   const {
-    data
+    data,
+    error
   } = useRemoteData({
-    apiEndpoint: `linkpreview?url=${encodeURIComponent(url)}`,
-    getOpts: {
-      once: true
-    }
+    apiEndpoint: `linkpreview?url=${encodeURIComponent(url)}`
   });
   const {
     favicons,
     images,
     title,
     url: linkUrl
-  } = data?.[0]?.metadata ?? {};
+  } = data[0]?.metadata ?? {};
 
   return (
     <div className={styles.linkPreview}>
+      {error && <div>{error}</div>}
       <a
         href={linkUrl}
         rel="noopener noreferrer"

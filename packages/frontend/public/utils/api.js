@@ -109,7 +109,7 @@ async function postData(apiEndpoint, payload, opts = {}) {
  */
 async function putData(apiEndpoint, payload, opts = {}) {
   try {
-    const response = window.fetch(`${API_PATH}/${apiEndpoint}`, {
+    const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
       body: JSON.stringify(payload),
       headers: {
         'Content-Type': `application/json`
