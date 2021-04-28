@@ -28,3 +28,7 @@
 .markdown > * ~ * {
   margin-top: var(--gutter-lg);
 }
+
+.strikethrough {
+  text-decoration: line-through;
+}

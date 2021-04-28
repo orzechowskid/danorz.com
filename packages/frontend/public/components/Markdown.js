@@ -31,6 +31,14 @@ function Code(props) {
     : <code {...props} />;
 }
 
+function Strikethrough(props) {
+  return (
+    <span className={styles.strikethrough}>
+      {props.children}
+    </span>
+  );
+}
+
 /** @type {types.Component<MarkdownProps>} */
 function Markdown(props) {
   const {
@@ -46,7 +54,8 @@ function Markdown(props) {
         overrides: {
           a: A,
           code: Code,
-          'md-preview': LinkPreview
+          'md-preview': LinkPreview,
+          strikethrough: Strikethrough
         }
       }}
     >
