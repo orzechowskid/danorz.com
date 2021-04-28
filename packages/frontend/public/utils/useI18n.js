@@ -6,12 +6,8 @@ import {
 import * as types from '~/types.js';
 
 import {
-  selectDictionary,
-  selectLocale
-} from '~/state/i18n.js';
-import {
-  useSelectors
-} from '~/utils/useGlobalState.js';
+  useRemoteData
+} from '~/utils/useRemoteData.js';
 
 /**
  * @param {string} locale
@@ -73,7 +69,7 @@ export function translate(locale, dictionary, key, values = {}) {
     namespace,
     realKey
   ] = key.split(`:`);
-  const str = dictionary?.[namespace]?.[realKey];
+  const str = dictionary[namespace]?.[realKey];
 
   if (!str) {
     console.warn(`no entry in ${locale} dictionary found for ${namespace || '<undefined>'}:${realKey || '<undefined>'}`);
@@ -99,17 +95,39 @@ export function translate(locale, dictionary, key, values = {}) {
  * @property {(date:Date, [args]:Object) => string} time
  */
 
+function useDictionary(locale) {
+  const {
+    data
+  } = useRemoteData({
+    apiEndpoint: () => locale ? `i18n/locales/${locale}/dictionary` : null,
+    opts: { raw: true }
+  });
+
+  return data ?? {};
+}
+
+function useSupportedLocales() {
+  const {
+    data
+  } = useRemoteData({
+    apiEndpoint: `i18n/locales`,
+    opts: { raw: true }
+  });
+
+  return data?.locales ?? {};
+}
+
+function useLocale() {
+  // TODO: preferences, local storage, etc
+  return `en-us`;
+}
+
 /**
  * @return {I18nFunctions}
  */
 function useI18n() {
-  const {
-    dictionary,
-    locale
-  } = useSelectors({
-    dictionary: selectDictionary,
-    locale: selectLocale
-  });
+  const locale = useLocale();
+  const dictionary = useDictionary(locale);
   const date = useCallback(
     (...args) => datestring(locale, ...args),
     [ locale ]
@@ -136,5 +154,7 @@ function useI18n() {
 }
 
 export {
-  useI18n
+  useI18n,
+  useLocale,
+  useSupportedLocales
 };

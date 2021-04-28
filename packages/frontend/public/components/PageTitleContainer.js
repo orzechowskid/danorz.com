@@ -1,14 +1,11 @@
 import * as types from '~/types.js';
 
 import {
-  selectSignedIn
-} from '~/state/session.js';
-import {
-  useSelectors
-} from '~/utils/useGlobalState.js';
-import {
   usePageTitle
 } from '~/utils/usePageTitle.js';
+import {
+  useSession
+} from '~/utils/useSession.js';
 
 import styles from './PageTitleContainer.module.css';
 
@@ -37,14 +34,15 @@ function PageActions(props) {
     children
   } = props;
   const {
+    data
+  } = useSession();
+  const {
     isSignedIn
-  } = useSelectors({
-    isSignedIn: selectSignedIn
-  });
+  } = data;
 
   return (
     <div aria-live="polite">
-      {isSignedIn ? children : null}
+      {isSignedIn ? children : children}
     </div>
   );
 }

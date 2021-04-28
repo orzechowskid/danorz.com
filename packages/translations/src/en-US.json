@@ -8,6 +8,7 @@
   },
   "About": {
     "description": "About me",
+    "no-content": "Nothing here yet!",
     "title": "About"
   },
   "AccountMenu": {
@@ -100,7 +101,10 @@
   },
   "Settings": {
     "description": "Configure your site",
-    "title": "Site Settings"
+    "title": "Site Settings",
+    "blog": "Blog settings",
+    "blog.allowComments": "Allow comments on blog posts",
+    "content": "Content settings"
   },
   "SignInForm": {
     "cancel": "Never mind",

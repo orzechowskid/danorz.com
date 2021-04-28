@@ -30,6 +30,39 @@ export async function getContent(dbQuery) {
 }
 
 /** @type {types.DBQueryFunction<types.Content>} */
+export async function createContent(dbQuery) {
+  const {
+    data
+  } = dbQuery;
+  let total = -1;
+  let error;
+
+  try {
+    const newContent = new Content(data);
+
+    await newContent.save();
+
+    return {
+      data: [ newContent ],
+      metadata: {
+        total: 1
+      }
+    };
+  }
+  catch (ex) {
+    error = ex.message;
+
+    return {
+      data: [],
+      metadata: {
+        error,
+        total
+      }
+    };
+  }
+}
+
+/** @type {types.DBQueryFunction<types.Content>} */
 export async function updateContent(dbQuery) {
   const {
     data,

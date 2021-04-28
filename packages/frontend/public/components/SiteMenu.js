@@ -98,6 +98,10 @@ function SiteMenuContents(props) {
     doSignOut
   });
 
+  function onNavigateToSettings() {
+    onClose();
+  }
+
   return (
     <div
       className={styles.siteMenuBackground}
@@ -122,9 +126,14 @@ function SiteMenuContents(props) {
           </div>
           {isSignedIn ? (
             <>
-              <button>
-                {t(`Page:settings`)}
-              </button>
+              <div>
+                <a
+                  href="/settings"
+                  onClick={onNavigateToSettings}
+                >
+                  {t(`Page:settings`)}
+                </a>
+              </div>
               <button onClick={actions.doSignOut}>
                 {t(`SiteMenu:sign-out`)}
               </button>

@@ -35,7 +35,15 @@ function setStoredValue(path, value) {
   }
 }
 
+function useLocalStorage() {
+  return {
+    getStoredValue,
+    setStoredValue
+  }
+}
+
 export {
   getStoredValue,
-  setStoredValue
+  setStoredValue,
+  useLocalStorage
 };

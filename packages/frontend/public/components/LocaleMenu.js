@@ -2,19 +2,18 @@ import * as types from '~/types.js';
 
 import Input from '~/components/Input.js';
 import {
-  doSetLocale,
-  selectLocale,
-  selectSupportedLocales
+  doSetLocale
 } from '~/state/i18n.js';
 import {
   doSetUserPreferredLocale
 } from '~/state/session.js';
 import {
-  useActionCreators,
-  useSelectors
+  useActionCreators
 } from '~/utils/useGlobalState.js';
 import {
-  useI18n
+  useI18n,
+  useLocale,
+  useSupportedLocales
 } from '~/utils/useI18n.js';
 
 import styles from './LocaleMenu.module.css';
@@ -29,13 +28,8 @@ function LocaleMenu(props) {
   const {
     className
   } = props;
-  const {
-    currentLocale,
-    supportedLocales
-  } = useSelectors({
-    currentLocale: selectLocale,
-    supportedLocales: selectSupportedLocales
-  });
+  const currentLocale = useLocale();
+  const supportedLocales = useSupportedLocales();
   const actions = useActionCreators({
     doSetLocale,
     doSetUserPreferredLocale

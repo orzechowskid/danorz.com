@@ -1,0 +1,11 @@
+.collapsibleSection {
+  margin-left: var(--gutter-md);
+}
+
+.collapsibleSection + .collapsibleSection {
+  margin-top: var(--gutter-md);
+}
+
+.collapsibleSection > div {
+  margin-left: var(--gutter-md);
+}

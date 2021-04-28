@@ -32,6 +32,34 @@ router.get(
     next(err);
   });
 
+router.post(
+  `/:documentName`,
+  ensureSignedIn,
+  async function createContent(req, res, next) {
+    /** @type {types.DBConnection} */
+    const db = res.locals.db;
+    let err = null;
+
+    if (req.body.name !== req.params.documentName) {
+      res.status(400).end();
+    }
+    else {
+      try {
+        const response = await db.createContent({
+          data: req.body
+        });
+
+        res.json(response)
+          .end();
+      }
+      catch (ex) {
+        err = ex;
+      }
+    }
+
+    next(err);
+  });
+
 router.put(
   `/:documentName`,
   ensureSignedIn,
