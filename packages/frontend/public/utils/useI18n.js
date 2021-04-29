@@ -103,7 +103,7 @@ function useDictionary(locale) {
     opts: { raw: true }
   });
 
-  return data ?? {};
+  return data;
 }
 
 function useSupportedLocales() {
@@ -154,6 +154,7 @@ function useI18n() {
 }
 
 export {
+  useDictionary,
   useI18n,
   useLocale,
   useSupportedLocales

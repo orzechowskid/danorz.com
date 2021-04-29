@@ -1,8 +1,5 @@
 import 'preact/devtools';
 
-import {
-  useEffect
-} from 'preact/hooks';
 import hydrate from 'preact-iso/hydrate';
 import {
   ErrorBoundary
@@ -14,25 +11,22 @@ import {
 
 import * as types from './types.js';
 
-import PrivateRoute from './components/PrivateRoute.js';
 import Footer from './components/Footer.js';
 import Header from './components/Header.js';
+import PrivateRoute from './components/PrivateRoute.js';
 import About from './pages/about/index.js';
 import Blog from './pages/blog/index.js';
 import BlogPost from './pages/blog/post.js';
 import Home from './pages/home/index.js';
 import Me from './pages/me/index.js';
 import NotFound from './pages/not-found/index.js';
-import Settings from './pages/settings';
+import Settings from './pages/settings/index.js';
 import {
-  initialState
-} from './state/globalState.js';
-import {
-  createGlobalState
-} from './utils/useGlobalState.js';
-import {
-  useRemoteData
-} from './utils/useRemoteData.js';
+  useDictionary,
+  useLocale
+} from './utils/useI18n.js';
+
+import busyStyles from './components/Busy.module.css';
 
 import './theme.css';
 import './global.css';
@@ -69,7 +63,28 @@ function onNavigate() {
   }, 0);
 }
 
+function usePreloadData() {
+  const locale = useLocale();
+  const dictionary = useDictionary(locale);
+
+  return [ locale, dictionary ].every(Boolean);
+}
+
+function Contents() {
+  return (
+    <LocationProvider>
+      <ErrorBoundary>
+        <Router onLoadEnd={onNavigate}>
+          {routes}
+        </Router>
+      </ErrorBoundary>
+    </LocationProvider>
+  );
+}
+
 function App() {
+  const ready = usePreloadData();
+
   return (
     <>
       <div id="app">
@@ -77,14 +92,12 @@ function App() {
 
         <Header />
 
-        <main id="main">
-          <LocationProvider>
-            <ErrorBoundary>
-              <Router onLoadEnd={onNavigate}>
-                {routes}
-              </Router>
-            </ErrorBoundary>
-          </LocationProvider>
+        <main
+          aria-busy={!ready}
+          className={busyStyles.busy}
+          id="main"
+        >
+          {ready && <Contents />}
         </main>
 
         <Footer />
