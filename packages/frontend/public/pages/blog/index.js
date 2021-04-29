@@ -32,14 +32,14 @@ function Blog() {
     data,
     doUpdate,
     localError,
-    metadata,
-    ready
+    metadata
   } = useRemoteData({
     apiEndpoint: `blog/posts`
   });
   const {
     t
   } = useI18n();
+  const ready = !!data.length;
   const page = `Blog`;
   const pageTitle = t(`${page}:title`);
   usePageMeta(function setPageMeta() {
