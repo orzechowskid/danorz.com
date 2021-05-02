@@ -63,25 +63,36 @@
  */
 
 /**
- * @typedef {Object} RemoteData
- * @property {T[]} data
- * @property {Object} metadata
- * @property {string} [metadata.error]
- * @property {number} [metadata.total]
+ * @typedef {Object} RemoteDataItem
+ * @property {T} data
+ * @property {(arg0: T) => T} doCreate
+ * @property {() => void} doDelete
+ * @property {(arg0: Partial<T>) => T} doUpdate
+ * @property {string} [error]
  * @template T
  */
 
 /**
- * @typedef {Object} RemoteDataResult
+ * @typedef {Object} RemoteDataList
  * @property {T[]} data
- * @property {(arg0: Object) => void} doCreate
- * @property {(arg0: Object) => void} doDelete
- * @property {() => void} doGet
- * @property {(arg0: Object) => void} doUpdate
- * @property {string} localError
- * @property {Object} metadata
- * @property {boolean} ready
+ * @property {(arg0: T) => T} doCreate
+ * @property {(arg0: T) => void} doDelete
+ * @property {(arg0: T) => T} doUpdate
+ * @property {string} [error]
  * @template T
+ */
+
+/**
+ * @typedef {Object} RemoteDataSpecialCase
+ * @property {T} data
+ * @property {(arg0: C) => T} doCreate
+ * @property {(arg0: D) => void} doDelete
+ * @property {(arg0: Partial<U>) => T} doUpdate
+ * @property {string} [error]
+ * @template T
+ * @template C
+ * @template D
+ * @template U
  */
 
 /**

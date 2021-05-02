@@ -25,24 +25,14 @@ import LocaleMenu from '~/components/LocaleMenu.js';
 import ModalDialog from '~/components/ModalDialog.js';
 import SignInForm from '~/components/SignInForm.js';
 import {
-  selectAppClientVersion,
-  selectAppServerVersion
-} from '~/state/globalState.js';
-import {
-  selectLocale,
-  selectSupportedLocales
-} from '~/state/i18n.js';
-import {
-  doSignOut,
-  selectSignedIn
-} from '~/state/session.js';
-import {
-  useActionCreators,
-  useSelectors
-} from '~/utils/useGlobalState.js';
-import {
   useI18n
 } from '~/utils/useI18n.js';
+import {
+  useSession
+} from '~/utils/useSession.js';
+import {
+  useSystemVersion
+} from '~/utils/useSystemVersion.js';
 
 import styles from './SiteMenu.module.css';
 
@@ -85,18 +75,12 @@ function SiteMenuContents(props) {
   );
   const {
     clientVersion,
-    isSignedIn,
     serverVersion
-  } = useSelectors({
-    clientVersion: selectAppClientVersion,
-    currentLocale: selectLocale,
-    isSignedIn: selectSignedIn,
-    serverVersion: selectAppServerVersion,
-    supportedLocales: selectSupportedLocales
-  });
-  const actions = useActionCreators({
-    doSignOut
-  });
+  } = useSystemVersion();
+  const {
+    isSignedIn,
+    signOut
+  } = useSession();
 
   function onNavigateToSettings() {
     onClose();
@@ -134,7 +118,7 @@ function SiteMenuContents(props) {
                   {t(`Page:settings`)}
                 </a>
               </div>
-              <button onClick={actions.doSignOut}>
+              <button onClick={signOut}>
                 {t(`SiteMenu:sign-out`)}
               </button>
             </>

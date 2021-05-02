@@ -47,6 +47,9 @@
       } ],
 
     "import/default": "error",
+    "import/extensions": [
+      "warn", "ignorePackages"
+    ],
     "import/named": "error",
     "import/no-extraneous-dependencies": [
       "warn", {

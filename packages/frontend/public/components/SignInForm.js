@@ -7,27 +7,21 @@ import {
 
 import Input from '~/components/Input.js';
 import {
-  doSignIn
-} from '~/state/session.js';
-import {
   getFormData
 } from '~/utils/helpers.js';
 import {
-  useActionCreators
-} from '~/utils/useGlobalState.js';
-import {
   useI18n
 } from '~/utils/useI18n.js';
+import {
+  useSession
+} from '~/utils/useSession.js';
 
 import styles from './SignInForm.module.css';
 
-function SignInForm() {
+function useSignInForm() {
   const {
-    t
-  } = useI18n();
-  const actions = useActionCreators({
-    doSignIn
-  });
+    signIn
+  } = useSession();
   /** @type {types.LocalState<boolean>} */
   const [ isBusy, setBusy ] = useState(false);
   /** @type {types.LocalState<number>} */
@@ -41,7 +35,10 @@ function SignInForm() {
 
     e.preventDefault();
     setBusy(true);
-    await actions.doSignIn(username, password);
+    await signIn({
+      name: username,
+      password
+    });
     setBusy(false);
   }, []);
   const increment = useCallback(function increment() {
@@ -50,6 +47,27 @@ function SignInForm() {
   const decrement = useCallback(function decrement() {
     setFocusedEls((f) => f - 1);
   }, []);
+
+  return {
+    decrement,
+    focusedEls,
+    increment,
+    isBusy,
+    onSignIn
+  };
+}
+
+function SignInForm() {
+  const {
+    decrement,
+    focusedEls,
+    increment,
+    isBusy,
+    onSignIn
+  } = useSignInForm();
+  const {
+    t
+  } = useI18n();
 
   return (
     <form
