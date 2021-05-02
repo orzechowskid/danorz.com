@@ -2,21 +2,26 @@ import * as types from '~/types.js';
 
 import Input from '~/components/Input.js';
 import {
-  doSetLocale
-} from '~/state/i18n.js';
-import {
-  doSetUserPreferredLocale
-} from '~/state/session.js';
-import {
-  useActionCreators
-} from '~/utils/useGlobalState.js';
-import {
   useI18n,
   useLocale,
   useSupportedLocales
 } from '~/utils/useI18n.js';
 
 import styles from './LocaleMenu.module.css';
+
+function useLocaleMenu() {
+  const {
+    locale,
+    setLocale
+  } = useLocale();
+  const supportedLocales = useSupportedLocales();
+
+  return {
+    locale,
+    setLocale,
+    supportedLocales
+  };
+}
 
 /**
  * @typedef {Object} LocaleMenuProps
@@ -28,20 +33,14 @@ function LocaleMenu(props) {
   const {
     className
   } = props;
-  const currentLocale = useLocale();
-  const supportedLocales = useSupportedLocales();
-  const actions = useActionCreators({
-    doSetLocale,
-    doSetUserPreferredLocale
-  });
+  const {
+    locale,
+    setLocale,
+    supportedLocales
+  } = useLocaleMenu();
   const {
     t
   } = useI18n();
-
-  function updateLocale(nextLocale) {
-    actions.doSetLocale(nextLocale);
-    actions.doSetUserPreferredLocale(nextLocale);
-  }
 
   return (
     <form className={`${styles.localeMenu} ${className}`}>
@@ -58,15 +57,15 @@ function LocaleMenu(props) {
         className={styles.localeMenu}
         id="locale-menu"
       >
-        {Object.entries(supportedLocales).map(([ locale, localeText ]) => (
-          <label key={locale}>
+        {Object.entries(supportedLocales).map(([ supportedLocale, localeText ]) => (
+          <label key={supportedLocale}>
             <Input
-              checked={locale.toLowerCase() === currentLocale.toLowerCase()}
+              checked={supportedLocale.toLowerCase() === locale.toLowerCase()}
               className={styles.localeOption}
               name="locale"
-              onClick={() => updateLocale(locale)}
+              onClick={() => setLocale(supportedLocale)}
               type="radio"
-              value={locale}
+              value={supportedLocale}
             />
             {localeText}
           </label>

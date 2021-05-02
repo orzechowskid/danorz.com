@@ -27,4 +27,28 @@ router.use(`/`, async function getEnv(req, res, next) {
   next(err);
 });
 
+router.get(
+  `/settings/:settingsObject`,
+  async function getSettings(req, res, next) {
+    const db = res.locals.db;
+    let err;
+
+    try {
+      const response = await db.getSettings({
+        which: {
+          name: req.params.settingsObject
+        }
+      });
+
+      res.json(response)
+        .end();
+    }
+    catch (ex) {
+      err = ex;
+    }
+
+    next(err);
+  }
+);
+
 export default router;

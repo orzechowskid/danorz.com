@@ -34,11 +34,8 @@ function PageActions(props) {
     children
   } = props;
   const {
-    data
-  } = useSession();
-  const {
     isSignedIn
-  } = data;
+  } = useSession();
 
   return (
     <div aria-live="polite">

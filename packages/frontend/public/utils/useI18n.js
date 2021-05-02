@@ -119,7 +119,10 @@ function useSupportedLocales() {
 
 function useLocale() {
   // TODO: preferences, local storage, etc
-  return `en-us`;
+  return {
+    locale: `en-us`,
+    setLocale() {}
+  };
 }
 
 /**

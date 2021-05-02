@@ -76,8 +76,7 @@ router.delete(
 
     try {
       req.logOut();
-      res.json({ data: [], metadata: { errors: [] } })
-        .end();
+      res.status(200).end();
     }
     catch (ex) {
       err = ex;

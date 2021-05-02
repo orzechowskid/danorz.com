@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import * as types from '~/types.js';
 
 import {
+  deleteData,
   postData,
   putData,
   rawRequest
@@ -59,7 +60,7 @@ function useCallbackFactory(fn, args) {
  * @property {RemoteDataOtherOpts} opts
  */
 
-function useCreateData(cacheKey, swrOpts, createDataOpts) {
+function getCreateDataFunction(cacheKey, swrOpts, createDataOpts) {
   const {
     mutate
   } = swrOpts
@@ -67,7 +68,8 @@ function useCreateData(cacheKey, swrOpts, createDataOpts) {
     apiEndpoint,
     fetchOpts
   } = createDataOpts;
-  const doCreate = useCallback(async function doCreate(next) {
+
+  return async function doCreate(next) {
     /* step 1: optimistic local update */
     // TODO: need api envelope
     mutate(next, false);
@@ -78,9 +80,7 @@ function useCreateData(cacheKey, swrOpts, createDataOpts) {
 
     /* step 3: sync local data with remote */
     mutate(response, false);
-  }, []);
-
-  return doCreate;
+  };
 }
 
 function getUpdateDataFunction(cacheKey, swrOpts, updateDataOpts) {
@@ -113,9 +113,31 @@ function getUpdateDataFunction(cacheKey, swrOpts, updateDataOpts) {
   };
 }
 
+function getDeleteDataFunction(cacheKey, swrOpts, deleteDataOpts) {
+  const {
+    mutate
+  } = swrOpts;
+  const {
+    apiEndpoint,
+    fetchOpts
+  } = deleteDataOpts;
+
+  return async function doDelete() {
+    /* step 1: optimistic local update */
+    mutate(undefined, false);
+
+    /* step 2: make remote update */
+    const deleteEndpoint = apiEndpoint || cacheKey;
+    await deleteData(deleteEndpoint, fetchOpts);
+
+    /* step 3: sync local data with remote */
+    mutate(undefined);
+  };
+}
+
+
 /**
  * @param {RemoteDataOpts} remoteDataOpts
- * @return {types.RemoteDataResult}
  */
 function useRemoteData(remoteDataOpts) {
   const {
@@ -124,6 +146,7 @@ function useRemoteData(remoteDataOpts) {
   } = remoteDataOpts;
   const {
     createOpts = {},
+    deleteOpts = {},
     raw,
     updateOpts = {},
     ...userSwrOpts
@@ -140,10 +163,17 @@ function useRemoteData(remoteDataOpts) {
     data: swrData,
     error
   } = swr;
-  const doCreate = useCreateData(apiEndpoint, swr, createOpts);
+  const doCreate = useCallbackFactory(
+    getCreateDataFunction,
+    [ apiEndpoint, swr, createOpts ]
+  );
   const doUpdate = useCallbackFactory(
     getUpdateDataFunction,
     [ apiEndpoint, swr, updateOpts ]
+  );
+  const doDelete = useCallbackFactory(
+    getDeleteDataFunction,
+    [ apiEndpoint, swr, deleteOpts ]
   );
   const data = raw
     ? swrData
@@ -155,6 +185,7 @@ function useRemoteData(remoteDataOpts) {
   return {
     data,
     doCreate,
+    doDelete,
     doUpdate,
     error,
     metadata

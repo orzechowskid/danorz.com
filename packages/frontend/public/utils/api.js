@@ -22,13 +22,9 @@ async function rawRequest(apiEndpoint, opts = {}) {
     return response.json();
   }
   catch (ex) {
-    return {
-      data: [],
-      metadata: {
-        count: -1,
-        error: ex.message
-      }
-    };
+    console.warn(apiEndpoint, ex.message);
+
+    return undefined;
   }
 }
 
