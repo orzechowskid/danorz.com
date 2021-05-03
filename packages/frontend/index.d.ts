@@ -18,11 +18,11 @@ type RemoteDataItem<T> = RemoteDataSpecialCase<T, Omit<T, '_id'>, T, void, void,
 
 type RemoteDataList<T> = RemoteDataSpecialCase<T[], Omit<T, '_id'>, T, DataId, void, Partial<T>, T>;
 
-type RemoteDataResult = RemoteDataItem<T> | RemoteDataList<T>;
+type RemoteDataResult<T> = RemoteDataItem<T> | RemoteDataList<T>;
 
 type BannerSeverity = 'info' | 'warning';
 
-type SiteBanner {
+interface SiteBanner {
   _id: DataId;
   dismissable: boolean;
   severity: BannerSeverity;
