@@ -2,7 +2,7 @@
 
 type DataId = string;
 
-interface RemoteDataOpts<T> {
+interface RemoteDataOpts {
   apiEndpoint: string;
 }
 
@@ -35,7 +35,7 @@ type LocalState<T> = [ T, (arg0: LocalStateSetter<T>) => void ];
 
 interface LocalStorage<T> {
   data: T;
-  update: (T) => void;
+  update: (newValue: T) => void;
 }
 
 type BannerInfo = Record<DataId, boolean>;

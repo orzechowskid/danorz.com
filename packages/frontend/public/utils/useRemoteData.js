@@ -91,6 +91,9 @@ function getDeleteDataFunction(cacheKey, swrOpts, deleteDataOpts) {
   };
 }
 
+/**
+ * @param {RemoteDataOpts} remoteDataOpts
+ */
 function useRemoteData(remoteDataOpts) {
   const {
     apiEndpoint,
