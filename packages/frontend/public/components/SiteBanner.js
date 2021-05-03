@@ -23,7 +23,11 @@ function useSiteBanner() {
     data,
     error
   } = useRemoteData({
-    apiEndpoint: `site/banner`
+    apiEndpoint: `site/banner`,
+    opts: {
+      /* checking for a banner more than once a minute seems wasteful */
+      dedupingInterval: 60000
+    }
   });
   const {
     _id

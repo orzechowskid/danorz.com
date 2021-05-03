@@ -64,7 +64,9 @@ function onNavigate() {
 }
 
 function usePreloadData() {
-  const locale = useLocale();
+  const {
+    locale
+  } = useLocale();
   const dictionary = useDictionary(locale);
 
   return [ locale, dictionary ].every(Boolean);

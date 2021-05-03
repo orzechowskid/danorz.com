@@ -56,3 +56,10 @@ type Component<T> = (props: T) => (HTMLElement | null);
 interface PrivateRouteProps {
   children: any;
 }
+
+interface I18nFunctions {
+  date: (value: number, args?: Object) => string;
+  num: (value: number) => string;
+  t: (key: string, values?: Object) => string;
+  time: (date: Date, args?: Object) => string;
+}

@@ -3,8 +3,6 @@ import {
   useCallback
 } from 'preact/hooks';
 
-import * as types from '~/types.js';
-
 import {
   useRemoteData
 } from '~/utils/useRemoteData.js';
@@ -87,20 +85,16 @@ export function translate(locale, dictionary, key, values = {}) {
   }
 }
 
-/**
- * @typedef {Object} I18nFunctions
- * @property {(value:number, [args]:Object) => string} date
- * @property {(value:number) => string} num
- * @property {(key:string, [values]:Object) => string} t
- * @property {(date:Date, [args]:Object) => string} time
- */
-
 function useDictionary(locale) {
   const {
     data
   } = useRemoteData({
     apiEndpoint: () => locale ? `i18n/locales/${locale}/dictionary` : null,
-    opts: { raw: true }
+    opts: {
+      /* once an hour seems fine? */
+      dedupingInterval: 1000 * 60 * 60,
+      raw: true
+    }
   });
 
   return data;
@@ -129,7 +123,9 @@ function useLocale() {
  * @return {I18nFunctions}
  */
 function useI18n() {
-  const locale = useLocale();
+  const {
+    locale
+  } = useLocale();
   const dictionary = useDictionary(locale);
   const date = useCallback(
     (...args) => datestring(locale, ...args),

@@ -1,13 +1,10 @@
 import {
   useCallback,
-  useEffect,
   useState
 } from 'preact/hooks';
 import {
   useLocation
 } from 'preact-iso/router';
-
-import * as types from '~/types.js';
 
 import LinkButton from '~/components/LinkButton.js';
 import Markdown from '~/components/Markdown.js';
@@ -44,10 +41,10 @@ function BlogPost() {
   const {
     t
   } = useI18n();
-  /** @type {types.RemoteDataResult<types.BlogPost>} */
+  /** @type {RemoteDataItem<BlogPost>} */
   const {
     data,
-    ready
+    error
   } = useRemoteData({
     apiEndpoint: path.slice(1)
   });
@@ -71,11 +68,11 @@ function BlogPost() {
       description: t(`BlogPost:description`)
     };
   }, [ t ]);
-  usePageLoadTracker([ ready ]);
+  usePageLoadTracker([ !!data ]);
 
   return (
     <div
-      aria-busy={!ready}
+      aria-busy={!data}
       className={`${layoutStyles.layout} ${styles.post} ${busyStyles.busy}`}
     >
       <form>
