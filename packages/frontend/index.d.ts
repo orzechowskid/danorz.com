@@ -35,7 +35,7 @@ type LocalState<T> = [ T, (arg0: LocalStateSetter<T>) => void ];
 
 interface LocalStorage<T> {
   data: T;
-  update: (nextValue: T) => void;
+  update: (T) => void;
 }
 
 type BannerInfo = Record<DataId, boolean>;
