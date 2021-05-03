@@ -58,7 +58,7 @@ interface PrivateRouteProps {
 }
 
 interface I18nFunctions {
-  date: (value: number, args?: Object) => string;
+  date: (value: Date, args?: Object) => string;
   num: (value: number) => string;
   t: (key: string, values?: Object) => string;
   time: (date: Date, args?: Object) => string;

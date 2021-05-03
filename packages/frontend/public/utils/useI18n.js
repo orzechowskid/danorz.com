@@ -10,7 +10,7 @@ import {
 /**
  * @param {string} locale
  * @param {Date} value
- * @param {object} [args]
+ * @param {Record<string, any>} [args]
  * @return {string}
  */
 export function datestring(locale, value, args = {}) {
@@ -38,7 +38,7 @@ function number(locale, value) {
 /**
  * @param {string} locale
  * @param {Date} value
- * @param {object} [args]
+ * @param {Record<string, any>} [args]
  * @return {string}
  */
 function timestamp(locale, value, args = {}) {
@@ -53,9 +53,9 @@ function timestamp(locale, value, args = {}) {
 
 /**
  * @param {string} locale
- * @param {Object} dictionary
+ * @param {Record<string, any>} dictionary
  * @param {string} key
- * @param {Object} [values={}]
+ * @param {Record<string, any>} [values={}]
  * @return {string}
  */
 export function translate(locale, dictionary, key, values = {}) {
@@ -85,6 +85,10 @@ export function translate(locale, dictionary, key, values = {}) {
   }
 }
 
+/**
+ * @param {string} locale
+ * @return {Record<string, any>}
+ */
 function useDictionary(locale) {
   const {
     data
@@ -119,28 +123,29 @@ function useLocale() {
   };
 }
 
-/**
- * @return {I18nFunctions}
- */
 function useI18n() {
   const {
     locale
   } = useLocale();
   const dictionary = useDictionary(locale);
+  /** @type {(value: Date, args?: Record<string, any>) => string} */
   const date = useCallback(
-    (...args) => datestring(locale, ...args),
+    (value, args) => datestring(locale, value, args),
     [ locale ]
   );
+  /** @type {(value: number) => string} */
   const num = useCallback(
-    (...args) => number(locale, ...args),
+    (value) => number(locale, value),
     [ locale ]
   );
+  /** @type {(key: string, values?: Record<string, any>) => string} */
   const t = useCallback(
-    (...args) => translate(locale, dictionary, ...args),
+    (key, values) => translate(locale, dictionary, key, values),
     [ locale, dictionary ]
   );
+  /** @type {(d: Date, args?: Record<string, any>) => string} */
   const time = useCallback(
-    (...args) => timestamp(locale, ...args),
+    (d, args) => timestamp(locale, d, args),
     [ locale ]
   );
 
