@@ -16,3 +16,7 @@
   border-bottom: transparent;
   box-shadow: var(--box-shadow-header);
 }
+
+.header h1 {
+  word-break: break-all;
+}

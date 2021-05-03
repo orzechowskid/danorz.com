@@ -1,11 +1,9 @@
 import * as types from '~/types.js';
 
+import Restricted from '~/components/Restricted.js';
 import {
   usePageTitle
 } from '~/utils/usePageTitle.js';
-import {
-  useSession
-} from '~/utils/useSession.js';
 
 import styles from './PageTitleContainer.module.css';
 
@@ -33,18 +31,17 @@ function PageActions(props) {
   const {
     children
   } = props;
-  const {
-    isSignedIn
-  } = useSession();
 
   return (
     <div aria-live="polite">
-      {isSignedIn ? children : children}
+      <Restricted ensureSignedIn>
+        {children}
+      </Restricted>
     </div>
   );
 }
 
-/** @type {types.Component<>} */
+/** @type {types.Component<PageTitleContainerProps>} */
 function PageTitleContainer(props) {
   const {
     children
