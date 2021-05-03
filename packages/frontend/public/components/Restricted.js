@@ -1,17 +1,8 @@
-import * as types from '~/types.js';
-
 import {
   useSession
 } from '~/utils/useSession.js';
 
-/**
- * @typedef {Object} RestrictedProps
- * @property {Object} children
- * @property {boolean} [ensureSignedIn]
- * @property {string} [permission]
- */
-
-/** @type {types.Component<RestrictedProps>} */
+/** @type {Component<RestrictedProps>} */
 function Restricted(props) {
   const {
     children,

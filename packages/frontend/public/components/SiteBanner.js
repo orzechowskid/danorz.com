@@ -1,35 +1,65 @@
-import Markdown from 'markdown-to-jsx';
-
-import * as types from '~/types.js';
-
+import Layout from '~/components/Layout.js';
+import Markdown from '~/components/Markdown.js';
 import {
   useI18n
 } from '~/utils/useI18n.js';
 import {
-  useSiteBanner
-} from '~/utils/useSiteBanner.js';
-import Layout from './Layout.js';
+  useLocalStorage
+} from '~/utils/useLocalStorage.js';
+import {
+  useRemoteData
+} from '~/utils/useRemoteData.js';
 
 import styles from './SiteBanner.module.css';
 
-/** @type {types.Component<undefined>} */
+function useSiteBanner() {
+  /** @type {LocalStorage<BannerInfo>} */
+  const {
+    data: dismissedBanners,
+    update: updateDismissedBanners
+  } = useLocalStorage(`site/banner`);
+  /** @type {RemoteDataItem<SiteBanner>} */
+  const {
+    data,
+    error
+  } = useRemoteData({
+    apiEndpoint: `site/banner`
+  });
+  const {
+    _id
+  } = data;
+  const activeBanner = dismissedBanners?.[_id]
+    ? null
+    : data;
+
+  function dismissBanner() {
+    updateDismissedBanners({ ...dismissedBanners, [_id]: true });
+  }
+
+  return {
+    data: activeBanner,
+    dismissBanner,
+    error
+  };
+}
+
 function SiteBanner() {
   const {
     data,
     dismissBanner
   } = useSiteBanner();
   const {
+    _id,
     bannerDismissable,
-    bannerId,
     bannerSeverity,
     bannerText,
     dismissed
-  } = data;
+  } = data ?? {};
   const {
     t
   } = useI18n();
 
-  if (!bannerText || dismissed) {
+  if (!data || dismissed) {
     return null;
   }
 

@@ -6,7 +6,6 @@ import PageTitleContainer, {
   PageActions,
   PageTitle
 } from '~/components/PageTitleContainer.js';
-import Restricted from '~/components/Restricted.js';
 import { mongoIdToTimestamp } from '~/utils/datetime.js';
 import {
   useI18n
@@ -59,16 +58,11 @@ function Blog() {
       <PageTitleContainer>
         <PageTitle title={pageTitle} />
         <PageActions>
-          <Restricted
-            ensureSignedIn
-            permission=""
+          <LinkButton
+            key="new-post-action"
           >
-            <LinkButton
-              key="new-post-action"
-            >
-              <span>{t(`Blog:new-post-action`)}</span>
-            </LinkButton>
-          </Restricted>
+            <span>{t(`Blog:new-post-action`)}</span>
+          </LinkButton>
         </PageActions>
       </PageTitleContainer>
       {data?.map((post) => (

@@ -3,8 +3,6 @@ import {
 } from 'preact/hooks';
 import useSWR from 'swr';
 
-import * as types from '~/types.js';
-
 import {
   deleteData,
   postData,
@@ -17,48 +15,6 @@ const ABOUT_ONE_MONTH_IN_MS = 1000 * 86400 * 30;
 function useCallbackFactory(fn, args) {
   return useCallback(fn(...args), args);
 }
-
-/**
- * @typedef {Object} SwrOpts
- * @property {T} [data]
- * @property {string} [error]
- * @property {function} mutate
- * @template T
- */
-
-/**
- * @typedef {Object} CreateOpts
- * @property {boolean} [raw]
- */
-
-/**
- * @typedef {Object} DeleteOpts
- * @property {boolean} [raw]
- */
-
-/**
- * @typedef {Object} GetOpts
- * @property {boolean} [raw]
- */
-
-/**
- * @typedef {Object} UpdateOpts
- * @property {boolean} [raw]
- */
-
-/**
- * @typedef {Object} RemoteDataOtherOpts
- * @property {CreateOpts} createOpts
- * @property {DeleteOpts} deleteOpts
- * @property {GetOpts} getOpts
- * @property {UpdateOpts} updateOpts
- */
-
-/**
- * @typedef {Object} RemoteDataOpts
- * @property {string} apiEndpoint
- * @property {RemoteDataOtherOpts} opts
- */
 
 function getCreateDataFunction(cacheKey, swrOpts, createDataOpts) {
   const {
@@ -135,10 +91,6 @@ function getDeleteDataFunction(cacheKey, swrOpts, deleteDataOpts) {
   };
 }
 
-
-/**
- * @param {RemoteDataOpts} remoteDataOpts
- */
 function useRemoteData(remoteDataOpts) {
   const {
     apiEndpoint,
