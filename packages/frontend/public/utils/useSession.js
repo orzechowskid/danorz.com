@@ -11,11 +11,23 @@ function useSession() {
   const {
     data,
     doCreate,
-    doDelete
+    doDelete,
+    error
   } = remoteData;
+  let isSignedIn;
+
+  if (data === undefined && error === undefined) {
+    isSignedIn = undefined;
+  }
+  else if (error) {
+    isSignedIn = false;
+  }
+  else {
+    isSignedIn = !error;
+  }
 
   return {
-    isSignedIn: !!data,
+    isSignedIn,
     signIn: doCreate,
     signOut: doDelete
   };
