@@ -3,7 +3,7 @@ import * as types from '../../types.js';
 import mongoose from 'mongoose';
 
 import {
-  runStandardGetQuery
+  runStandardSingleItemQuery
 } from './utils.js';
 
 const opts = {
@@ -26,7 +26,7 @@ let Settings = null;
 
 /** @type {types.DBQueryFunction<types.Settings>} */
 export async function getSettings(dbQuery) {
-  return runStandardGetQuery(Settings, dbQuery);
+  return runStandardSingleItemQuery(Settings, dbQuery);
 }
 
 /** @type {types.DBQueryFunction<types.Settings>} */

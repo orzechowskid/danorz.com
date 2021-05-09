@@ -34,7 +34,7 @@ function PageActions(props) {
 
   return (
     <div aria-live="polite">
-      <Restricted ensureSignedIn>
+      <Restricted ifSignedIn>
         {children}
       </Restricted>
     </div>

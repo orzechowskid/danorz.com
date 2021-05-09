@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import PageTitleContainer, {
   PageTitle
 } from '~/components/PageTitleContainer.js';
@@ -7,57 +5,52 @@ import {
   useI18n
 } from '~/utils/useI18n.js';
 import {
-  useRemoteData
-} from '~/utils/useRemoteData.js';
+  useSiteSettings
+} from '~/utils/useSiteSettings.js';
 
 import CollapsibleSection from './components/CollapsibleSection.js';
 
+import busyStyles from '~/components/Busy.module.css';
 import layoutStyles from '~/components/Layout.module.css';
-//import styles from './index.module.css';
-const styles = {};
+
+function useSettings() {
+  const {
+    data
+  } = useSiteSettings({
+    raw: true
+  });
+
+  return {
+    data
+  };
+}
 
 /** @type {types.Component<void>} */
 function Settings() {
-  /** @type {types.RemoteDataResult<types.BlogPost>} */
   const {
-    data,
-    //    doUpdate,
-    //    localError,
-    metadata,
-    ready
-  } = useRemoteData({
-    apiEndpoint: `my/settings/site`
-  });
+    data
+  } = useSettings();
   const {
     t
   } = useI18n();
+  const ready = !!data;
   const page = `Settings`;
   const pageTitle = t(`${page}:title`);
-
-  const data2 = {
-    blog: {
-      allowComments: true
-    },
-    content: {
-      about: {
-        private: false
-      }
-    }
-  };
 
   return (
     <div
       aria-busy={!ready}
-      className={`${styles.page} ${layoutStyles.layout}`}
+      className={`${layoutStyles.layout} ${busyStyles.busy}`}
     >
       <PageTitleContainer>
         <PageTitle title={pageTitle} />
       </PageTitleContainer>
-      {Object.keys(data2).map((k) => (
+
+      {Object.keys(data).map((k) => (
         <CollapsibleSection
           key={k}
-          data={data2[k]}
-          level={3}
+          data={data[k]}
+          level={1}
           namespace={k}
         />
       ))}

@@ -44,6 +44,23 @@ async function runStandardGetQuery(model, dbQuery) {
   };
 }
 
+/**
+ * @param {import('mongoose').Model} model
+ * @param {types.DBQuery<T>} dbQuery
+ * @return {types.DBQueryResult}
+ * @template T
+ */
+async function runStandardSingleItemQuery(model, dbQuery) {
+  const {
+    which = {}
+  } = dbQuery;
+
+  return model.findOne(which)
+    .lean()
+    .exec();
+}
+
 export {
-  runStandardGetQuery
+  runStandardGetQuery,
+  runStandardSingleItemQuery
 };

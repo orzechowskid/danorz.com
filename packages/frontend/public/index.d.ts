@@ -1,9 +1,20 @@
-/* eslint-disable */
+import * as Preact from 'preact';
 
 type DataId = string;
 
+interface RemoteDataOperationOpts {
+  apiEndpoint?: string;
+  fetchOpts: RequestInit;
+}
+
 interface RemoteDataOpts {
   apiEndpoint: string;
+  opts?: {
+    createOpts?: RemoteDataOperationOpts;
+    deleteOpts?: RemoteDataOperationOpts;
+    raw: boolean;
+    updateOpts?: RemoteDataOperationOpts;
+  };
 }
 
 interface RemoteDataSpecialCase<T, CReq, CRes, DReq, DRes, UReq, URes> {
@@ -42,8 +53,8 @@ type BannerInfo = Record<DataId, boolean>;
 
 interface RestrictedProps {
   children: any;
-  ensureSignedIn?: boolean;
-  permission?: string | string[];
+  ifSignedIn?: boolean;
+  ifSiteSettingEnabled?: string;
 }
 
 interface PageTitleContainerProps {
