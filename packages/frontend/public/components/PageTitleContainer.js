@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import Restricted from '~/components/Restricted.js';
 import {
   usePageTitle
@@ -7,12 +5,7 @@ import {
 
 import styles from './PageTitleContainer.module.css';
 
-/**
- * @typedef {Object} PageTitleProps
- * @property {string | (() => string)} title
- */
-
-/** @type {types.Component<PageTitleProps>} */
+/** @type {Component<PageTitleProps>} */
 function PageTitle(props) {
   const {
     title
@@ -41,7 +34,7 @@ function PageActions(props) {
   );
 }
 
-/** @type {types.Component<PageTitleContainerProps>} */
+/** @type {Component<PageTitleContainerProps>} */
 function PageTitleContainer(props) {
   const {
     children

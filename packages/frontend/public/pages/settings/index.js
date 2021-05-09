@@ -21,7 +21,7 @@ function useSettings() {
   });
 
   return {
-    data
+    data: data.values
   };
 }
 

@@ -1,10 +1,27 @@
-import SiteBanner from './SiteBanner.js';
-import SiteMenu from './SiteMenu.js';
+import SiteBanner from '~/components/SiteBanner.js';
+import SiteMenu from '~/components/SiteMenu.js';
+import {
+  useSiteSettings
+} from '~/utils/useSiteSettings.js';
 
 import styles from './Header.module.css';
 import layoutStyles from './Layout.module.css';
 
+function useHeader() {
+  const {
+    data,
+    getSetting
+  } = useSiteSettings();
+  return {
+    siteName: getSetting(`site.title`)
+  }
+}
+
 function Header() {
+  const {
+    siteName
+  } = useHeader();
+
   return (
     <header
       className={styles.header}
@@ -13,7 +30,7 @@ function Header() {
       <SiteBanner />
 
       <div className={`${layoutStyles.layout} ${styles.headerContents}`}>
-        <h1>danorz dot com</h1>
+        <h1>{siteName}</h1>
 
         <SiteMenu />
       </div>

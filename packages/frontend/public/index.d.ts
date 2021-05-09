@@ -57,6 +57,10 @@ interface RestrictedProps {
   ifSiteSettingEnabled?: string;
 }
 
+interface PageTitleProps {
+  title: string | (() => string);
+}
+
 interface PageTitleContainerProps {
   children: any;
 }
