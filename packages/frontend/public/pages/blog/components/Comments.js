@@ -1,6 +1,5 @@
-import * as types from '~/types.js';
-
 import Markdown from '~/components/Markdown.js';
+import Restricted from '~/components/Restricted.js';
 import {
   mongoIdToTimestamp
 } from '~/utils/datetime.js';
@@ -53,7 +52,6 @@ function SingleComment(props) {
   );
 }
 
-/** @type {types.Component<{comments: types.BlogPostComment[]}>} */
 function Comments(props) {
   const {
     comments = []
@@ -72,6 +70,10 @@ function Comments(props) {
       {comments.map(
         (c) => <SingleComment key={c._id} {...c} />
       )}
+
+      <Restricted ifSiteSettingEnabled="blog.allowComments">
+        <span>add comment</span>
+      </Restricted>
     </section>
   );
 }

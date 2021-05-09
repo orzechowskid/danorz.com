@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import {
   useI18n
 } from '~/utils/useI18n.js';
@@ -13,7 +11,6 @@ import styles from './CollapsibleSection.module.css';
  * @property {string} namespace
  */
 
-/** @type {types.Component<CollapsibleSectionProps>} */
 function CollapsibleSection(props) {
   const {
     data,
@@ -23,8 +20,10 @@ function CollapsibleSection(props) {
   const {
     t
   } = useI18n();
+  /* +1 for site title, + 1 for page title */
+  const headerElLevel = level + 2;
   const keys = Object.keys(data);//.sort(sortSettingsKeys);
-  const El = `h${level}`;
+  const El = `h${headerElLevel}`;
 
   return (
     <section className={styles.collapsibleSection}>

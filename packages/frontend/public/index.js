@@ -25,6 +25,9 @@ import {
   useDictionary,
   useLocale
 } from './utils/useI18n.js';
+import {
+  useSiteSettings
+} from './utils/useSiteSettings.js';
 
 import busyStyles from './components/Busy.module.css';
 
@@ -68,8 +71,13 @@ function usePreloadData() {
     locale
   } = useLocale();
   const dictionary = useDictionary(locale);
+  const {
+    data: siteSettings
+  } = useSiteSettings({
+    raw: true
+  });
 
-  return [ locale, dictionary ].every(Boolean);
+  return [ locale, dictionary, siteSettings ].every(Boolean);
 }
 
 function Contents() {

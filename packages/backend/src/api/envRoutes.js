@@ -4,31 +4,8 @@ import express from 'express';
 
 const router = express();
 
-router.use(`/`, async function getEnv(req, res, next) {
-  let err = null;
-
-  try {
-    const response = {
-      data: [{
-        hello: 'yes'
-      }],
-      metadata: {
-        count: 1
-      }
-    };
-
-    res.json(response)
-      .end();
-  }
-  catch (ex) {
-    err = ex;
-  }
-
-  next(err);
-});
-
 router.get(
-  `/settings/:settingsObject`,
+  `/settings`,
   async function getSettings(req, res, next) {
     const db = res.locals.db;
     let err;
@@ -36,7 +13,7 @@ router.get(
     try {
       const response = await db.getSettings({
         which: {
-          name: req.params.settingsObject
+          name: `site`
         }
       });
 

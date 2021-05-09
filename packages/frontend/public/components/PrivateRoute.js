@@ -31,7 +31,7 @@ function PrivateRoute(props) {
   const {
     isSignedIn,
     route
-  } = usePrivateRoute;
+  } = usePrivateRoute();
 
   useEffect(function componentDidMount() {
     if (isSignedIn === false) {

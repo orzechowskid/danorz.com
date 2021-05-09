@@ -27,7 +27,6 @@ function getCreateDataFunction(cacheKey, swrOpts, createDataOpts) {
 
   return async function doCreate(next) {
     /* step 1: optimistic local update */
-    // TODO: need api envelope
     mutate(next, false);
 
     /* step 2: make remote update */
