@@ -21,13 +21,11 @@ import {
   useRemoteData
 } from '~/utils/useRemoteData.js';
 
+import busyStyles from '~/components/Busy.module.css';
 import layoutStyles from '~/components/Layout.module.css';
 import styles from './index.module.css';
 
-function About() {
-  const {
-    t
-  } = useI18n();
+function useAbout() {
   const {
     data,
     doCreate,
@@ -37,16 +35,14 @@ function About() {
   } = useRemoteData({
     apiEndpoint: `content/bio`
   });
-  const page = `About`;
-  const pageTitle = t(`${page}:title`);
   const pageContents = data[0]?.text;
-  const err = error || metadata.error;
-  /** @type {types.LocalState<string>} */
+  const busy = metadata.error === undefined;
+  /** @type {LocalState<string>} */
   const [ previewContents, setPreviewContents ] = useState(pageContents);
-  /** @type {types.LocalState<boolean>} */
+  /** @type {LocalState<boolean>} */
   const [ editMode, setEditMode ] = useState(false);
-  /** @type {types.LocalState<boolean>} */
-  const [ previewMode, setPreviewMode ] = useState(false);
+  /** @type {LocalState<boolean>} */
+  const [ editPreviewMode, setEditPreviewMode ] = useState(false);
   const onEdit = useCallback(function onEdit() {
     setEditMode(true);
     setPreviewContents(pageContents);
@@ -56,11 +52,11 @@ function About() {
     }, 0);
   }, [ pageContents ]);
   const onPreview = useCallback(function onPreview() {
-    setPreviewMode(!previewMode);
-  }, [ previewMode ]);
+    setEditPreviewMode(!editPreviewMode);
+  }, [ editPreviewMode ]);
   const onCancel = useCallback(function onCancel() {
     setEditMode(false);
-    setPreviewMode(false);
+    setEditPreviewMode(false);
     setPreviewContents(pageContents);
   }, []);
   const onChange = useCallback(function onChange(e) {
@@ -75,12 +71,44 @@ function About() {
       doCreate({ name: `bio`, text: previewContents });
     }
     setEditMode(false);
-    setPreviewMode(false);
+    setEditPreviewMode(false);
   }, [ previewContents ]);
-  const md = previewMode
+  const content = editMode
     ? previewContents
     : pageContents;
 
+  return {
+    busy,
+    content,
+    editMode,
+    editPreviewMode,
+    error,
+    onCancel,
+    onChange,
+    onEdit,
+    onPreview,
+    onSubmit
+  };
+}
+
+function About() {
+  const {
+    busy,
+    content,
+    editMode,
+    editPreviewMode,
+    error,
+    onCancel,
+    onChange,
+    onEdit,
+    onPreview,
+    onSubmit
+  } = useAbout();
+  const {
+    t
+  } = useI18n();
+  const page = `About`;
+  const pageTitle = t(`${page}:title`);
   usePageMeta(function setPageMetaTags() {
     return {
       description: t(`About:description`)
@@ -88,7 +116,7 @@ function About() {
   }, [ t ]);
 
   return (
-    <div className={`${layoutStyles.layout}`}>
+    <div className={layoutStyles.layout}>
       <PageTitleContainer>
         <PageTitle title={pageTitle} />
         <PageActions>
@@ -96,7 +124,7 @@ function About() {
             <>
               <LinkButton
                 key="preview"
-                aria-pressed={previewMode}
+                aria-pressed={editPreviewMode}
                 className={styles.previewButton}
                 onClick={onPreview}
               >
@@ -126,25 +154,30 @@ function About() {
           )}
         </PageActions>
       </PageTitleContainer>
-      {err && <div>{err}</div>}
+      {error && <div>{error}</div>}
       {editMode ? (
         <form
           id={page}
           onSubmit={onSubmit}
         >
-          {previewMode ? (
-            <Markdown className={styles.markdownPreview}>{md}</Markdown>
+          {editPreviewMode ? (
+            <Markdown className={styles.markdownPreview}>{content}</Markdown>
           ) : (
             <textarea
               className={styles.editArea}
               onChange={onChange}
             >
-              {previewContents}
+              {content}
             </textarea>
           )}
         </form>
       ) : (
-        <Markdown>{md || t(`About:no-content`)}</Markdown>
+        <Markdown
+          aria-busy={busy}
+          className={busyStyles.busy}
+        >
+          {busy ? `` : (content || t(`About:no-content`))}
+        </Markdown>
       )}
     </div>
   );

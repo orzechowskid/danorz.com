@@ -12,20 +12,13 @@ async function rawFetch(apiEndpoint, opts={}) {
 }
 
 async function rawRequest(apiEndpoint, opts = {}) {
-  try {
-    const response = await rawFetch(apiEndpoint, opts);
+  const response = await rawFetch(apiEndpoint, opts);
 
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-
-    return response.json();
+  if (!response.ok) {
+    throw new Error(response.statusText);
   }
-  catch (ex) {
-    console.warn(apiEndpoint, ex.message);
 
-    return undefined;
-  }
+  return response.json();
 }
 
 /**
