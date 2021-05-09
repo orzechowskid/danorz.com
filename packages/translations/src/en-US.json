@@ -40,9 +40,6 @@
     "tags": "tags",
     "title-link": "direct link to this post"
   },
-  "EditButton": {
-    "title": "Edit"
-  },
   "Header": {
     "header-navigation": "header navigation"
   },
@@ -82,29 +79,19 @@
     "PublicHome": "Home",
     "settings": "Settings"
   },
-  "Pager": {
-    "currentPage": "Page {currentPage, number} of {pageCount, number}",
-    "newer": "Newer",
-    "newest": "Newest",
-    "older": "Older",
-    "oldest": "Oldest"
-  },
   "PageActions": {
     "cancel-button": "Cancel",
     "preview-button": "Preview",
     "save-button": "Save"
-  },
-  "PublicHome": {
-    "description-about": "Who do you think you are, anyway?",
-    "description-blog": "Irregularly-updated notes, mostly to myself",
-    "description-photos": "I sometimes take photos"
   },
   "Settings": {
     "description": "Configure your site",
     "title": "Site Settings",
     "blog": "Blog settings",
     "blog.allowComments": "Allow comments on blog posts",
-    "content": "Content settings"
+    "content": "Content settings",
+    "site": "Global settings",
+    "site.title": "Site title"
   },
   "SignInForm": {
     "cancel": "Never mind",
