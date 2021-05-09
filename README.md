@@ -12,6 +12,11 @@
 - start the frontend: `cd packages/frontend; npm run start`
 - (in your browser) visit http://localhost:8080
 
+## Getting Started with the Backend
+
+- `docker stop` the web-backend container
+- `cd packages/backend; npm run start`
+
 # Provided for You
 
 you can log in to the webapp using a pre-set user with the username `r2d2` and password `starwars`
