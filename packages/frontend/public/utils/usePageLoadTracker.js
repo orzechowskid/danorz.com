@@ -31,7 +31,7 @@ function usePageLoadTracker(doneConditions = []) {
         window.scrollTo({ top: 0 });
       }
     }
-  }, doneConditions);
+  }, [ ...doneConditions, doneRef.current ]);
 }
 
 export {
