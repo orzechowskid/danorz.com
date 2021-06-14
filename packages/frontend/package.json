@@ -33,7 +33,6 @@
     "react": "preact/compat",
     "react-dom": "preact/compat"
   },
-  "types": "public/index.d.ts",
   "dependencies": {
     "@react-aria/button": "^3.3.0",
     "@react-aria/dialog": "^3.1.2",
@@ -48,8 +47,6 @@
     "preact": "^10.5.12",
     "preact-iso": "^1.0.1",
     "preact-render-to-string": "^5.1.16",
-    "reselect": "^4.0.0",
-    "swr": "^0.5.3",
-    "unistore": "^3.5.2"
+    "swr": "^0.5.3"
   }
 }

@@ -12,7 +12,7 @@ import {
 
 import styles from './Comments.module.css';
 
-/** @type {types.Component<types.BlogPostComment>} */
+/** @type {Component<BlogPostComment>} */
 function SingleComment(props) {
   const {
     _id,
@@ -54,7 +54,8 @@ function SingleComment(props) {
 
 function Comments(props) {
   const {
-    comments = []
+    comments = [],
+    onAddComment
   } = props;
   const {
     num,
@@ -64,7 +65,9 @@ function Comments(props) {
   return (
     <section className={styles.comments}>
       <h3 className={styles.commentsHeader}>
-        {t(`BlogPost:comment-counter`, { commentCount: num(comments.length) })}
+        {t(`BlogPost:comment-counter`, {
+          commentCount: num(comments.length)
+        })}
       </h3>
 
       {comments.map(
@@ -72,7 +75,7 @@ function Comments(props) {
       )}
 
       <Restricted ifSiteSettingEnabled="blog.allowComments">
-        <span>add comment</span>
+        <button onClick={onAddComment}>add comment</button>
       </Restricted>
     </section>
   );

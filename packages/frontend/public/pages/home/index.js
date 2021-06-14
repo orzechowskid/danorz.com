@@ -1,6 +1,8 @@
+import layoutStyles from '~/components/Layout.module.css';
+
 function Home() {
   return (
-    <span>home</span>
+    <section className={layoutStyles.layout}>home</section>
   );
 }
 

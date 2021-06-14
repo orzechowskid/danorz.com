@@ -38,6 +38,10 @@ button {
   border: var(--border-button);
 }
 
+button[aria-pressed="true"] {
+  box-shadow: var(--box-shadow-toggle-button-pressed);
+}
+
 button:focus {
   box-shadow: var(--box-shadow-menu-trigger);
 }
@@ -114,7 +118,10 @@ pre code {
 }
 
 textarea {
+  padding: var(--gutter-sm);
   font-family: var(--font-family-code);
+  font-size: var(--font-size-text-input);
+  line-height: var(--line-height-body-copy);
   letter-spacing: 0.5px;
   border: var(--border-text-input);
 }

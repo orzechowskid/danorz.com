@@ -13,7 +13,6 @@
     "project": [ "./tsconfig.json" ]
   },
   "plugins": [
-    "import",
     "react"
   ],
   "rules": {
@@ -45,23 +44,6 @@
         "array": false,
         "object": true
       } ],
-
-    "import/default": "error",
-    "import/extensions": [
-      "warn", "ignorePackages"
-    ],
-    "import/named": "error",
-    "import/no-extraneous-dependencies": [
-      "warn", {
-        "devDependencies": false
-      } ],
-    "import/no-mutable-exports": "warn",
-    "import/no-nodejs-modules": "error",
-    "import/no-self-import": "error",
-    "import/no-unresolved": "error",
-    "import/no-unused-modules": "error",
-    "import/no-webpack-loader-syntax": "error",
-    "import/prefer-default-export": "off",
 
     "jsx-a11y/href-no-hash": "off",
     "jsx-a11y/label-has-for": "off",

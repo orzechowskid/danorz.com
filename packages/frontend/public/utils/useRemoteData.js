@@ -55,7 +55,9 @@ function getUpdateDataFunction(cacheKey, swrOpts, updateDataOpts) {
 
     /* step 1: optimistic local update */
     mutate(
-      { ...data, data: next },
+      {
+        ...data, data: next
+      },
       false
     );
 
@@ -91,7 +93,15 @@ function getDeleteDataFunction(cacheKey, swrOpts, deleteDataOpts) {
 }
 
 /**
- * @param {RemoteDataOpts} remoteDataOpts
+ * @typedef {Object} RemoteData
+ * @property {PayloadType|undefined} data
+ * @property {string|undefined} error
+ * @template PayloadType
+ */
+
+/**
+ * @type {(RemoteDataOpts) => RemoteData<PayloadType>}
+ * @template PayloadType
  */
 function useRemoteData(remoteDataOpts) {
   const {

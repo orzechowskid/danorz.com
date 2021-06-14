@@ -1,11 +1,11 @@
 import {
-  useCallback,
-  useState
+  useCallback
 } from 'preact/hooks';
 import {
   useLocation
 } from 'preact-iso/router';
 
+import Busy from '~/components/Busy.js';
 import LinkButton from '~/components/LinkButton.js';
 import Markdown from '~/components/Markdown.js';
 import PageTitleContainer, {
@@ -27,21 +27,42 @@ import {
 import {
   useRemoteData
 } from '~/utils/useRemoteData.js';
+import {
+  useToggle
+} from '~/utils/useToggle.js';
+import AddCommentDialog from './components/AddCommentDialog.js';
 import Byline from './components/Byline.js';
 import Comments from './components/Comments.js';
 
-import busyStyles from '~/components/Busy.module.css';
 import layoutStyles from '~/components/Layout.module.css';
 import styles from './post.module.css';
 
-function BlogPost() {
+/**
+ * @typedef {Object} BlogComment
+ * @property {string} _id
+ * @property {string} gravatarHash
+ * @property {string} name
+ * @property {string} text
+ */
+
+/**
+ * @typedef {Object} BlogPost
+ * @property {string} _id
+ * @property {string} author
+ * @property {BlogComment[]} comments
+ * @property {string[]} tags
+ * @property {string} text
+ * @property {string} title
+ */
+
+function useBlogPost() {
   const {
     path
   } = useLocation();
   const {
     t
   } = useI18n();
-  /** @type {RemoteDataItem<BlogPost>} */
+  /** @type {import('~/utils/useRemoteData').RemoteData<BlogPost>} */
   const {
     data,
     error
@@ -49,19 +70,29 @@ function BlogPost() {
     apiEndpoint: path.slice(1)
   });
   const {
-    _id,
-    author,
-    comments,
-    tags,
-    text,
-    title
-  } = data[0] ?? {};
-  /** @type {types.LocalState<boolean>} */
-  const [ editMode, setEditMode ] = useState(false);
+    disable: disableEditMode,
+    enable: enableEditMode,
+    on: editMode
+  } = useToggle(false);
+  const {
+    disable: disableAddCommentMode,
+    enable: enableAddCommentMode,
+    on: addCommentMode
+  } = useToggle(false);
   const onEdit = useCallback(function onEdit(e) {
     e.preventDefault();
-    setEditMode(true);
+    enableEditMode();
   }, [ ]);
+  const onAddComment = useCallback(function onAddComment(e) {
+    e.preventDefault();
+    enableAddCommentMode();
+  }, []);
+  const onCancelAddComment = useCallback(function onCancelAddComment(e) {
+    disableAddCommentMode();
+  }, []);
+  const onSubmitComment = useCallback(function onSubmitComment(e) {
+    onCancelAddComment();
+  }, [ onCancelAddComment ]);
 
   usePageMeta(function setPageMeta() {
     return {
@@ -70,10 +101,45 @@ function BlogPost() {
   }, [ t ]);
   usePageLoadTracker([ !!data ]);
 
+  return {
+    addCommentMode,
+    data: data[0] ?? {},
+    disableEditMode,
+    editMode,
+    error,
+    onAddComment,
+    onCancelAddComment,
+    onEdit,
+    onSubmitComment,
+    t
+  };
+}
+
+/** @type {import('preact').FunctionComponent<void>} */
+const BlogPost = function() {
+  const {
+    addCommentMode,
+    data,
+    error,
+    onAddComment,
+    onCancelAddComment,
+    onEdit,
+    onSubmitComment,
+    t
+  } = useBlogPost();
+  const {
+    _id,
+    author,
+    comments,
+    tags,
+    text,
+    title
+  } = data;
+
   return (
-    <div
-      aria-busy={!data}
-      className={`${layoutStyles.layout} ${styles.post} ${busyStyles.busy}`}
+    <Busy
+      className={`${layoutStyles.layout} ${styles.post}`}
+      ready={!!data || !!error}
     >
       <form>
         <PageTitleContainer>
@@ -95,16 +161,26 @@ function BlogPost() {
               timestamp={mongoIdToTimestamp(_id)}
             />
           </header>
-          <a href="#comments">skip to comments</a>
+          <a href="#comments">{t(`BlogPost:skip-to-comments`)}</a>
           <Markdown>
             {text}
           </Markdown>
           <footer id="comments">
-            <Comments comments={comments} />
+            <Comments
+              comments={comments}
+              onAddComment={onAddComment}
+            />
           </footer>
         </section>
       </form>
-    </div>
+
+      {addCommentMode && (
+        <AddCommentDialog
+          onCancel={onCancelAddComment}
+          onSubmit={onSubmitComment}
+        />
+      )}
+    </Busy>
   );
 }
 

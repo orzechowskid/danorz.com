@@ -1,9 +1,6 @@
 .editArea {
   width: 100%;
   height: 50vh;
-  padding: var(--gutter-sm);
-  font-size: var(--font-size-text-input);
-  line-height: var(--line-height-body-copy);
 }
 
 .markdownPreview {

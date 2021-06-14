@@ -31,7 +31,7 @@
   --color-input-background: #ffffff;
   --color-link: #2c2ce0;
   --color-link-visited: #7939a0;
-  --color-modal-background: rgba(0, 0, 0, 0.5);
+  --color-overlay-background: rgba(0, 0, 0, 0.5);
   --color-page-background: #fafafa;
   --color-radio-button-tick: steelblue;
   --color-severity-info: lightblue;
@@ -70,15 +70,26 @@
   --gutter-md: calc(var(--gutter-base-unit) * 2);
   --gutter-lg: calc(var(--gutter-base-unit) * 4);
   --gutter-xl: calc(var(--gutter-base-unit) * 8);
+  --height-add-blog-comment-dialog-sm: 90vh;
+  --height-add-blog-comment-dialog-lg: 50vh;
   --height-radio-button: 24px;
   --line-height-body-copy: 1.5;
   --line-height-footer-nav: 1.5;
   --line-height-menu-trigger: 24px;
   --max-width-link-preview: 50%;
+  --opacity-modal-dialog-transition-begin: 0;
+  --opacity-modal-dialog-transition-end: 1;
   --outline-input-invalid: 2px solid firebrick;
   --outline-link-preview-focus: 1px solid var(--color-link);
+  --top-modal-dialog-transition-begin: 100%;
+  --top-modal-dialog-transition-end: 0;
+  --transition-modal-dialog-sm: top 0.5s;
+  --transition-modal-dialog-lg: opacity 0.35s;
+  --width-add-blog-comment-dialog-sm: 100vw;
+  --width-add-blog-comment-dialog-lg: 50vw;
   --width-busy-indicator: 0.3em;
   --width-busy-indicator-container: 4em;
   --width-link-preview-favicon: 32px;
+  --width-modal-dialog-480: 400px;
   --width-radio-button: var(--height-radio-button);
 }

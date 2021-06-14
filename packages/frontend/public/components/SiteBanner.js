@@ -1,4 +1,3 @@
-import Layout from '~/components/Layout.js';
 import Markdown from '~/components/Markdown.js';
 import {
   useI18n
@@ -11,14 +10,22 @@ import {
 } from '~/utils/useRemoteData.js';
 
 import styles from './SiteBanner.module.css';
+import layoutStyles from './Layout.module.css';
+
+/** @typedef {'info' | 'warning'} BannerSeverity */
+/**
+ * @typedef {Object} SiteBannerData
+ * @property {BannerSeverity} bannerSeverity
+ * @property {string} bannerText
+ * @property {boolean} dismissed
+ */
 
 function useSiteBanner() {
-  /** @type {LocalStorage<BannerInfo>} */
   const {
     data: dismissedBanners,
     update: updateDismissedBanners
   } = useLocalStorage(`site/banner`);
-  /** @type {RemoteDataItem<SiteBanner>} */
+  /** @type {import('~/utils/useRemoteData').RemoteData<SiteBannerData>} */
   const {
     data,
     error
@@ -26,7 +33,8 @@ function useSiteBanner() {
     apiEndpoint: `site/banner`,
     opts: {
       /* checking for a banner more than once a minute seems wasteful */
-      dedupingInterval: 60000
+      dedupingInterval: 60000,
+      revalidateOnFocus: false
     }
   });
   const {
@@ -37,7 +45,9 @@ function useSiteBanner() {
     : data;
 
   function dismissBanner() {
-    updateDismissedBanners({ ...dismissedBanners, [_id]: true });
+    updateDismissedBanners({
+      ...dismissedBanners, [_id]: true
+    });
   }
 
   return {
@@ -47,6 +57,7 @@ function useSiteBanner() {
   };
 }
 
+/** @type {import('preact').FunctionComponent<void>} */
 function SiteBanner() {
   const {
     data,
@@ -58,7 +69,7 @@ function SiteBanner() {
     bannerSeverity,
     bannerText,
     dismissed
-  } = data ?? {};
+  } = data;
   const {
     t
   } = useI18n();
@@ -73,7 +84,7 @@ function SiteBanner() {
       data-severity={bannerSeverity}
       id="site-banner"
     >
-      <Layout className={styles.bannerContents}>
+      <div className={`${layoutStyles.layout} ${styles.bannerContents}`}>
         <Markdown>{bannerText}</Markdown>
 
         {bannerDismissable && (
@@ -85,7 +96,7 @@ function SiteBanner() {
             ×
           </button>
         )}
-      </Layout>
+      </div>
     </div>
   );
 }

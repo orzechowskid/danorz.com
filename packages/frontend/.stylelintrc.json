@@ -6,7 +6,11 @@
   "rules": {
     "color-hex-length": null,
     "indentation": 2,
-    "selector-list-comma-newline-after": "off",
+    "selector-list-comma-newline-after": null,
+    "selector-pseudo-class-no-unknown": [
+      true, {
+        "ignorePseudoClasses": [ "global", "local" ]
+      } ],
 
     "magic-numbers/magic-colors": [ true ],
     "magic-numbers/magic-numbers": [
