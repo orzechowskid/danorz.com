@@ -9,8 +9,6 @@ import {
   Router
 } from 'preact-iso/router';
 
-import * as types from './types.js';
-
 import Busy from './components/Busy.js';
 import Footer from './components/Footer.js';
 import Header from './components/Header.js';
@@ -88,6 +86,7 @@ function usePreloadData() {
   return [ locale, dictionary, siteSettings, sessionCheck ].every(Boolean);
 }
 
+/** @type {import('~/t').Component<void>} */
 function Contents() {
   return (
     <LocationProvider>
@@ -100,7 +99,7 @@ function Contents() {
   );
 }
 
-/** @type {import('preact').FunctionComponent<void>} */
+/** @type {import('~/t').Component<void>} */
 function App() {
   const ready = usePreloadData();
 

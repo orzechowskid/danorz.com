@@ -3,10 +3,9 @@ import {
 } from './useRemoteData.js';
 
 function useSession() {
-  /** @type {Session} */
+  /** @type {import('~/t').RemoteResource<import('~/t').Session>} */
   const remoteData = useRemoteData({
-    apiEndpoint: `auth/session`,
-    opts: { raw: true }
+    apiEndpoint: `auth/session`
   });
   const {
     data,
@@ -27,6 +26,7 @@ function useSession() {
   }
 
   return {
+    currentUser: data?.name,
     isSignedIn,
     signIn: doCreate,
     signOut: doDelete

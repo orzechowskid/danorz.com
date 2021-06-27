@@ -16,7 +16,7 @@
     "magic-numbers/magic-numbers": [
       true,
       {
-        "acceptedNumbers": [ 0 ],
+        "acceptedNumbers": [ 0, 1 ],
         "acceptedValues": [ "100%", "1fr" ],
         "severity": "error"
       }

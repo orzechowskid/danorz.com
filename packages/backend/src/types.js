@@ -9,7 +9,9 @@
 
 /**
  * @typedef {Object} BlogPostComment
- * @property {string} id
+ * @property {string} _id
+ * @property {string} name
+ * @property {string} text
  */
 
 /**

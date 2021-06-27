@@ -1,3 +1,10 @@
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'preact/hooks';
+
 import MarkdownPreviewPane from '~/components/MarkdownPreviewPane.js';
 import ModalDialog from '~/components/ModalDialog.js';
 import {
@@ -18,7 +25,6 @@ import styles from './AddCommentDialog.module.css';
 /** @param {AddCommentDialogProps} props */
 function useAddCommentDialog(props) {
   const {
-    onCancel,
     onSubmit
   } = props;
   const {
@@ -28,10 +34,32 @@ function useAddCommentDialog(props) {
   const {
     t
   } = useI18n();
+  const [ errorMessage, setErrorMessage ] = useState(` `);
+  const onSubmitComment = useCallback(function onSubmitComment(e) {
+    const formData = new FormData(e.target);
+    const commentText = formData.get(`commentText`);
+
+    e.preventDefault();
+
+    if (commentText.length < 10) {
+      setErrorMessage(`10 chars or more plz`);
+    }
+    else {
+      onSubmit(commentText);
+    }
+  }, [ onSubmit ]);
+  /** @type {import('preact').RefObject<HTMLFormElement>} */
+  const formRef = useRef();
+
+  useEffect(function onMount() {
+    formRef.current?.querySelector(`textarea`)?.focus();
+  }, []);
 
   return {
-    onCancelAddComment: onCancel,
-    onSubmitComment: onSubmit,
+    ...props,
+    errorMessage,
+    formRef,
+    onSubmitComment,
     onTogglePreview,
     previewMode,
     t
@@ -41,7 +69,9 @@ function useAddCommentDialog(props) {
 /** @type {import('preact').FunctionComponent<AddCommentDialogProps>} */
 const AddCommentDialog = function(props) {
   const {
-    onCancelAddComment,
+    errorMessage,
+    formRef,
+    onCancel,
     onSubmitComment,
     onTogglePreview,
     previewMode,
@@ -51,23 +81,38 @@ const AddCommentDialog = function(props) {
   return (
     <ModalDialog
       className={styles.addCommentDialog}
-      onClose={onCancelAddComment}
+      onClose={onCancel}
       title={t(`AddCommentDialog:title`)}
     >
-      <form>
+      <form
+        onSubmit={onSubmitComment}
+        ref={formRef}
+      >
         <MarkdownPreviewPane
           className={styles.markdownPreviewPane}
+          name="commentText"
           previewMode={previewMode}
         />
-        <div>
+        <div role="status">
+          {errorMessage}
+        </div>
+        <div role="group">
           <button
             aria-pressed={previewMode}
             onClick={onTogglePreview}
+            type="button"
           >
             preview
           </button>
-          <button onClick={onSubmitComment}>add comment</button>
-          <button onClick={onCancelAddComment}>cancel</button>
+          <button type="submit">
+            add comment
+          </button>
+          <button
+            onClick={onCancel}
+            type="button"
+          >
+            cancel
+          </button>
         </div>
       </form>
     </ModalDialog>

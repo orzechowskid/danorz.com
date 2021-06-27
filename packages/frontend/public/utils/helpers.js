@@ -15,7 +15,10 @@ function gravatarHashToUrl(hash, size = 80) {
  */
 function mapObjectValues(obj, mapFn) {
   return Object.entries(obj).reduce(
-    (acc, [ k, v ]) => ({ ...acc, [k]: mapFn(v) }), {}
+    (acc, [ k, v ]) => ({
+      ...acc,
+      [k]: mapFn(v)
+    }), {}
   );
 }
 
@@ -27,7 +30,10 @@ function getFormData(formEl) {
   const formData = new FormData(formEl);
 
   return [ ...formData.entries() ].reduce(
-    (acc, [ k, v ]) => ({ ...acc, [k]: v }),
+    (acc, [ k, v ]) => ({
+      ...acc,
+      [k]: v
+    }),
     {}
   );
 }

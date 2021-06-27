@@ -25,49 +25,32 @@ import {
   usePageMeta
 } from '~/utils/usePageTitle.js';
 import {
-  useRemoteData
-} from '~/utils/useRemoteData.js';
-import {
   useToggle
 } from '~/utils/useToggle.js';
 import AddCommentDialog from './components/AddCommentDialog.js';
 import Byline from './components/Byline.js';
 import Comments from './components/Comments.js';
+import {
+  useBlogPost
+} from './utils/useBlogPost.js';
 
 import layoutStyles from '~/components/Layout.module.css';
 import styles from './post.module.css';
 
-/**
- * @typedef {Object} BlogComment
- * @property {string} _id
- * @property {string} gravatarHash
- * @property {string} name
- * @property {string} text
- */
-
-/**
- * @typedef {Object} BlogPost
- * @property {string} _id
- * @property {string} author
- * @property {BlogComment[]} comments
- * @property {string[]} tags
- * @property {string} text
- * @property {string} title
- */
-
-function useBlogPost() {
+function useBlogPostPage() {
   const {
     path
   } = useLocation();
   const {
     t
   } = useI18n();
-  /** @type {import('~/utils/useRemoteData').RemoteData<BlogPost>} */
+  const postId = path.split(`/`).pop();
   const {
+    createComment,
     data,
     error
-  } = useRemoteData({
-    apiEndpoint: path.slice(1)
+  } = useBlogPost({
+    id: postId
   });
   const {
     disable: disableEditMode,
@@ -87,12 +70,13 @@ function useBlogPost() {
     e.preventDefault();
     enableAddCommentMode();
   }, []);
-  const onCancelAddComment = useCallback(function onCancelAddComment(e) {
+  const onCancelAddComment = useCallback(function onCancelAddComment() {
     disableAddCommentMode();
   }, []);
-  const onSubmitComment = useCallback(function onSubmitComment(e) {
-    onCancelAddComment();
-  }, [ onCancelAddComment ]);
+  const onSubmitComment = useCallback(async function onSubmitComment(commentText) {
+    await createComment(commentText);
+    disableAddCommentMode();
+  }, [ createComment, disableAddCommentMode ]);
 
   usePageMeta(function setPageMeta() {
     return {
@@ -103,7 +87,7 @@ function useBlogPost() {
 
   return {
     addCommentMode,
-    data: data[0] ?? {},
+    data,
     disableEditMode,
     editMode,
     error,
@@ -126,7 +110,7 @@ const BlogPost = function() {
     onEdit,
     onSubmitComment,
     t
-  } = useBlogPost();
+  } = useBlogPostPage();
   const {
     _id,
     author,
@@ -134,7 +118,7 @@ const BlogPost = function() {
     tags,
     text,
     title
-  } = data;
+  } = data ?? {};
 
   return (
     <Busy

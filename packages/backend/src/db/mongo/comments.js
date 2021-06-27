@@ -13,6 +13,11 @@ export const CommentSchema = new mongoose.Schema({
   text: {
     required: true,
     type: String
+  },
+  timestamp: {
+    default: Date.now,
+    required: true,
+    type: Date
   }
 }, opts);
 

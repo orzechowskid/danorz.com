@@ -1,7 +1,7 @@
 import styles from './Footer.module.css';
 import layoutStyles from './Layout.module.css';
 
-/** @type {import('../types').Component<undefined>} */
+/** @type {import('~/t').Component<void>} */
 function Footer() {
   return (
     <footer className={styles.footer}>

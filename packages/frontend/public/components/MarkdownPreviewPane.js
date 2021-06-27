@@ -9,6 +9,7 @@ import Markdown from './Markdown.js';
  * @typedef {Object} MarkdownPreviewPaneProps
  * @property {string} [className]
  * @property {(string) => void} onChange
+ * @property {string} name
  * @property {boolean} previewMode
  * @property {string} value
  */
@@ -16,21 +17,18 @@ import Markdown from './Markdown.js';
 /** @param {MarkdownPreviewPaneProps} props */
 function useMarkdownPreviewPane(props) {
   const {
-    className,
     initialValue,
-    onChange,
-    previewMode
+    onChange
   } = props;
   const [ value, setValue ] = useState(initialValue || ``);
   const onTextChange = useCallback(function onTextChange(e) {
     setValue(e.target.value);
-    onChange?.(e.target.value);
+    onChange?.(e);
   }, [ onChange ]);
 
   return {
-    className,
+    ...props,
     onTextChange,
-    previewMode,
     value
   };
 }
@@ -39,6 +37,7 @@ function useMarkdownPreviewPane(props) {
 const MarkdownPreviewPane = function(props) {
   const {
     className,
+    name,
     onTextChange,
     previewMode,
     value
@@ -46,14 +45,20 @@ const MarkdownPreviewPane = function(props) {
 
   return previewMode
     ? (
-      <Markdown
-        className={className}
-      >
-        {value}
-      </Markdown>
+      <>
+        <Markdown className={className}>
+          {value}
+        </Markdown>
+        <input
+          name={name}
+          type="hidden"
+          value={value}
+        />
+      </>
     ) : (
       <textarea
         className={className}
+        name={name}
         onChange={onTextChange}
       >
         {value}

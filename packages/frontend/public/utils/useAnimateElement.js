@@ -2,16 +2,7 @@ import {
   useEffect
 } from 'preact/hooks';
 
-/** @typedef {Object} AnimateElementOptions
- * @property {string} [className="animate"]
- * @property {number} [delay=0]
- * @property {number} duration
- * @property {() => void} [onEnd]
- * @property {() => void} [onStart]
- * @property {{ current: HTMLElement }} ref
- */
-
-/** @param {AnimateElementOptions} opts */
+/** @param {import('~/t').UseAnimateElementOptions} opts */
 function useAnimateElement(opts) {
   const {
     className,
@@ -27,7 +18,7 @@ function useAnimateElement(opts) {
       return;
     }
 
-    setTimeout(function() {
+    const timer = setTimeout(function() {
       ref.current.classList.add(`${className}-start`);
       onStart?.();
 
@@ -36,6 +27,10 @@ function useAnimateElement(opts) {
         onEnd?.();
       }, duration);
     }, delay);
+
+    return function cleanup() {
+      clearTimeout(timer);
+    }
   }, [ delay, duration, onStart, onEnd, ref.current ]);
 }
 

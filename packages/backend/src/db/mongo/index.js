@@ -34,7 +34,9 @@ class DBConnection {
     this.deleteLinkPreview = LinkPreview.deleteLinkPreview;
     this.getLinkPreview = LinkPreview.getLinkPreview;
 
+    this.createBlogPostComment = Posts.addComment;
     this.getBlogPosts = Posts.getPosts;
+    this.getBlogPostComments = Posts.getBlogPostComments;
 
     this.getSettings = Settings.getSettings;
 

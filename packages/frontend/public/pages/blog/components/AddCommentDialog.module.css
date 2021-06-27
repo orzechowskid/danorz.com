@@ -16,6 +16,14 @@
   flex-grow: 1;
 }
 
+.addCommentDialog [role="status"] {
+  height: var(--height-status-message-container);
+}
+
+.addCommentDialog [role="group"] * ~ * {
+  margin-left: var(--gutter-sm);
+}
+
 .markdownPreviewPane {
   flex-grow: 1;
   margin: var(--gutter-sm) 0;

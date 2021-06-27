@@ -7,6 +7,16 @@
   grid-gap: var(--gutter-md) var(--gutter-md);
 }
 
+.comments header img {
+  width: var(--width-comment-avatar-sm);
+  height: var(--height-comment-avatar-sm);
+
+  @media (min-width: 480px) {
+    width: unset;
+    height: unset;
+  }
+}
+
 .comments article + article {
   margin-top: var(--gutter-lg);
 }

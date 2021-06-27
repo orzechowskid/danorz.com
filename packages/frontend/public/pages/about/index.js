@@ -3,8 +3,6 @@ import {
   useState
 } from 'preact/hooks';
 
-import * as types from '~/types.js';
-
 import Markdown from '~/components/Markdown.js';
 import LinkButton from '~/components/LinkButton.js';
 import PageTitleContainer, {
@@ -28,20 +26,17 @@ import styles from './index.module.css';
 function useAbout() {
   const {
     data,
-    doCreate,
-    doUpdate,
     error,
-    metadata
+    metadata,
+    remoteCreate,
+    remoteUpdate
   } = useRemoteData({
     apiEndpoint: `content/bio`
   });
   const pageContents = data[0]?.text;
   const busy = metadata.error === undefined;
-  /** @type {LocalState<string>} */
   const [ previewContents, setPreviewContents ] = useState(pageContents);
-  /** @type {LocalState<boolean>} */
   const [ editMode, setEditMode ] = useState(false);
-  /** @type {LocalState<boolean>} */
   const [ editPreviewMode, setEditPreviewMode ] = useState(false);
   const onEdit = useCallback(function onEdit() {
     setEditMode(true);
@@ -64,11 +59,18 @@ function useAbout() {
   }, []);
   const onSubmit = useCallback(function onSubmit(e) {
     e.preventDefault();
+
     if (pageContents) {
-      doUpdate({...data[0], text: previewContents });
+      remoteUpdate({
+        ...data[0],
+        text: previewContents
+      });
     }
     else {
-      doCreate({ name: `bio`, text: previewContents });
+      remoteCreate({
+        name: `bio`,
+        text: previewContents
+      });
     }
     setEditMode(false);
     setEditPreviewMode(false);

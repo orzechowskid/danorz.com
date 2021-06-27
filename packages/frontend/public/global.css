@@ -33,6 +33,12 @@ a.unstyled {
   color: inherit;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  a:focus {
+    animation: var(--animation-pulse-focus);
+  }
+}
+
 button {
   padding: var(--gutter-md);
   border: var(--border-button);
