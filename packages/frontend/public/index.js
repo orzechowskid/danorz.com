@@ -9,8 +9,7 @@ import {
   Router
 } from 'preact-iso/router';
 
-import * as types from './types.js';
-
+import Busy from './components/Busy.js';
 import Footer from './components/Footer.js';
 import Header from './components/Header.js';
 import PrivateRoute from './components/PrivateRoute.js';
@@ -25,6 +24,9 @@ import {
   useDictionary,
   useLocale
 } from './utils/useI18n.js';
+import {
+  useSession
+} from './utils/useSession.js';
 import {
   useSiteSettings
 } from './utils/useSiteSettings.js';
@@ -76,10 +78,15 @@ function usePreloadData() {
   } = useSiteSettings({
     raw: true
   });
+  const {
+    isSignedIn
+  } = useSession();
+  const sessionCheck = isSignedIn !== undefined;
 
-  return [ locale, dictionary, siteSettings ].every(Boolean);
+  return [ locale, dictionary, siteSettings, sessionCheck ].every(Boolean);
 }
 
+/** @type {import('~/t').Component<void>} */
 function Contents() {
   return (
     <LocationProvider>
@@ -92,6 +99,7 @@ function Contents() {
   );
 }
 
+/** @type {import('~/t').Component<void>} */
 function App() {
   const ready = usePreloadData();
 
@@ -102,13 +110,14 @@ function App() {
 
         <Header />
 
-        <main
-          aria-busy={!ready}
+        <Busy
+          as="main"
           className={busyStyles.busy}
+          ready={ready}
           id="main"
         >
           {ready && <Contents />}
-        </main>
+        </Busy>
 
         <Footer />
       </div>

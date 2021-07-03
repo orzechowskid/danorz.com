@@ -17,6 +17,9 @@
     "siteOptions": "Site options",
     "triggerLabel": "show/hide account menu"
   },
+  "AddCommentDialog": {
+    "title": "Add comment"
+  },
   "Blog": {
     "description": "latest blog posts",
     "new-post-action": "New post",
@@ -37,6 +40,7 @@
     "description": "a single blog post",
     "noComments": "comments are disabled for this post",
     "published-on": "publish date",
+    "skip-to-comments": "skip to comments",
     "tags": "tags",
     "title-link": "direct link to this post"
   },
@@ -81,6 +85,7 @@
   },
   "PageActions": {
     "cancel-button": "Cancel",
+    "edit-button": "Edit",
     "preview-button": "Preview",
     "save-button": "Save"
   },

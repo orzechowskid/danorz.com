@@ -14,7 +14,7 @@
   bottom: 0;
   left: 0;
   overflow: hidden;
-  background-color: var(--color-modal-background);
+  background-color: var(--color-overlay-background);
 }
 
 .siteMenu {

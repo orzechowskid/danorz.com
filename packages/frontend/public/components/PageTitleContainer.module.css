@@ -9,6 +9,5 @@
 }
 
 .pageTitleContainer button {
-  padding: var(--gutter-sm);
   font-size: var(--font-size-page-edit-button);
 }

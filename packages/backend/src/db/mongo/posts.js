@@ -50,7 +50,7 @@ export async function addComment(dbQuery) {
 
     post.comments = [
       ...post.comments,
-      new CommentModel(newComment) // peer resource id here?
+      new CommentModel(newComment)
     ];
 
     await post.save();
@@ -106,7 +106,9 @@ export async function getPosts(dbQuery) {
     which
   } = dbQuery;
   const findArgs = which && which._id
-    ? { _id: which._id }
+    ? {
+      _id: which._id
+    }
     : {};
   const dataQuery = Post.find(findArgs)
     .sort(`field -_id`)
@@ -121,6 +123,36 @@ export async function getPosts(dbQuery) {
     totalQuery,
     dataQuery
   ]);
+
+  return {
+    data,
+    metadata: {
+      total
+    }
+  };
+}
+
+/** @type {types.DBQueryFunction<types.BlogPostComment[]>} */
+export async function getBlogPostComments(dbQuery) {
+  const {
+    count = 1,
+    start = 0,
+    which
+  } = dbQuery;
+  const findArgs = which && which._id
+    ? {
+      _id: which._id
+    }
+    : {};
+  const dataQuery = Post.find(findArgs)
+    .sort(`field -_id`)
+    .skip(+start)
+    .limit(+count)
+    .lean()
+    .exec();
+
+  const data = (await dataQuery)?.[0]?.comments ?? [];
+  const total = data.length;
 
   return {
     data,

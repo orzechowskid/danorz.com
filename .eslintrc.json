@@ -1,7 +1,13 @@
 {
   "root": true,
+
+  "env": {
+    "es2021": true
+  },
   "plugins": [
-    "import"
+    "import",
+    "jsdoc",
+    "modules-newline"
   ],
   "rules": {
     "array-bracket-spacing": [
@@ -43,6 +49,11 @@
       "warn", {
         "terms": [ "debug", "fixme", "todo" ]
       } ],
+    "object-curly-newline": [
+      "warn", {
+        "consistent": true,
+        "minProperties": 1
+    } ],
     "operator-linebreak": "off",
     "prefer-arrow-callback": "off",
     "prefer-destructuring": [ "warn" ],
@@ -57,6 +68,33 @@
         "anonymous": "never",
         "asyncArrow": "always",
         "named": "never"
-      } ]
+      } ],
+
+    "import/default": "error",
+    "import/extensions": [
+      "warn", "ignorePackages"
+    ],
+    "import/first": "warn",
+    "import/named": "error",
+    "import/no-extraneous-dependencies": [
+      "warn", {
+        "devDependencies": false
+      } ],
+    "import/no-mutable-exports": "warn",
+    "import/no-nodejs-modules": "error",
+    "import/no-self-import": "error",
+    "import/no-unresolved": "error",
+    "import/no-unused-modules": "error",
+    "import/no-webpack-loader-syntax": "error",
+    "import/prefer-default-export": "off",
+
+    "jsdoc/no-undefined-types": "warn",
+
+    "modules-newline/import-declaration-newline": "warn"
+  },
+  "settings": {
+    "jsdoc": {
+      "mode": "typescript"
+    }
   }
 }

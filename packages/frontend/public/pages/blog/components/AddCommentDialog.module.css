@@ -1,0 +1,30 @@
+.addCommentDialog {
+  display: flex;
+  flex-direction: column;
+  width: var(--width-add-blog-comment-dialog-sm);
+  height: var(--height-add-blog-comment-dialog-sm);
+
+  @media (min-width: 480px) {
+    width: var(--width-add-blog-comment-dialog-lg);
+    height: var(--height-add-blog-comment-dialog-lg);
+  }
+}
+
+.addCommentDialog form {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.addCommentDialog [role="status"] {
+  height: var(--height-status-message-container);
+}
+
+.addCommentDialog [role="group"] * ~ * {
+  margin-left: var(--gutter-sm);
+}
+
+.markdownPreviewPane {
+  flex-grow: 1;
+  margin: var(--gutter-sm) 0;
+}

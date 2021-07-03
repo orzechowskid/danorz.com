@@ -33,9 +33,19 @@ a.unstyled {
   color: inherit;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  a:focus {
+    animation: var(--animation-pulse-focus);
+  }
+}
+
 button {
   padding: var(--gutter-md);
   border: var(--border-button);
+}
+
+button[aria-pressed="true"] {
+  box-shadow: var(--box-shadow-toggle-button-pressed);
 }
 
 button:focus {
@@ -114,7 +124,10 @@ pre code {
 }
 
 textarea {
+  padding: var(--gutter-sm);
   font-family: var(--font-family-code);
+  font-size: var(--font-size-text-input);
+  line-height: var(--line-height-body-copy);
   letter-spacing: 0.5px;
   border: var(--border-text-input);
 }

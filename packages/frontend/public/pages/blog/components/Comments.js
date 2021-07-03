@@ -1,9 +1,6 @@
 import Markdown from '~/components/Markdown.js';
 import Restricted from '~/components/Restricted.js';
 import {
-  mongoIdToTimestamp
-} from '~/utils/datetime.js';
-import {
   gravatarHashToUrl
 } from '~/utils/helpers.js';
 import {
@@ -12,25 +9,42 @@ import {
 
 import styles from './Comments.module.css';
 
-/** @type {types.Component<types.BlogPostComment>} */
-function SingleComment(props) {
-  const {
-    _id,
-    gravatarHash,
-    name,
-    text
-  } = props;
+/**
+ * @param {import('~/t').BlogPostComment} props
+ */
+function useSingleComment(props) {
   const {
     date,
     t,
     time
   } = useI18n();
-  const timestamp = new Date(mongoIdToTimestamp(_id));
+  const timestamp = props.timestamp
+    ? new Date(props.timestamp)
+    : new Date();
+
+  return {
+    ...props,
+    t,
+    timestamp,
+    timeString: `${time(timestamp)} ${date(timestamp)}`
+  };
+}
+
+/** @type {import('~/t').Component<import('~/t').BlogPostComment>} */
+function SingleComment(props) {
+  const {
+    gravatarHash,
+    name,
+    t,
+    text,
+    timestamp,
+    timeString
+  } = useSingleComment(props);
 
   return (
     <article className={styles.comment}>
       <header>
-        <span className={styles.commentIcon}>
+        <span>
           <img
             alt={t(`BlogPost:avatar-alt`)}
             src={gravatarHashToUrl(gravatarHash)}
@@ -41,7 +55,7 @@ function SingleComment(props) {
             {name}
           </div>
           <time dateTime={timestamp.toISOString()}>
-            {time(timestamp)}&nbsp;{date(timestamp)}
+            {timeString}
           </time>
         </div>
       </header>
@@ -54,7 +68,8 @@ function SingleComment(props) {
 
 function Comments(props) {
   const {
-    comments = []
+    comments = [],
+    onAddComment
   } = props;
   const {
     num,
@@ -64,7 +79,9 @@ function Comments(props) {
   return (
     <section className={styles.comments}>
       <h3 className={styles.commentsHeader}>
-        {t(`BlogPost:comment-counter`, { commentCount: num(comments.length) })}
+        {t(`BlogPost:comment-counter`, {
+          commentCount: num(comments.length)
+        })}
       </h3>
 
       {comments.map(
@@ -72,7 +89,7 @@ function Comments(props) {
       )}
 
       <Restricted ifSiteSettingEnabled="blog.allowComments">
-        <span>add comment</span>
+        <button onClick={onAddComment}>add comment</button>
       </Restricted>
     </section>
   );

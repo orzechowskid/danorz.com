@@ -1,6 +1,16 @@
+@keyframes input-shadow {
+}
+
 .linkButton {
-  padding: 0;
+  padding: var(--gutter-xs);
   color: var(--color-link);
   background-color: transparent;
   border: 0;
+  border-radius: var(--border-radius-link-button);
+}
+
+.linkButton:focus {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animation-pulse-focus);
+  }
 }

@@ -10,7 +10,7 @@ import {
 /**
  * @param {string} locale
  * @param {Date} value
- * @param {Record<string, any>} [args]
+ * @param {{ [key: string]: any} [args={}]
  * @return {string}
  */
 export function datestring(locale, value, args = {}) {
@@ -38,7 +38,7 @@ function number(locale, value) {
 /**
  * @param {string} locale
  * @param {Date} value
- * @param {Record<string, any>} [args]
+ * @param {{ [key: string]: any} [args={}]
  * @return {string}
  */
 function timestamp(locale, value, args = {}) {
@@ -53,9 +53,9 @@ function timestamp(locale, value, args = {}) {
 
 /**
  * @param {string} locale
- * @param {Record<string, any>} dictionary
+ * @param {Object} dictionary
  * @param {string} key
- * @param {Record<string, any>} [values={}]
+ * @param {{ [key: string]: any} [values={}]
  * @return {string}
  */
 export function translate(locale, dictionary, key, values = {}) {
@@ -87,7 +87,7 @@ export function translate(locale, dictionary, key, values = {}) {
 
 /**
  * @param {string} locale
- * @return {Record<string, any>}
+ * @return {{ [key: string]: any }}
  */
 function useDictionary(locale) {
   const {
@@ -109,7 +109,9 @@ function useSupportedLocales() {
     data
   } = useRemoteData({
     apiEndpoint: `i18n/locales`,
-    opts: { raw: true }
+    opts: {
+      raw: true
+    }
   });
 
   return data?.locales ?? {};
