@@ -14,13 +14,15 @@ const BusyContainer = function(props) {
     as: ElementName = `div`,
     children,
     className,
-    ready
+    ready,
+    ...otherProps
   } = props;
 
   return (
     <ElementName
       aria-busy={!ready}
       className={`${styles.busy} ${className}`}
+      {...otherProps}
     >
       {children}
     </ElementName>

@@ -30,7 +30,11 @@ function Header() {
       <SiteBanner />
 
       <div className={`${layoutStyles.layout} ${styles.headerContents}`}>
-        <h1>{siteName}</h1>
+        <h1>
+          <a href="/">
+            {siteName}
+          </a>
+        </h1>
 
         <SiteMenu />
       </div>

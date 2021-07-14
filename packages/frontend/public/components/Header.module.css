@@ -20,3 +20,14 @@
 .header h1 {
   word-break: break-all;
 }
+
+.header h1 a {
+  font-weight: unset;
+  color: unset;
+  text-decoration: none;
+}
+
+.header h1 a:focus {
+  box-shadow: var(--box-shadow-menu-trigger);
+  animation: none;
+}

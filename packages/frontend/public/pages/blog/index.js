@@ -6,7 +6,6 @@ import PageTitleContainer, {
   PageActions,
   PageTitle
 } from '~/components/PageTitleContainer.js';
-import { mongoIdToTimestamp } from '~/utils/datetime.js';
 import {
   useI18n
 } from '~/utils/useI18n.js';
@@ -17,7 +16,7 @@ import {
   usePageMeta
 } from '~/utils/usePageTitle.js';
 import {
-  useRemoteData
+  useRemoteCollection
 } from '~/utils/useRemoteData.js';
 import Byline from './components/Byline.js';
 
@@ -33,7 +32,7 @@ function Blog() {
     doUpdate,
     localError,
     metadata
-  } = useRemoteData({
+  } = useRemoteCollection({
     apiEndpoint: `blog/posts`
   });
   const {
@@ -79,7 +78,7 @@ function Blog() {
                 {post.title}
               </a>
             </h3>
-            <Byline author={post.author} tags={post.tags} timestamp={mongoIdToTimestamp(post._id)} />
+            <Byline author={post.author} tags={post.tags} timestamp={new Date("1981-11-28T00:00:00Z")} />
           </header>
           <Markdown>
             {post.text}
@@ -89,7 +88,9 @@ function Blog() {
               aria-label={t(`BlogPost:comment-link`)}
               href={`blog/posts/${post._id}#comments`}
             >
-              {t(`BlogPost:comment-counter`, { commentCount: post.comments.length })}
+              {t(`BlogPost:comment-counter`, {
+                commentCount: post.comments.length
+              })}
             </a>
           </footer>
         </article>
