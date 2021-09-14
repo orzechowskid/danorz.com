@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import {
   deleteData,
   getData,
@@ -7,26 +5,26 @@ import {
   putData
 } from '~/utils/api.js';
 import {
-  getStoredValue,
-  setStoredValue
-} from '~/utils/localStorage.js';
+  read as readFromLocalStorage,
+  write as writeToLocalStorage
+} from '~/utils/useLocalStorage.js';
 
 export const name = `session`;
 
-/** @type {types.SessionState} */
+/** @type {import('~/t').SessionState} */
 export const initialState = {
   isSignedIn: undefined,
   name: undefined,
-  preferredLocale: getStoredValue(`session.preferredLocale`) || `en-US`
+  preferredLocale: readFromLocalStorage(`session.preferredLocale`) || `en-US`
 };
 
-/** @type {types.Selector<string>} */
+/** @type {import('~/t').Selector<string>} */
 export const selectPreferredLocale = (state) => state[name].preferredLocale;
 
-/** @type {types.Selector<boolean>} */
+/** @type {import('~/t').Selector<boolean>} */
 export const selectSignedIn = (state) => state[name].isSignedIn;
 
-/** @type {types.ActionCreator<types.SessionState>} */
+/** @type {import('~/t').ActionCreator<import('~/t').SessionState>} */
 export async function doSignIn(appState, username, password) {
   const response = await postData(`auth/session`, {
     name: username,
@@ -41,7 +39,7 @@ export async function doSignIn(appState, username, password) {
   };
 }
 
-/** @type {types.ActionCreator<"session", types.SessionState>} */
+/** @type {import('~/t').ActionCreator<"session", import('~/t').SessionState>} */
 export async function doSignOut() {
   try {
     await deleteData(`auth/session`);
@@ -57,7 +55,7 @@ export async function doSignOut() {
   }
 }
 
-/** @type {types.ActionCreator<name, types.SessionState>} */
+/** @type {import('~/t').ActionCreator<name, import('~/t').SessionState>} */
 export async function doGetExistingSession(appState) {
   try {
     const response = await getData(`auth/session`);
@@ -74,7 +72,7 @@ export async function doGetExistingSession(appState) {
   }
 }
 
-/** @type {types.ActionCreator<name, types.SessionState>} */
+/** @type {import('~/t').ActionCreator<name, import('~/t').SessionState>} */
 export async function doSetUserPreferredLocale(appState, newLocale) {
   try {
     const {
@@ -82,7 +80,7 @@ export async function doSetUserPreferredLocale(appState, newLocale) {
       ...currentState
     } = appState[name];
 
-    setStoredValue(`session.preferredLocale`, newLocale);
+    writeToLocalStorage(`session.preferredLocale`, newLocale);
 
     if (!isSignedIn) {
       return;

@@ -8,9 +8,9 @@ import {
   useSiteSettings
 } from '~/utils/useSiteSettings.js';
 
+import Busy from '~/components/Busy.js';
 import CollapsibleSection from './components/CollapsibleSection.js';
 
-import busyStyles from '~/components/Busy.module.css';
 import layoutStyles from '~/components/Layout.module.css';
 
 function useSettings() {
@@ -25,8 +25,8 @@ function useSettings() {
   };
 }
 
-/** @type {types.Component<void>} */
-function Settings() {
+/** @type {import('~/t').Component<void>} */
+const Settings = () => {
   const {
     data
   } = useSettings();
@@ -38,9 +38,9 @@ function Settings() {
   const pageTitle = t(`${page}:title`);
 
   return (
-    <div
-      aria-busy={!ready}
-      className={`${layoutStyles.layout} ${busyStyles.busy}`}
+    <Busy
+      ready={ready}
+      className={layoutStyles.layout}
     >
       <PageTitleContainer>
         <PageTitle title={pageTitle} />
@@ -54,7 +54,7 @@ function Settings() {
           namespace={k}
         />
       ))}
-    </div>
+    </Busy>
   );
 }
 

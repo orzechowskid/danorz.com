@@ -1,12 +1,10 @@
-import * as types from '~/types.js';
-
+import Busy from '~/components/Busy.js';
 import LinkButton from '~/components/LinkButton.js';
 import Markdown from '~/components/Markdown.js';
 import PageTitleContainer, {
   PageActions,
   PageTitle
 } from '~/components/PageTitleContainer.js';
-import { mongoIdToTimestamp } from '~/utils/datetime.js';
 import {
   useI18n
 } from '~/utils/useI18n.js';
@@ -17,31 +15,30 @@ import {
   usePageMeta
 } from '~/utils/usePageTitle.js';
 import {
-  useRemoteData
+  useRemoteCollection
 } from '~/utils/useRemoteData.js';
 import Byline from './components/Byline.js';
 
-import busyStyles from '~/components/Busy.module.css';
 import layoutStyles from '~/components/Layout.module.css';
 import styles from './index.module.css';
 
-/** @type {types.Component<void>} */
-function Blog() {
-  /** @type {types.RemoteDataResult<types.BlogPost>} */
+function useBlogPage() {
+  /** @type {import('~/t').RemoteDataResult<import('~/t').BlogPost>} */
   const {
     data,
     doUpdate,
     localError,
     metadata
-  } = useRemoteData({
+  } = useRemoteCollection({
     apiEndpoint: `blog/posts`
   });
   const {
     t
   } = useI18n();
-  const ready = !!data.length;
+  const ready = metadata?.total !== undefined;
   const page = `Blog`;
   const pageTitle = t(`${page}:title`);
+
   usePageMeta(function setPageMeta() {
     return {
       description: t(`Blog:description`)
@@ -49,10 +46,27 @@ function Blog() {
   }, [ t ]);
   usePageLoadTracker([ ready ]);
 
+  return {
+    data,
+    pageTitle,
+    ready,
+    t
+  }
+}
+
+/** @type {import('~/t').Component<void>} */
+function Blog() {
+  const {
+    data,
+    pageTitle,
+    ready,
+    t
+  } = useBlogPage();
+
   return (
-    <div
-      aria-busy={!ready}
-      className={`${layoutStyles.layout} ${styles.page} ${busyStyles.busy}`}
+    <Busy
+      className={`${layoutStyles.layout} ${styles.page}`}
+      ready={ready}
       role="feed"
     >
       <PageTitleContainer>
@@ -79,7 +93,7 @@ function Blog() {
                 {post.title}
               </a>
             </h3>
-            <Byline author={post.author} tags={post.tags} timestamp={mongoIdToTimestamp(post._id)} />
+            <Byline author={post.author} tags={post.tags} timestamp={new Date()} />
           </header>
           <Markdown>
             {post.text}
@@ -89,12 +103,14 @@ function Blog() {
               aria-label={t(`BlogPost:comment-link`)}
               href={`blog/posts/${post._id}#comments`}
             >
-              {t(`BlogPost:comment-counter`, { commentCount: post.comments.length })}
+              {t(`BlogPost:comment-counter`, {
+                commentCount: post.comments.length
+              })}
             </a>
           </footer>
         </article>
       ))}
-    </div>
+    </Busy>
   );
 }
 

@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import Input from '~/components/Input.js';
 import {
   useI18n,
@@ -28,8 +26,8 @@ function useLocaleMenu() {
  * @property {string} [className]
  */
 
-/** @type {types.Component<LocaleMenuProps>} */
-function LocaleMenu(props) {
+/** @type {import('~/t').Component<LocaleMenuProps>} */
+const LocaleMenu = (props) => {
   const {
     className
   } = props;

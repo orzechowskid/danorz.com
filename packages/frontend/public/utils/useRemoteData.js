@@ -1,5 +1,6 @@
 import {
-  useCallback
+  useCallback,
+  useState
 } from 'preact/hooks';
 import useSWR from 'swr';
 
@@ -83,13 +84,10 @@ function getUpdateDataFunction(cacheKey, swrOpts, updateDataOpts, isCollection) 
       ];
 
       /* step 1: optimistic local update */
-      mutate(
-        {
-          ...swrData,
-          data: next
-        },
-        false
-      );
+      mutate({
+        ...swrData,
+        data: next
+      }, false);
 
       /* step 2: make remote update */
       const updateEndpoint = apiEndpoint || cacheKey;
@@ -102,21 +100,26 @@ function getUpdateDataFunction(cacheKey, swrOpts, updateDataOpts, isCollection) 
       const next = typeof nextState === `function`
         ? nextState(swrData?.data)
         : nextState;
-
       /* step 1: optimistic local update */
-      mutate(
-        {
-          ...swrData, data: next
-        },
-        false
-      );
+      mutate({
+        ...swrData,
+        data: next
+      }, false);
 
-      /* step 2: make remote update */
-      const updateEndpoint = apiEndpoint || cacheKey;
-      const response = await putData(updateEndpoint, next, fetchOpts);
+      try {
+        /* step 2: make remote update */
+        const updateEndpoint = apiEndpoint || cacheKey;
+        const response = await putData(updateEndpoint, next, fetchOpts);
 
-      /* step 3: sync local data with remote */
-      mutate(response);
+        /* step 3: sync local data with remote */
+        mutate(response);
+      }
+      catch (ex) {
+        /* rollback by re-fetching remote data */
+        mutate();
+        /* inform listeners that something went wrong */
+        throw ex;
+      }
     };
 }
 
@@ -179,36 +182,104 @@ function useRemoteData(opts) {
     ...userSwrOpts
   };
   const swr = useSWR(apiEndpoint, rawRequest, swrOpts);
-  const {
-    data: swrData,
-    error
-  } = swr;
-  const remoteCreate = useCallbackFactory(
+  // gross!
+  const data = raw
+    ? swr.data
+    : (swr.data?.data?.[0] ?? {});
+  const metadata = raw
+    ? undefined
+    : (swr.data?.metadata ?? {});
+
+  /* remote get operation */
+  const get = {
+    data: {
+      data,
+      metadata
+    },
+    error: swr.error,
+    execute: swr.mutate
+  };
+
+  /* remote create operation */
+  const [ createError, setCreateError ] = useState(null);
+  const [ createState, setCreateState ] = useState(`ready`);
+  const doCreate = useCallbackFactory(
     getCreateDataFunction,
     [ apiEndpoint, swr, createOpts ]
   );
-  const remoteUpdate = useCallbackFactory(
+  const create = {
+    error: createError,
+    execute: async function() {
+      try {
+        setCreateError(undefined);
+        setCreateState(`busy`);
+        await doCreate();
+        setCreateState(`ready`);
+      }
+      catch (ex) {
+        setCreateState(`error`);
+        setCreateError(ex);
+      }
+    },
+    state: createState
+  };
+  /* remote update operation */
+
+  /** @type {import('preact/hooks').StateUpdater<Error>} */
+  const [ updateError, setUpdateError ] = useState(null);
+  /** @type {import('preact/hooks').StateUpdater<import('~/t').RemoteOperationState>} */
+  const [ updateState, setUpdateState ] = useState(`ready`);
+  const doUpdate = useCallbackFactory(
     getUpdateDataFunction,
     [ apiEndpoint, swr, updateOpts ]
   );
-  const remoteDelete = useCallbackFactory(
+  const update = {
+    error: updateError,
+    execute: async function(next) {
+      try {
+        setUpdateError(undefined);
+        setUpdateState(`busy`);
+        await doUpdate(next);
+        setUpdateState(`success`);
+      }
+      catch (ex) {
+        setUpdateState(`error`);
+        setUpdateError(ex);
+      }
+    },
+    state: updateState
+  };
+  /* remote delete operation */
+  const [ deleteError, setDeleteError ] = useState(null);
+  const [ deleteState, setDeleteState ] = useState(`ready`);
+  const doDelete = useCallbackFactory(
     getDeleteDataFunction,
     [ apiEndpoint, swr, deleteOpts ]
   );
-  const data = raw
-    ? swrData
-    : (swrData?.data?.[0] ?? {});
-  const metadata = raw
-    ? undefined
-    : (swrData?.metadata ?? {});
+  const del = {
+    error: deleteError,
+    execute: async function() {
+      try {
+        setDeleteError(undefined);
+        setDeleteState(`busy`);
+        await doDelete();
+        setDeleteState(`success`);
+      }
+      catch (ex) {
+        setDeleteState(`error`);
+        setDeleteError(ex);
+      }
+    },
+    state: deleteState
+  };
 
   return {
-    data,
-    error,
-    metadata,
-    remoteCreate,
-    remoteDelete,
-    remoteUpdate
+    create,
+    data, // deprecated
+    del, /* sigh */
+    get,
+    metadata, // deprecated
+    update
   };
 }
 
@@ -234,18 +305,6 @@ function useRemoteCollection(opts) {
     data: swrData,
     error
   } = swr;
-  const remoteCreate = useCallbackFactory(
-    getCreateDataFunction,
-    [ apiEndpoint, swr, createOpts, true ]
-  );
-  const remoteUpdate = useCallbackFactory(
-    getUpdateDataFunction,
-    [ apiEndpoint, swr, updateOpts, true ]
-  );
-  const remoteDelete = useCallbackFactory(
-    getDeleteDataFunction,
-    [ apiEndpoint, swr, deleteOpts, true ]
-  );
   const data = raw
     ? swrData
     : (swrData?.data ?? []);
@@ -253,13 +312,97 @@ function useRemoteCollection(opts) {
     ? undefined
     : (swrData?.metadata ?? {});
 
+  /* remote get operation */
+  const get = {
+    data: {
+      data,
+      metadata
+    },
+    error: swr.error,
+    execute: swr.mutate
+  };
+
+  /* remote create operation */
+  const [ createError, setCreateError ] = useState(null);
+  const [ createState, setCreateState ] = useState(`ready`);
+  const doCreate = useCallbackFactory(
+    getCreateDataFunction,
+    [ apiEndpoint, swr, createOpts ]
+  );
+  const create = {
+    error: createError,
+    execute: async function() {
+      try {
+        setCreateError(undefined);
+        setCreateState(`busy`);
+        await doCreate();
+        setCreateState(`ready`);
+      }
+      catch (ex) {
+        setCreateState(`error`);
+        setCreateError(ex);
+      }
+    },
+    state: createState
+  };
+  /* remote update operation */
+
+  /** @type {import('preact/hooks').StateUpdater<Error>} */
+  const [ updateError, setUpdateError ] = useState(null);
+  /** @type {import('preact/hooks').StateUpdater<import('~/t').RemoteOperationState>} */
+  const [ updateState, setUpdateState ] = useState(`ready`);
+  const doUpdate = useCallbackFactory(
+    getUpdateDataFunction,
+    [ apiEndpoint, swr, updateOpts, true ]
+  );
+  const update = {
+    error: updateError,
+    execute: async function(next) {
+      try {
+        setUpdateError(undefined);
+        setUpdateState(`busy`);
+        await doUpdate(next);
+        setUpdateState(`success`);
+      }
+      catch (ex) {
+        setUpdateState(`error`);
+        setUpdateError(ex);
+      }
+    },
+    state: updateState
+  };
+  /* remote delete operation */
+  const [ deleteError, setDeleteError ] = useState(null);
+  const [ deleteState, setDeleteState ] = useState(`ready`);
+  const doDelete = useCallbackFactory(
+    getDeleteDataFunction,
+    [ apiEndpoint, swr, deleteOpts ]
+  );
+  const del = {
+    error: deleteError,
+    execute: async function() {
+      try {
+        setDeleteError(undefined);
+        setDeleteState(`busy`);
+        await doDelete();
+        setDeleteState(`success`);
+      }
+      catch (ex) {
+        setDeleteState(`error`);
+        setDeleteError(ex);
+      }
+    },
+    state: deleteState
+  };
+
   return {
-    data,
-    error,
-    metadata,
-    remoteCreate,
-    remoteDelete,
-    remoteUpdate
+    create,
+    data, // deprecated
+    del,
+    error, // deprecated
+    get,
+    metadata, // deprecated
+    update
   };
 }
 

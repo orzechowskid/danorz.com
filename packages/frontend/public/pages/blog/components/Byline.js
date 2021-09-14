@@ -4,7 +4,14 @@ import {
 
 import styles from './Byline.module.css';
 
-/** @type {types.Component<{tags: string[]}>} */
+/**
+ * @typedef {Object} BylineProps
+ * @property {string} author
+ * @property {string[]} tags
+ * @property {number} timestamp
+ */
+
+/** @type {import('~/t').Component<{tags: BylineProps['tags']}>} */
 function TagList(props) {
   const {
     tags
@@ -21,7 +28,7 @@ function TagList(props) {
       {tags?.map(
         (tag) => (
           <li key={tag}>
-            <a key={tag} href={`/blog/tag/${tag}`}>{tag}</a>
+            <a key={tag} href={`/blog/tags/${tag}`}>{tag}</a>
           </li>
         )
       )}
@@ -48,7 +55,8 @@ function Timestamp(props) {
   );
 }
 
-function Byline(props) {
+/** @type {import('~/t').Component<BylineProps>} */
+const Byline = (props) => {
   const {
     author,
     tags,

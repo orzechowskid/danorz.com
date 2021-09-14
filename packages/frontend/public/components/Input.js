@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import {
   useCallback,
   useState
@@ -7,11 +5,17 @@ import {
 
 import RadioButton from './inputs/RadioButton.js';
 
-function Input(props) {
+/**
+ * @typedef {Object} InputProps
+ * @property {(arg0: any) => void} onFocus
+ */
+
+/** @type {import('~/t').Component<InputProps>} */
+const Input = (props) => {
   const {
     onFocus
   } = props;
-  /** @type {types.LocalState<boolean>} */
+  /** @type {import('~/t').LocalState<boolean>} */
   const [ touched, setTouched ] = useState(false);
   const preOnFocus = useCallback(function preOnFocus() {
     setTouched(true);
