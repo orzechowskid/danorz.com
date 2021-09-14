@@ -3,7 +3,16 @@ import * as PreactHooks from 'preact/hooks';
 
 export type Id = string;
 
-export type Component<Props> = Preact.Component<Partial<Props>>;
+export type Component<Props> = Preact.FunctionComponent<Props>;
+
+export type LocalStateSetter<T> = T | ((arg0: T) => T);
+export type LocalState<T> = [ T, (arg0: LocalStateSetter<T>) => void ];
+
+export interface Byline {
+  author: string;
+  tags: string[];
+  timestamp: number;
+}
 
 export interface RemoteDataOpts {
   apiEndpoint: string;

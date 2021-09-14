@@ -1,16 +1,14 @@
-import * as types from '~/types.js';
-
 import SinglePost from './SinglePost.js';
 
 import styles from './Feed.module.css';
 
 /**
  * @typedef {Object} FeedProps
- * @property {types.BlogPost[]} posts
+ * @property {import('~/t').BlogPost[]} posts
  */
 
-/** @type {types.Component<FeedProps>} */
-function Feed(props) {
+/** @type {import('~/t').Component<FeedProps>} */
+const Feed = (props) => {
   const {
     posts
   } = props;

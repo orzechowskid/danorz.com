@@ -1,5 +1,6 @@
 import {
-  useCallback
+  useCallback,
+  useEffect
 } from 'preact/hooks';
 import {
   useLocation
@@ -12,9 +13,6 @@ import PageTitleContainer, {
   PageActions,
   PageTitle
 } from '~/components/PageTitleContainer.js';
-import {
-  mongoIdToTimestamp
-} from '~/utils/datetime.js';
 import {
   useI18n
 } from '~/utils/useI18n.js';
@@ -30,6 +28,7 @@ import {
 import AddCommentDialog from './components/AddCommentDialog.js';
 import Byline from './components/Byline.js';
 import Comments from './components/Comments.js';
+import EditPostDialog from './components/EditPostDialog.js';
 import {
   useBlogPost
 } from './utils/useBlogPost.js';
@@ -48,7 +47,7 @@ function useBlogPostPage() {
   const {
     createComment,
     data,
-    error
+    editPost
   } = useBlogPost({
     id: postId
   });
@@ -72,11 +71,22 @@ function useBlogPostPage() {
   }, []);
   const onCancelAddComment = useCallback(function onCancelAddComment() {
     disableAddCommentMode();
-  }, []);
-  const onSubmitComment = useCallback(async function onSubmitComment(commentText) {
-    await createComment(commentText);
-    disableAddCommentMode();
-  }, [ createComment, disableAddCommentMode ]);
+  }, [ disableAddCommentMode ]);
+  const onCancelEdit = useCallback(function onCancelEdit() {
+    disableEditMode();
+  }, [ disableEditMode ]);
+
+  useEffect(function handleSubmitCommentStateChange() {
+    if (createComment.state === `success`) {
+      disableAddCommentMode();
+    }
+  }, [ disableAddCommentMode, createComment.state ]);
+
+  useEffect(function handleSubmitEditStateChange() {
+    if (editPost.state === `success`) {
+      disableEditMode();
+    }
+  }, [ disableEditMode, editPost.state ]);
 
   usePageMeta(function setPageMeta() {
     return {
@@ -86,15 +96,18 @@ function useBlogPostPage() {
   usePageLoadTracker([ !!data ]);
 
   return {
+    addCommentError: createComment.error,
     addCommentMode,
     data,
     disableEditMode,
     editMode,
-    error,
+    editPostError: editPost.error,
     onAddComment,
     onCancelAddComment,
+    onCancelEdit,
     onEdit,
-    onSubmitComment,
+    onSubmitComment: createComment.execute,
+    onSubmitEdit: editPost.execute,
     t
   };
 }
@@ -104,11 +117,15 @@ const BlogPost = function() {
   const {
     addCommentMode,
     data,
+    editMode,
+    editPostError,
     error,
     onAddComment,
     onCancelAddComment,
+    onCancelEdit,
     onEdit,
     onSubmitComment,
+    onSubmitEdit,
     t
   } = useBlogPostPage();
   const {
@@ -142,7 +159,7 @@ const BlogPost = function() {
             <Byline
               author={author}
               tags={tags}
-              timestamp={mongoIdToTimestamp(_id)}
+              timestamp={new Date("1981-11-28T00:00:00Z")}
             />
           </header>
           <a href="#comments">{t(`BlogPost:skip-to-comments`)}</a>
@@ -157,6 +174,15 @@ const BlogPost = function() {
           </footer>
         </section>
       </form>
+
+      {editMode && (
+        <EditPostDialog
+          error={editPostError}
+          initialValue={text}
+          onCancel={onCancelEdit}
+          onSubmit={onSubmitEdit}
+        />
+      )}
 
       {addCommentMode && (
         <AddCommentDialog

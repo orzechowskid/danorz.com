@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import {
   useRemoteData
 } from '~/utils/useRemoteData.js';
@@ -12,8 +10,8 @@ import styles from './LinkPreview.module.css';
  * @property {string} url
  */
 
-/** @type {types.Component<LinkPreviewProps>} */
-function LinkPreview(props) {
+/** @type {import('~/t').Component<LinkPreviewProps>} */
+const LinkPreview = (props) => {
   const {
     url
   } = props;

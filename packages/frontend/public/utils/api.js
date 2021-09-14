@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 const API_PATH = `/api/1`;
 
 /**
@@ -26,7 +24,7 @@ async function rawRequest(apiEndpoint, opts = {}) {
  *
  * @param {string} apiEndpoint
  * @param {Object} [opts]
- * @return {Promise<types.RemoteData<T>>}
+ * @return {Promise<import('~/t').RemoteData<T>>}
  * @template T
  */
 async function getData(apiEndpoint, opts = {}) {
@@ -59,7 +57,7 @@ async function getData(apiEndpoint, opts = {}) {
  * @param {string} apiEndpoint
  * @param {T} payload
  * @param {RequestInit} [opts]
- * @returns {Promise<types.RemoteData<T>>}
+ * @returns {Promise<import('~/t').RemoteData<T>>}
  * @template T
  */
 async function postData(apiEndpoint, payload, opts = {}) {
@@ -92,8 +90,8 @@ async function postData(apiEndpoint, payload, opts = {}) {
  *
  * @param {String} apiEndpoint
  * @param {T} payload
- * @param {RequestInit} [opts]
- * @return {Promise<types.RemoteData<T>>}
+ * @return {Promise<T>}
+ * @throws {Error}
  * @template T
  */
 async function putData(apiEndpoint, payload, opts = {}) {
@@ -111,13 +109,8 @@ async function putData(apiEndpoint, payload, opts = {}) {
     return json;
   }
   catch (ex) {
-    return {
-      data: [],
-      metadata: {
-        count: -1,
-        error: ex.message
-      }
-    };
+    // TODO: analytics
+    throw new Error(ex.message);
   }
 }
 
@@ -133,8 +126,8 @@ async function deleteData(apiEndpoint) {
 
 /**
  * @param {T|T[]} data
- * @param {types.RemoteData<T>} apiResponse
- * @return {types.RemoteData<T>}
+ * @param {import('~/t').RemoteData<T>} apiResponse
+ * @return {import('~/t').RemoteData<T>}
  * @template T
  */
 function wrap(data, apiResponse) {
@@ -145,7 +138,7 @@ function wrap(data, apiResponse) {
 }
 
 /**
- * @param {types.RemoteData<T>} apiResponse
+ * @param {import('~/t').RemoteData<T>} apiResponse
  * @return {string|T[]|T}
  * @template T
  */
@@ -179,6 +172,6 @@ export {
   putData,
   rawFetch,
   rawRequest,
-  unwrap,
+  //  unwrap,
   wrap
 };

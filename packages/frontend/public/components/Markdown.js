@@ -1,7 +1,5 @@
 import MarkdownToJsx from 'markdown-to-jsx';
 
-import * as types from '~/types.js';
-
 import LinkPreview from '~/components/LinkPreview.js';
 import {
   preprocess
@@ -39,8 +37,8 @@ function Strikethrough(props) {
   );
 }
 
-/** @type {types.Component<MarkdownProps>} */
-function Markdown(props) {
+/** @type {import('~/t').Component<MarkdownProps>} */
+const Markdown = (props) => {
   const {
     children = ``,
     className = ``

@@ -19,8 +19,6 @@ import {
   useRef
 } from 'preact/hooks';
 
-import * as types from '~/types.js';
-
 import LocaleMenu from '~/components/LocaleMenu.js';
 import ModalDialog from '~/components/ModalDialog.js';
 import SignInForm from '~/components/SignInForm.js';
@@ -43,8 +41,8 @@ import styles from './SiteMenu.module.css';
  * @property {Object} overlayTriggerProps
  */
 
-/** @type {types.Component<SiteMenuContentsProps>} */
-function SiteMenuContents(props) {
+/** @type {import('~/t').Component<SiteMenuContentsProps>} */
+const SiteMenuContents = (props) => {
   const {
     onClose,
     overlayTriggerProps
@@ -143,8 +141,8 @@ function SiteMenuContents(props) {
   );
 }
 
-/** @type {types.Component<undefined>} */
-function SiteMenu() {
+/** @type {import('~/t').Component<void>} */
+const SiteMenu = () => {
   const {
     t
   } = useI18n();
@@ -154,14 +152,18 @@ function SiteMenu() {
     overlayProps: overlayTriggerProps,
     triggerProps
   } = useOverlayTrigger(
-    { type: `dialog` },
+    {
+      type: `dialog`
+    },
     menuState,
     triggerElRef
   );
   const {
     buttonProps
   } = useButton(
-    { onPress: menuState.open },
+    {
+      onPress: menuState.open
+    },
     triggerElRef
   );
   const isSignedIn = false;

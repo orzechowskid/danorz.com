@@ -1,11 +1,9 @@
-import * as types from '~/types.js';
-
 import {
   postData
 } from './api.js';
 
 /**
- * @param {types.AnalyticsEvent} eventData
+ * @param {import('~/t').AnalyticsEvent} eventData
  * @return {Promise<boolean>}
  */
 async function fireEvent(eventData) {
@@ -17,7 +15,9 @@ async function fireEvent(eventData) {
   const payload = btoa(JSON.stringify(eventReport));
 
   try {
-    postData(`analytics/event`, { event: payload });
+    postData(`analytics/event`, {
+      event: payload
+    });
   }
   catch (ex) {
     // TODO: dump into local storage and retry later

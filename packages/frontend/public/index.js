@@ -31,8 +31,6 @@ import {
   useSiteSettings
 } from './utils/useSiteSettings.js';
 
-import busyStyles from './components/Busy.module.css';
-
 import './theme.css';
 import './global.css';
 
@@ -112,7 +110,6 @@ function App() {
 
         <Busy
           as="main"
-          className={busyStyles.busy}
           ready={ready}
           id="main"
         >

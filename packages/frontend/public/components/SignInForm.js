@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import {
   useCallback,
   useState
@@ -22,9 +20,9 @@ function useSignInForm() {
   const {
     signIn
   } = useSession();
-  /** @type {types.LocalState<boolean>} */
+  /** @type {import('~/t').LocalState<boolean>} */
   const [ isBusy, setBusy ] = useState(false);
-  /** @type {types.LocalState<number>} */
+  /** @type {import('~/t').LocalState<number>} */
   const [ focusedEls, setFocusedEls ] = useState(0);
   /** @type {(e: SubmitEvent) => void} */
   const onSignIn = useCallback(async function onSignIn(e) {
@@ -57,7 +55,8 @@ function useSignInForm() {
   };
 }
 
-function SignInForm() {
+/** @type {import('~/t').Component<void>} */
+const SignInForm = () => {
   const {
     decrement,
     focusedEls,

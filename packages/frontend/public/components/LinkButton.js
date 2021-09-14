@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import Button from '~/components/Button.js';
 
 import styles from './LinkButton.module.css';
@@ -11,8 +9,8 @@ import styles from './LinkButton.module.css';
  * @property {(Event) => void} onClick
  */
 
-/** @type {types.Component<LinkButtonProps>} */
-function LinkButton(props) {
+/** @type {import('~/t').Component<LinkButtonProps>} */
+const LinkButton = (props) => {
   const {
     className = ``,
     ...otherProps

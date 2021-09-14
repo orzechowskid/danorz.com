@@ -1,9 +1,12 @@
-import * as types from '~/types.js';
-
 import styles from './RadioButton.module.css';
 
-/** @type {types.Component<object>} */
-function RadioButton(props) {
+/**
+ * @typedef {Object} RadioButtonProps
+ * @property {string} [className]
+ */
+
+/** @type {import('~/t').Component<RadioButtonProps>} */
+const RadioButton = (props) => {
   const {
     className = ``,
     ...otherProps

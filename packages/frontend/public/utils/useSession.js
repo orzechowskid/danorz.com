@@ -8,11 +8,14 @@ function useSession() {
     apiEndpoint: `auth/session`
   });
   const {
-    data,
-    doCreate,
-    doDelete,
-    error
+    create,
+    del,
+    get
   } = remoteData;
+  const {
+    data,
+    error
+  } = get;
   let isSignedIn;
 
   if (data === undefined && error === undefined) {
@@ -28,8 +31,8 @@ function useSession() {
   return {
     currentUser: data?.name,
     isSignedIn,
-    signIn: doCreate,
-    signOut: doDelete
+    signIn: create.execute,
+    signOut: del.execute
   };
 }
 

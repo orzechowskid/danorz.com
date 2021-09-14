@@ -1,5 +1,3 @@
-import * as types from '~/types.js';
-
 import Markdown from '~/components/Markdown.js';
 import {
   mongoIdToTimestamp
@@ -13,8 +11,8 @@ import {
 
 import styles from './SinglePost.module.css';
 
-/** @type {types.Component<{tags: string[]}>} */
-function TagList(props) {
+/** @type {import('~/t').Component<{tags: string[]}>} */
+const TagList = (props) => {
   const {
     tags
   } = props;
@@ -38,8 +36,8 @@ function TagList(props) {
   );
 }
 
-/** @type {types.Component<types.BlogPostComment>} */
-function SingleComment(props) {
+/** @type {import('~/t').Component<import('~/t').BlogPostComment>} */
+const SingleComment = (props) => {
   const {
     _id,
     gravatarHash,
@@ -76,8 +74,8 @@ function SingleComment(props) {
   );
 }
 
-/** @type {types.Component<{comments: [types.BlogPostComment]}>} */
-function Comments(props) {
+/** @type {import('~/t').Component<{comments: [import('~/t').BlogPostComment]}>} */
+const Comments = (props) => {
   const {
     comments = []
   } = props;
@@ -89,7 +87,9 @@ function Comments(props) {
   return (
     <>
       <h3 className={styles.commentsHeader}>
-        {t(`BlogPost:comment-counter`, { commentCount: num(comments.length) })}
+        {t(`BlogPost:comment-counter`, {
+          commentCount: num(comments.length)
+        })}
       </h3>
 
       <ol className={styles.comments}>
@@ -144,8 +144,8 @@ function Timestamp(props) {
   );
 }
 
-/** @type {types.Component<types.BlogPost>} */
-function FeedItem(props) {
+/** @type {import('~/t').Component<import('~/t').BlogPost>} */
+const FeedItem = (props) => {
   const {
     _id,
     author,
@@ -175,7 +175,9 @@ function FeedItem(props) {
             <Comments comments={comments} />
           </footer>
         ) : (
-          <a href={`/blog/posts/${_id}#comments`}>{t(`BlogPost:comment-counter`, { commentCount: num(comments.length) })}</a>
+          <a href={`/blog/posts/${_id}#comments`}>{t(`BlogPost:comment-counter`, {
+            commentCount: num(comments.length)
+          })}</a>
         )}
     </article>
   );

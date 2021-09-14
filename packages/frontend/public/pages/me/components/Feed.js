@@ -1,13 +1,13 @@
-import * as types from '~/types.js';
-
 import {
-  useGetData
+  useRemoteCollection
 } from '~/utils/useRemoteData.js';
 
-/** @type {types.Component<undefined>} */
-function Feed() {
-  /** @type {types.RemoteData<types.BlogPost>} */
-  const posts = useGetData(`my/posts`);
+/** @type {import('~/t').Component<void>} */
+const Feed = () => {
+  /** @type {import('~/t').RemoteData<import('~/t').BlogPost>} */
+  const posts = useRemoteCollection({
+    apiEndpoint: `my/posts`
+  });
 
   return (
     <>

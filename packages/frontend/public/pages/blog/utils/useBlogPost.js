@@ -1,4 +1,8 @@
 import {
+  useCallback
+} from 'preact/hooks';
+
+import {
   useRemoteData
 } from '~/utils/useRemoteData.js';
 
@@ -14,22 +18,37 @@ function useBlogPost(opts) {
     id
   } = opts;
   /** @type {import('~/t').RemoteResource<import('~/t').BlogPost>} */
-  const blogPost = useRemoteData({
+  const {
+    get,
+    update
+  } = useRemoteData({
     apiEndpoint: `blog/posts/${id}`
   });
+  const {
+    data
+  } = get
   const {
     comments,
     createComment
   } = useBlogPostComments({
     id
   });
+  const editPost = useCallback(async function editPost(newText) {
+    update.execute({
+      ...data,
+      text: newText
+    });
+  }, [ data, update.execute ]);
 
   return {
-    ...blogPost,
     createComment,
     data: {
-      ...(blogPost.data ?? {}),
-      comments
+      ...(data?.data ?? {}),
+      comments: comments.data ?? []
+    },
+    editPost: {
+      ...update,
+      execute: editPost
     }
   };
 }

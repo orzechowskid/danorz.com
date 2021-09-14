@@ -96,5 +96,7 @@ function useLocalStorage(path) {
 }
 
 export {
-  useLocalStorage
+  read,
+  useLocalStorage,
+  write
 };

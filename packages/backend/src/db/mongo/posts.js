@@ -27,6 +27,10 @@ export const PostSchema = new mongoose.Schema({
     required: true,
     type: String
   },
+  timestamp: {
+    required: true,
+    type: Date
+  },
   title: {
     required: true,
     type: String
@@ -139,9 +143,9 @@ export async function getBlogPostComments(dbQuery) {
     start = 0,
     which
   } = dbQuery;
-  const findArgs = which && which._id
+  const findArgs = which?.id
     ? {
-      _id: which._id
+      _id: which.id
     }
     : {};
   const dataQuery = Post.find(findArgs)
