@@ -4,7 +4,9 @@ version: "3.8"
 services:
   gateway:
     build:
-      context: ./tools/gateway
+      # we need access to some other tools in order to build the gateway
+      context: ./tools
+      dockerfile: ./gateway/Dockerfile
     environment:
       - PORT=${GATEWAY_PORT}
     network_mode: "host"
