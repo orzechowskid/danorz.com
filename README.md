@@ -9,13 +9,17 @@
 - clone this repo
 - bootstrap the repo: `npm run bootstrap`
 - build some Docker images and run them in containers: `./up.sh`
-- start the frontend: `cd packages/frontend; npm run start`
-- (in your browser) visit http://localhost:8080
+- add our development CA to your browser's list of trusted certificate authorities: see tools/README.md
+
+## Getting Started with the Frontend
+
+- start a live server: `cd packages/frontend; npm run start`
+- (in your browser) visit https://localhost:8080
 
 ## Getting Started with the Backend
 
-- `docker stop` the web-backend container
-- `cd packages/backend; npm run start`
+- `docker stop` the web-backend container (if it's running)
+- start a live server: `cd packages/backend; npm run start`
 
 # Provided for You
 
