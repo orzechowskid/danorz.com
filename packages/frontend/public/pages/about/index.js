@@ -33,7 +33,7 @@ function useAbout() {
   } = useRemoteData({
     apiEndpoint: `content/bio`
   });
-  const pageContents = data[0]?.text;
+  const pageContents = data?.text;
   const busy = metadata.error === undefined;
   const [ previewContents, setPreviewContents ] = useState(pageContents);
   const [ editMode, setEditMode ] = useState(false);
