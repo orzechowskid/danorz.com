@@ -50,6 +50,9 @@
   "Header": {
     "header-navigation": "header navigation"
   },
+  "Home": {
+    "title": "Home"
+  },
   "Input": {
     "required": "required"
   },
