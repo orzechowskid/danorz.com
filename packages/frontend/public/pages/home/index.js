@@ -40,7 +40,6 @@ function Home() {
 
   return (
     <section className={layoutStyles.layout}>
-      home ({`${isSignedIn}`})
       {isSignedIn
         ? <span>private</span>
         : <PublicHome />}
