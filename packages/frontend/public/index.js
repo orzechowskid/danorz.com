@@ -71,10 +71,10 @@ function onNavigate() {
 
 function onAppError() {
   fireEvent({
-    eventType: `appError`,
     eventData: JSON.stringify({
       url: window.location.href
-    })
+    }),
+    eventType: `appError`
   });
 }
 
