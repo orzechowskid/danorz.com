@@ -16,6 +16,7 @@ function useSession() {
     data,
     error
   } = get;
+  /** @type {boolean|undefined} */
   let isSignedIn;
 
   if (data === undefined && error === undefined) {

@@ -77,3 +77,8 @@ export interface UseAnimateElementOptions {
 export interface Session {
   name: string;
 }
+
+export interface AnalyticsEvent {
+  eventType: string;
+  eventData?: string; /* serialized JSON */
+}
