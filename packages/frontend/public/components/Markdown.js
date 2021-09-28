@@ -13,29 +13,41 @@ import styles from './Markdown.module.css';
  * @property {string} [className]
  */
 
-function A(props) {
+/**
+ * @typedef {Object} LinkProps
+ * @property {string} href
+ */
+
+
+/** @type {import('~/t').Component<LinkProps>} */
+const A = (props) => {
+  const {
+    href
+  } = props;
+  const aProps = href.includes(`//`)
+    ? {
+      rel: `noopener noreferer`, target: `_blank`
+    }
+    : {};
+
   return (
     <a
-      rel="noopener noreferer"
-      target="_blank"
+      {...aProps}
       {...props}
+      href={href}
     />
   );
 }
 
-function Code(props) {
-  return props.children.includes(`\n`)
-    ? <pre><code {...props} /></pre>
-    : <code {...props} />;
-}
+const Code = (props) => props.children.includes(`\n`)
+  ? <pre><code {...props} /></pre>
+  : <code {...props} />
 
-function Strikethrough(props) {
-  return (
-    <span className={styles.strikethrough}>
-      {props.children}
-    </span>
-  );
-}
+const Strikethrough = (props) => (
+  <span className={styles.strikethrough}>
+    {props.children}
+  </span>
+)
 
 /** @type {import('~/t').Component<MarkdownProps>} */
 const Markdown = (props) => {
