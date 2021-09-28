@@ -44,6 +44,9 @@
     "tags": "tags",
     "title-link": "direct link to this post"
   },
+  "EditPostDialog": {
+    "title": "Edit post"
+  },
   "Header": {
     "header-navigation": "header navigation"
   },
