@@ -26,7 +26,7 @@ const LinkPreview = (props) => {
     images,
     title,
     url: linkUrl
-  } = data[0]?.metadata ?? {};
+  } = data?.metadata ?? {};
 
   return (
     <div className={styles.linkPreview}>
