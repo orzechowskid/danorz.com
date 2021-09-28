@@ -84,18 +84,23 @@ function usePreloadData() {
   return [ locale, dictionary, siteSettings, sessionCheck ].every(Boolean);
 }
 
-/** @type {import('~/t').Component<void>} */
-function Contents() {
-  return (
-    <LocationProvider>
-      <ErrorBoundary>
-        <Router onLoadEnd={onNavigate}>
-          {routes}
-        </Router>
-      </ErrorBoundary>
-    </LocationProvider>
-  );
+/**
+ * @param {Error} e
+ */
+function onAppError(e) {
+  // TODO: analytics
 }
+
+/** @type {import('~/t').Component<{}>} */
+const Contents = () => (
+  <LocationProvider>
+    <ErrorBoundary onError={onAppError}>
+      <Router onLoadEnd={onNavigate}>
+        {routes}
+      </Router>
+    </ErrorBoundary>
+  </LocationProvider>
+)
 
 /** @type {import('~/t').Component<void>} */
 function App() {

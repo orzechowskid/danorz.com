@@ -1,18 +1,14 @@
-import * as Preact from 'preact';
+import {
+  FunctionComponent
+} from 'preact';
 import * as PreactHooks from 'preact/hooks';
 
 export type Id = string;
 
-export type Component<Props> = Preact.FunctionComponent<Props>;
+export type Component<Props> = FunctionComponent<Props>;
 
 export type LocalStateSetter<T> = T | ((arg0: T) => T);
 export type LocalState<T> = [ T, (arg0: LocalStateSetter<T>) => void ];
-
-export interface Byline {
-  author: string;
-  tags: string[];
-  timestamp: number;
-}
 
 export interface RemoteDataOpts {
   apiEndpoint: string;
@@ -25,6 +21,7 @@ export interface RemoteMetadata {
 }
 
 export interface RemoteResource<Payload, CreateShape = Partial<Payload>, DeleteShape = void, UpdateShape = Payload> {
+  busy?: boolean;
   data?: Payload;
   doCreate: (arg0: CreateShape) => Promise<Payload>;
   doDelete: (arg0: DeleteShape) => void;

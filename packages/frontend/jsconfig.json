@@ -2,14 +2,15 @@
   "compilerOptions": {
     "baseUrl": "./public",
     "checkJs": true,
-    "jsx": "react",
-    "lib": [ "dom", "ES2017" ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "lib": [ "dom", "es2017" ],
     "moduleResolution": "node",
     "paths": {
       "~/*": [ "./*" ]
     },
     "reactNamespace": "createElement",
-    "target": "ES6"
+    "target": "es6"
   },
   "exclude": [ "node_modules" ]
 }

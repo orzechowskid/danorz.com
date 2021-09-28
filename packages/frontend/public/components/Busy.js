@@ -8,7 +8,7 @@ import styles from './Busy.module.css';
  * @property {boolean} [ready]
  */
 
-/** @type {import('preact').FunctionComponent<BusyContainerProps>} */
+/** @type {import('~/t').Component<BusyContainerProps>} */
 const BusyContainer = function(props) {
   const {
     as: ElementName = `div`,
