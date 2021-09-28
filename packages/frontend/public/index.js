@@ -21,6 +21,9 @@ import Me from './pages/me/index.js';
 import NotFound from './pages/not-found/index.js';
 import Settings from './pages/settings/index.js';
 import {
+  fireEvent
+} from './utils/analytics.js';
+import {
   useDictionary,
   useLocale
 } from './utils/useI18n.js';
@@ -66,6 +69,15 @@ function onNavigate() {
   }, 0);
 }
 
+function onAppError() {
+  fireEvent({
+    eventData: JSON.stringify({
+      url: window.location.href
+    }),
+    eventType: `appError`
+  });
+}
+
 function usePreloadData() {
   const {
     locale
@@ -82,13 +94,6 @@ function usePreloadData() {
   const sessionCheck = isSignedIn !== undefined;
 
   return [ locale, dictionary, siteSettings, sessionCheck ].every(Boolean);
-}
-
-/**
- * @param {Error} e
- */
-function onAppError(e) {
-  // TODO: analytics
 }
 
 /** @type {import('~/t').Component<{}>} */

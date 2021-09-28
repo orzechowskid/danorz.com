@@ -5,7 +5,7 @@ import {
 
 import {
   firePageView
-} from '~/utils/analytics.js';
+} from './analytics.js';
 
 /**
  * @param {boolean[]} [doneConditions]
@@ -28,7 +28,9 @@ function usePageLoadTracker(doneConditions = []) {
         document.querySelector(window.location.hash)?.scrollIntoView();
       }
       else {
-        window.scrollTo({ top: 0 });
+        window.scrollTo({
+          top: 0
+        });
       }
     }
   }, [ ...doneConditions, doneRef.current ]);
