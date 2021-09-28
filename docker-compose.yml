@@ -1,6 +1,6 @@
 # docker-compose.yml : easily bring up a complete environment for local development
 
-version: "3.8"
+version: "2"
 services:
   gateway:
     build:
