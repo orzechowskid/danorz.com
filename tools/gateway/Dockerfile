@@ -12,4 +12,4 @@ USER $USER
 COPY ./gateway/nginx.conf /etc/nginx/nginx.conf.template
 COPY ./fake-ca/domains/local.host/ /etc/fake-ca/local.host
 
-CMD sh -c "envsubst '\${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+CMD sh -c "envsubst '\${GATEWAY_PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"

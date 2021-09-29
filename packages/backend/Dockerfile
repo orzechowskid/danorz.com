@@ -1,7 +1,7 @@
 # context for this build is ../
 # see the root docker-compose.yml for details
 
-FROM mhart/alpine-node:14
+FROM mhart/alpine-node:16
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY ./backend/package.json ./package.json.orig
 RUN cat ./package.json.orig | jq '. + {type:"module"}' > ./package.json
 RUN npm ci
 
-FROM mhart/alpine-node:slim-14
+FROM mhart/alpine-node:slim-16
 
 ARG APP_VERSION
 WORKDIR /app
