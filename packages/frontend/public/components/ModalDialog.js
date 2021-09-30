@@ -5,16 +5,13 @@ import {
   FocusScope
 } from '@react-aria/focus';
 import {
+  useModal,
   useOverlay,
   usePreventScroll
 } from '@react-aria/overlays';
 import {
-  useEffect,
   useRef
 } from 'preact/hooks';
-import {
-  createPortal
-} from 'preact/compat';
 
 import {
   useAnimateElement
@@ -25,113 +22,67 @@ import {
 
 import styles from './ModalDialog.module.css';
 
-
 /**
- * @typedef {Object} ModalDialogProps
+ * @typedef {Object} ModalDialogOwnProps
+ * @property {string} [title]
  * @property {import('preact').ComponentChildren} children
- * @property {string} [className]
- * @property {() => void} [onClose]
- * @property {string} title
+ *
+ * @typedef {import('@react-aria/overlays').OverlayProps & import('@react-types/dialog').AriaDialogProps & ModalDialogOwnProps} ModalDialogProps
  */
 
 /**
  * @param {ModalDialogProps} props
  */
-function useModalDialog(props) {
+// function useModalDialog(props) {
+//   useAnimateElement({
+//     className: `animate`,
+//     ref: dialogContainerRef
+//   });
+//   usePreventScroll();
+
+//   return {
+//   };
+// }
+
+/** @type {import('~/t').Component<ModalDialogProps>} */
+const ModalDialog = function(props) {
   const {
     children,
-    onClose
+    title
   } = props;
+  const dialogContentsRef = useRef();
   const {
-    t
-  } = useI18n();
-  const dialogContainerRef = useRef();
-  const globalDialogElRef = useRef(document.getElementById(`modal-dialog`));
+    overlayProps,
+    underlayProps
+  } = useOverlay(props, dialogContentsRef);
+  const {
+    modalProps
+  } = useModal();
   const {
     dialogProps,
     titleProps
-  } = useDialog({
-    isDismissable: true
-  }, dialogContainerRef);
-  const {
-    overlayProps,
-    underlayProps
-  } = useOverlay({
-    'aria-details': t(`ModalDialog:description`),
-    'aria-label': `modal dialog`,
-    id: `modal`,
-    isDismissable: true,
-    isOpen: true,
-    onClose
-  }, dialogContainerRef);
+  } = useDialog(props, dialogContentsRef)
 
-  useAnimateElement({
-    className: `animate`,
-    ref: dialogContainerRef
-  });
   usePreventScroll();
-  useEffect(function setIsOpen() {
-    globalDialogElRef.current.setAttribute(`open`, ``);
 
-    return function cleanup() {
-      globalDialogElRef.current.removeAttribute(`open`);
-    };
-  }, [])
-
-  return {
-    children,
-    dialogContainerRef,
-    dialogEl: globalDialogElRef.current,
-    dialogProps,
-    onClose,
-    overlayProps,
-    titleProps,
-    underlayProps
-  };
-}
-
-/** @type {import('preact').FunctionComponent<ModalDialogProps>} */
-const ModalDialog = function(props) {
-  const {
-    className,
-    title
-  } = props;
-  const {
-    children,
-    dialogContainerRef,
-    dialogEl,
-    dialogProps,
-    onClose,
-    overlayProps,
-    titleProps,
-    underlayProps
-  } = useModalDialog(props);
-
+  /*
+   * underlay: mouse interaction
+   * overlay: full-bleed translucent
+   */
   return (
-    createPortal(
-      <div
-        className={styles.overlay}
-        onClose={onClose}
-        {...underlayProps}
-      >
-        <FocusScope
-          autoFocus
-          contain
-          restoreFocus
-        >
-          <div
-            ref={dialogContainerRef}
-            className={`animate ${styles.dialogContainer} ${className}`}
-            {...overlayProps}
-            {...dialogProps}
-          >
-            <h3 {...titleProps}>{title}</h3>
+    <div className={styles.overlay}>
+      <div className={styles.dialogContainer} {...underlayProps}>
+        <FocusScope autoFocus contain restoreFocus>
+          <div ref={dialogContentsRef}
+            {...overlayProps} {...dialogProps} {...modalProps} style={{
+              background: 'purple'
+            }}>
+            {title && <h3 {...titleProps}>{title}</h3>}
             {children}
           </div>
         </FocusScope>
-      </div>,
-      dialogEl
-    )
+      </div>
+    </div>
   );
 }
 

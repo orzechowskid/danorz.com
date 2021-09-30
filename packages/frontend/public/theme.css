@@ -100,6 +100,11 @@
   --width-radio-button: var(--height-radio-button);
 }
 
+:root {
+  --z-index-header: 1;
+  --z-index-modal-backdrop: 2;
+}
+
 @keyframes pulse-focus {
   0% {
     box-shadow: var(--box-shadow-menu-trigger);

@@ -7,7 +7,9 @@ import RadioButton from './inputs/RadioButton.js';
 
 /**
  * @typedef {Object} InputProps
- * @property {(arg0: any) => void} onFocus
+ * @property {string} name
+ * @property {(arg0: any) => void} [onFocus]
+ * @property {string} type
  */
 
 /** @type {import('~/t').Component<InputProps>} */

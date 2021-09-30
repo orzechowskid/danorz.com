@@ -1,6 +1,9 @@
 import {
-  useButton
-} from '@react-aria/button';
+  useOverlay,
+  usePreventScroll,
+  useModal,
+  OverlayContainer
+} from '@react-aria/overlays';
 import {
   useDialog
 } from '@react-aria/dialog';
@@ -8,10 +11,8 @@ import {
   FocusScope
 } from '@react-aria/focus';
 import {
-  DismissButton,
-  useOverlay,
-  useOverlayTrigger
-} from '@react-aria/overlays';
+  useButton
+} from '@react-aria/button';
 import {
   useOverlayTriggerState
 } from '@react-stately/overlays';
@@ -19,180 +20,103 @@ import {
   useRef
 } from 'preact/hooks';
 
-import LocaleMenu from '~/components/LocaleMenu.js';
+import Input from '~/components/Input.js';
 import ModalDialog from '~/components/ModalDialog.js';
-import SignInForm from '~/components/SignInForm.js';
-import {
-  useI18n
-} from '~/utils/useI18n.js';
-import {
-  useSession
-} from '~/utils/useSession.js';
-import {
-  useSystemVersion
-} from '~/utils/useSystemVersion.js';
-
-import styles from './SiteMenu.module.css';
 
 /**
- * @typedef {Object} SiteMenuContentsProps
- * @property {boolean} isSignedIn
- * @property {() => void} onClose
- * @property {Object} overlayTriggerProps
+ * @typedef {Object} ModalDialogOwnProps
+ * @property {string} [title]
+ * @property {any} children
+ *
+ * @typedef {import('@react-aria/overlays').OverlayProps & import('@react-types/dialog').AriaDialogProps & ModalDialogOwnProps} ModalDialogProps
  */
 
-/** @type {import('~/t').Component<SiteMenuContentsProps>} */
-const SiteMenuContents = (props) => {
+/** @type {import('~/t').Component<ModalDialogProps>} */
+const xModalDialog = (props) => {
   const {
-    onClose,
-    overlayTriggerProps
+    children,
+    title
   } = props;
+  const dialogContentsRef = useRef();
   const {
-    t
-  } = useI18n();
-  const siteMenuElRef = useRef();
+    overlayProps,
+    underlayProps
+  } = useOverlay(props, dialogContentsRef);
   const {
-    overlayProps
-  } = useOverlay(
-    {
-      isDismissable: true,
-      isOpen: true,
-      onClose
-    },
-    siteMenuElRef
-  );
+    modalProps
+  } = useModal();
   const {
-    dialogProps
-  } = useDialog(
-    {
-      'aria-label': t(`SiteMenu:site-nav`),
-      id: `site-menu`,
-      role: `dialog`
-    },
-    siteMenuElRef
-  );
-  const {
-    clientVersion,
-    serverVersion
-  } = useSystemVersion();
-  const {
-    isSignedIn,
-    signOut
-  } = useSession();
+    dialogProps,
+    titleProps
+  } = useDialog(props, dialogContentsRef)
 
-  function onNavigateToSettings() {
-    onClose();
-  }
+  usePreventScroll();
 
+  /*
+   * underlay: mouse interaction
+   * overlay: full-bleed translucent
+   */
   return (
-    <div
-      className={styles.siteMenuBackground}
-    >
-      <div
-        ref={siteMenuElRef}
-        className={styles.siteMenu}
-        {...overlayProps}
-        {...dialogProps}
-        {...overlayTriggerProps}
-      >
-        <FocusScope
-          autoFocus
-          contain
-          restoreFocus
-        >
-          <div
-            className={styles.siteMenuHeader}
-            role="presentation"
-          >
-            {t(`SiteMenu:hello`)}
+    <div style={{
+      background: '', position: 'fixed', top: 0, left: 0, bottom: 0, right: 0, zIndex: 1
+    }}>
+      <div style={{
+        width: '400px', height: '400px', display: 'flex', justifyContent: 'center', background: 'red', alignItems: 'center'
+      }} {...underlayProps}>
+        <FocusScope autoFocus contain restoreFocus>
+          <div ref={dialogContentsRef}
+            {...overlayProps} {...dialogProps} {...modalProps} style={{
+              background: 'purple'
+            }}>
+            <Input type="text" name="foo" />
+            <Input type="text" name="bar" />
           </div>
-          {isSignedIn ? (
-            <>
-              <div>
-                <a
-                  href="/settings"
-                  onClick={onNavigateToSettings}
-                >
-                  {t(`Page:settings`)}
-                </a>
-              </div>
-              <button onClick={signOut}>
-                {t(`SiteMenu:sign-out`)}
-              </button>
-            </>
-          ) : (
-            <SignInForm />
-          )}
-
-          <LocaleMenu className={styles.menuSection} />
-
-          <div className={`${styles.menuSection} ${styles.versionInfoSection}`}>
-            <div>
-              c{clientVersion}
-            </div>
-            <div>
-              s{serverVersion}
-            </div>
-          </div>
-          <DismissButton onDismiss={onClose} />
         </FocusScope>
       </div>
     </div>
   );
 }
 
-/** @type {import('~/t').Component<void>} */
 const SiteMenu = () => {
-  const {
-    t
-  } = useI18n();
-  const menuState = useOverlayTriggerState({});
-  const triggerElRef = useRef();
-  const {
-    overlayProps: overlayTriggerProps,
-    triggerProps
-  } = useOverlayTrigger(
-    {
-      type: `dialog`
-    },
-    menuState,
-    triggerElRef
-  );
+  const state = useOverlayTriggerState({});
+  const triggerButtonRef = useRef();
   const {
     buttonProps
   } = useButton(
     {
-      onPress: menuState.open
+      onPress: state.open
     },
-    triggerElRef
+    triggerButtonRef
   );
-  const isSignedIn = false;
 
   return (
     <>
       <button
+        ref={triggerButtonRef}
         {...buttonProps}
-        {...triggerProps}
-        ref={triggerElRef}
-        aria-label={t('SiteMenu:trigger-label')}
-        className={styles.menuTrigger}
       >
-        <span className={styles.menuTriggerIcon}>
-          &#x2630;
-        </span>
+        sitemenu
       </button>
 
-      {menuState.isOpen && (
-        <ModalDialog>
-          <SiteMenuContents
-            isSignedIn={isSignedIn}
-            onClose={menuState.close}
-            overlayTriggerProps={overlayTriggerProps}
-          />
-        </ModalDialog>
+      {state.isOpen && (
+        <OverlayContainer>
+          <ModalDialog
+            isOpen
+            title="dialogg"
+            onClose={state.close}
+            isDismissable
+          >
+            <form style={{
+              display: 'flex', flexDirection: 'column'
+            }}>
+              <Input name="foo" type="text" />
+              <Input name="bar" type="text" />
+            </form>
+          </ModalDialog>
+        </OverlayContainer>
       )}
     </>
   );
-}
+};
 
 export default SiteMenu;

@@ -68,7 +68,7 @@ export interface UseBlogPostComments {
 export interface UseAnimateElementOptions {
   className?: string;
   delay?: number;
-  duration: number;
+  duration?: number;
   onEnd?: () => void;
   onStart?: () => void;
   ref: PreactHooks.Ref<HTMLElement>;
