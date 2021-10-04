@@ -90,7 +90,8 @@ async function postData(apiEndpoint, payload, opts = {}) {
  *
  * @param {String} apiEndpoint
  * @param {T} payload
- * @return {Promise<T>}
+ * @param {RequestInit} [opts]
+ * @returns {Promise<import('~/t').RemoteData<T>>}
  * @throws {Error}
  * @template T
  */
@@ -115,12 +116,17 @@ async function putData(apiEndpoint, payload, opts = {}) {
 }
 
 /**
- * @param {string} apiEndpoint
+ * @description deletes JSON data at API endpoint
+ *
+ * @param {String} apiEndpoint
+ * @param {RequestInit} [opts]
  * @return {Promise<void>}
+ * @throws {Error}
  */
-async function deleteData(apiEndpoint) {
-  return window.fetch(`${API_PATH}/${apiEndpoint}`, {
-    method: `DELETE`
+async function deleteData(apiEndpoint, opts = {}) {
+  await window.fetch(`${API_PATH}/${apiEndpoint}`, {
+    method: `DELETE`,
+    ...opts
   });
 }
 

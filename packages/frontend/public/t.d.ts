@@ -2,17 +2,39 @@ import {
   FunctionComponent
 } from 'preact';
 import * as PreactHooks from 'preact/hooks';
+import { SWRConfiguration, SWRResponse } from 'swr';
 
 export type Id = string;
+
+export type Indexed<T> = T & {
+  _id?: Id;
+};
 
 export type Component<Props> = FunctionComponent<Props>;
 
 export type LocalStateSetter<T> = T | ((arg0: T) => T);
-export type LocalState<T> = [ T, (arg0: LocalStateSetter<T>) => void ];
+export type LocalState<T> = [
+  T,
+  PreactHooks.StateUpdater<T>
+];
+
+export interface RemoteData<T> {
+  data: Indexed<T>[];
+  metadata: {
+    count?: number;
+    error?: string;
+  }
+}
 
 export interface RemoteDataOpts {
   apiEndpoint: string;
-  opts?: Record<string, any>;
+  cacheKey?: string;
+  fetchOpts?: SWRConfiguration & {
+    createOpts?: RequestInit;
+    deleteOpts?: RequestInit;
+    raw?: boolean;
+    updateOpts?: RequestInit;
+  };
 }
 
 export interface RemoteMetadata {
@@ -20,26 +42,35 @@ export interface RemoteMetadata {
   total?: number;
 }
 
+export interface RemoteOperation<Request, Response = Promise<void>> {
+  busy: boolean;
+  error?: string | Error;
+  execute: (arg0: Request) => Response;
+}
+
+/* a container for manipulating a single piece of backend data */
 export interface RemoteResource<Payload, CreateShape = Partial<Payload>, DeleteShape = void, UpdateShape = Payload> {
-  busy?: boolean;
+  busy: boolean;
   data?: Payload;
-  doCreate: (arg0: CreateShape) => Promise<Payload>;
-  doDelete: (arg0: DeleteShape) => void;
-  doUpdate: (arg0: UpdateShape) => Promise<Payload>;
-  error?: string;
+  doCreate: RemoteOperation<CreateShape>;
+  doDelete: RemoteOperation<DeleteShape>;
+  doUpdate: RemoteOperation<UpdateShape>;
+  error?: string | Error;
   metadata?: RemoteMetadata;
 }
 
+/* a container for manipulating a collection of backend data */
 export interface RemoteCollection<Payload, CreateShape = Partial<Payload>, DeleteShape = Id, UpdateShape = Payload> {
-  data?: Payload[];
-  doCreate: (arg0: CreateShape) => Promise<Payload[]>;
-  doDelete: (arg0: Id) => void;
-  doUpdate: (arg0: Id, arg1: UpdateShape) => Promise<Payload[]>;
-  error?: string;
+  busy: boolean;
+  data?: Indexed<Payload>[];
+  doCreate: RemoteOperation<CreateShape>;
+  doDelete: RemoteOperation<DeleteShape>;
+  doUpdate: RemoteOperation<UpdateShape>;
+  error?: string | Error;
   metadata?: RemoteMetadata;
 }
 
-export type RemoteCollectionOpts = RemoteDataOpts;
+export type SWR<Payload> = SWRResponse<RemoteData<Partial<Payload>>, (string|Error)>;
 
 export interface BlogPostComment {
   gravatarHash: string;
@@ -72,10 +103,6 @@ export interface UseAnimateElementOptions {
   onEnd?: () => void;
   onStart?: () => void;
   ref: PreactHooks.Ref<HTMLElement>;
-}
-
-export interface Session {
-  name: string;
 }
 
 export interface AnalyticsEvent {
