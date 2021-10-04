@@ -11,7 +11,8 @@ import {
   rawRequest
 } from '~/utils/api.js';
 
-const ABOUT_ONE_MONTH_IN_MS = 1000 * 86400 * 30;
+const ABOUT_ONE_DAY_IN_MS = 1000 * 86400;
+const ABOUT_ONE_MONTH_IN_MS = ABOUT_ONE_DAY_IN_MS * 30;
 
 const defaultSwrOpts = {
   dedupingInterval: ABOUT_ONE_MONTH_IN_MS,
@@ -20,287 +21,394 @@ const defaultSwrOpts = {
   shouldRetryOnError: false
 };
 
-function useCallbackFactory(fn, args) {
-  return useCallback(fn(...args), args);
-}
-
-function getCreateDataFunction(cacheKey, swrOpts, createDataOpts, isCollection) {
+/**
+ * @description factory for building create-object functions
+ *
+ * @param {import('~/t').SWR<Payload>} swrInstance}
+ * @param {import('~/t').RemoteDataOpts} remoteDataOpts}
+ * @return {(newObj: Partial<Payload>) => Promise<void>}
+ * @template Payload
+ */
+function getCreateObjectFunction(swrInstance, remoteDataOpts) {
   const {
-    data,
+    data: prevState,
     mutate
-  } = swrOpts
+  } = swrInstance
   const {
     apiEndpoint,
+    cacheKey,
     fetchOpts
-  } = createDataOpts;
+  } = remoteDataOpts;
 
-  return isCollection
-    ? async function doCreateCollectionResource(nextState) {
-      /* step 1: optimistic local update */
-      mutate({
-        ...data,
-        data: [ ...data.data, nextState ]
-      }, false);
+  return async function doCreateObject(newObj) {
+    /* step 1: optimistic local update */
+    mutate({
+      ...prevState,  data: [ newObj ]
+    }, false);
 
-      /* step 2: make remote update */
-      const createEndpoint = apiEndpoint || cacheKey;
+    /* step 2: make remote update */
+    const createEndpoint = apiEndpoint || cacheKey;
+    const response = await postData(createEndpoint, newObj, fetchOpts?.createOpts);
 
-      await postData(createEndpoint, nextState, fetchOpts);
-
-      /* step 3: sync local data with remote */
-      mutate();
-    }
-    : async function doCreateResource(nextState) {
-      /* step 1: optimistic local update */
-      mutate(nextState, false);
-
-      /* step 2: make remote update */
-      const createEndpoint = apiEndpoint || cacheKey;
-      const response = await postData(createEndpoint, nextState, fetchOpts);
-
-      /* step 3: sync local data with remote */
-      mutate(response, false);
-    };
-}
-
-function getUpdateDataFunction(cacheKey, swrOpts, updateDataOpts, isCollection) {
-  const {
-    data: swrData,
-    mutate
-  } = swrOpts
-  const {
-    apiEndpoint,
-    fetchOpts
-  } = updateDataOpts;
-
-  return isCollection
-    ? async function doUpdateItemInCollection(index, nextState) {
-      const next = [
-        ...(swrData?.data ?? []).slice(0, index),
-        typeof nextState === `function`
-          ? nextState(swrData?.data)
-          : nextState,
-        ...(swrData?.data ?? []).slice(index + 1)
-      ];
-
-      /* step 1: optimistic local update */
-      mutate({
-        ...swrData,
-        data: next
-      }, false);
-
-      /* step 2: make remote update */
-      const updateEndpoint = apiEndpoint || cacheKey;
-      const response = await putData(updateEndpoint, next, fetchOpts);
-
-      /* step 3: sync local data with remote */
-      mutate(response);
-    }
-    : async function doUpdate(nextState) {
-      const next = typeof nextState === `function`
-        ? nextState(swrData?.data)
-        : nextState;
-      /* step 1: optimistic local update */
-      mutate({
-        ...swrData,
-        data: next
-      }, false);
-
-      try {
-        /* step 2: make remote update */
-        const updateEndpoint = apiEndpoint || cacheKey;
-        const response = await putData(updateEndpoint, next, fetchOpts);
-
-        /* step 3: sync local data with remote */
-        mutate(response);
-      }
-      catch (ex) {
-        /* rollback by re-fetching remote data */
-        mutate();
-        /* inform listeners that something went wrong */
-        throw ex;
-      }
-    };
-}
-
-function getDeleteDataFunction(cacheKey, swrOpts, deleteDataOpts, isCollection) {
-  const {
-    data: swrData,
-    mutate
-  } = swrOpts;
-  const {
-    apiEndpoint,
-    fetchOpts
-  } = deleteDataOpts;
-
-  return isCollection
-    ? async function doDeleteFromCollection(id) {
-      /* step 1: optimistic local update */
-      mutate({
-        ...swrData,
-        data: swrData.data.filter((item) => item._id !== id)
-      }, false);
-
-      /* step 2: make remote update */
-      const deleteEndpoint = apiEndpoint || cacheKey;
-      await deleteData(deleteEndpoint, fetchOpts);
-
-      /* step 3: sync local data with remote */
-      mutate();
-    }
-    : async function doDelete() {
-      /* step 1: optimistic local update */
-      mutate(undefined, false);
-
-      /* step 2: make remote update */
-      const deleteEndpoint = apiEndpoint || cacheKey;
-      await deleteData(deleteEndpoint, fetchOpts);
-
-      /* step 3: sync local data with remote */
-      mutate(undefined);
-    };
+    /* step 3: sync local data with remote */
+    mutate(response, false);
+  };
 }
 
 /**
+ * @description factory for building create-collection-object functions
+ *
+ * @param {import('~/t').SWR<Payload>} swrInstance}
+ * @param {import('~/t').RemoteDataOpts} remoteDataOpts}
+ * @return {(newObj: Partial<Payload>) => Promise<void>}
+ * @template Payload
+ */
+function getCreateCollectionObjectFunction(swrInstance, remoteDataOpts) {
+  const {
+    data,
+    mutate
+  } = swrInstance
+  const {
+    apiEndpoint,
+    cacheKey,
+    fetchOpts
+  } = remoteDataOpts;
+
+  return async function doCreateCollectionObject(newObj) {
+    /* step 1: optimistic local update */
+    mutate({
+      ...data,
+      data: [ ...data.data, newObj ]
+    }, false);
+
+    /* step 2: make remote update */
+    const createEndpoint = apiEndpoint || cacheKey;
+
+    await postData(createEndpoint, newObj, fetchOpts?.createOpts);
+
+    /* step 3: sync local data with remote */
+    mutate();
+  };
+}
+
+/**
+ * @description factory for building update-object functions
+ *
+ * @param {import('~/t').SWR<Payload>} swrInstance}
+ * @param {import('~/t').RemoteDataOpts} remoteDataOpts}
+ * @return {(newObj: Partial<Payload>) => Promise<void>}
+ * @template Payload
+ */
+function getUpdateObjectFunction(swrInstance, remoteDataOpts) {
+  const {
+    data: prevState,
+    mutate
+  } = swrInstance
+  const {
+    apiEndpoint,
+    cacheKey,
+    fetchOpts
+  } = remoteDataOpts;
+
+  return async function doUpdateObject(newObj) {
+    /* step 1: optimistic local update */
+    mutate({
+      ...prevState, data: [ newObj ]
+    }, false);
+
+    /* step 2: make remote update */
+    const updateEndpoint = apiEndpoint || cacheKey;
+    const response = await putData(updateEndpoint, newObj, fetchOpts?.updateOpts);
+
+    /* step 3: sync local data with remote */
+    mutate(response, false);
+  };
+}
+
+/**
+ * @description factory for building update-collection-object functions
+ *
+ * @param {import('~/t').SWR<Payload>} swrInstance}
+ * @param {import('~/t').RemoteDataOpts} remoteDataOpts}
+ * @return {(newObj: import('~/t').Indexed<Payload>) => Promise<void>}
+ * @template Payload
+ */
+function getUpdateCollectionObjectFunction(swrInstance, remoteDataOpts) {
+  const {
+    data: prevState,
+    mutate
+  } = swrInstance
+  const {
+    apiEndpoint,
+    cacheKey,
+    fetchOpts
+  } = remoteDataOpts;
+
+  return async function doUpdateCollectionObject(newObj) {
+    /* step 1: optimistic local update */
+    const idx = prevState.data.findIndex((obj) => obj._id === newObj._id);
+
+    mutate({
+      ...prevState,
+      data: [
+        ...prevState.data.slice(0, idx),
+        newObj,
+        ...prevState.data.slice(idx + 1)
+      ]
+    }, false);
+
+    /* step 2: make remote update */
+    const updateEndpoint = apiEndpoint || cacheKey;
+
+    await putData(updateEndpoint, newObj, fetchOpts?.createOpts);
+
+    /* step 3: sync local data with remote */
+    mutate();
+  };
+}
+
+/**
+ * @description factory for building delete-object functions
+ *
+ * @param {import('~/t').SWR<Payload>} swrInstance}
+ * @param {import('~/t').RemoteDataOpts} remoteDataOpts}
+ * @return {() => Promise<void>}
+ * @template Payload
+ */
+function getDeleteObjectFunction(swrInstance, remoteDataOpts) {
+  const {
+    mutate
+  } = swrInstance
+  const {
+    apiEndpoint,
+    cacheKey,
+    fetchOpts
+  } = remoteDataOpts;
+
+  return async function doDeleteObject() {
+    /* step 1: optimistic local update */
+    mutate(undefined, false);
+
+    /* step 2: make remote update */
+    const deleteEndpoint = apiEndpoint || cacheKey;
+
+    await deleteData(deleteEndpoint, fetchOpts?.deleteOpts);
+
+    /* step 3: sync local data with remote */
+    mutate(undefined);
+  };
+}
+
+
+/**
+ * @description factory for building delete-collection-object functions
+ *
+ * @param {import('~/t').SWR<Payload>} swrInstance}
+ * @param {import('~/t').RemoteDataOpts} remoteDataOpts}
+ * @return {(obj: import('~/t').Indexed<Payload>) => Promise<void>}
+ * @template Payload
+ */
+function getDeleteCollectionObjectFunction(swrInstance, remoteDataOpts) {
+  const {
+    data: prevState,
+    mutate
+  } = swrInstance;
+  const {
+    apiEndpoint,
+    cacheKey,
+    fetchOpts
+  } = remoteDataOpts;
+
+  return async function doDeleteFromCollection(oldObj) {
+    /* step 1: optimistic local update */
+    const idx = prevState.data.findIndex((obj) => obj._id === oldObj._id);
+    mutate({
+      ...prevState,
+      data: [
+        ...prevState.data.slice(0, idx),
+        ...prevState.data.slice(idx + 1)
+      ]
+    }, false);
+
+    /* step 2: make remote update */
+    const deleteEndpoint = apiEndpoint || cacheKey;
+    await deleteData(deleteEndpoint, fetchOpts?.deleteOpts);
+
+    /* step 3: sync local data with remote */
+    mutate();
+  };
+}
+
+/**
+ * @description hook for manipulating a single piece of backend data
+ *
  * @param {import('~/t').RemoteDataOpts} opts
- * @return {import('~/t').RemoteResource}
+ * @return {import('~/t').RemoteResource<Payload, CreateShape, void, UpdateShape>}
+ * @template Payload
+ * @template CreateShape = Partial<Payload>
+ * @template UpdateShape = Payload
  */
 function useRemoteData(opts) {
   const {
     apiEndpoint,
-    opts: otherOpts = {}
+    fetchOpts: otherOpts
   } = opts;
   const {
-    createOpts = {},
-    deleteOpts = {},
+    createOpts: _createOpts,
+    deleteOpts: _deleteOpts,
     raw,
-    updateOpts = {},
+    updateOpts: _updateOpts,
     ...userSwrOpts
-  } = otherOpts;
-  const swrOpts = {
+  } = otherOpts ?? {};
+  const swrInstance = {
     ...defaultSwrOpts,
     ...userSwrOpts
   };
-  const swr = useSWR(apiEndpoint, rawRequest, swrOpts);
-  // gross!
+  const swr = useSWR(apiEndpoint, rawRequest, swrInstance);
+  const {
+    data: swrData,
+    error
+  } = swr;
+  /* data data data data */
   const data = raw
-    ? swr.data
-    : (swr.data?.data?.[0] ?? {});
+    ? swrData
+    : (swrData?.data?.[0] ?? {});
   const metadata = raw
     ? undefined
-    : (swr.data?.metadata ?? {});
+    : (swrData?.metadata ?? {});
 
-  /* remote get operation */
-  const get = {
-    data: {
-      data,
-      metadata
-    },
-    error: swr.error,
-    execute: swr.mutate
-  };
+  /* build the remote create operation */
 
-  /* remote create operation */
+  /** @type {import('~/t').LocalState<string|Error|null>} */
   const [ createError, setCreateError ] = useState(null);
-  const [ createState, setCreateState ] = useState(`ready`);
-  const doCreate = useCallbackFactory(
-    getCreateDataFunction,
-    [ apiEndpoint, swr, createOpts ]
+  /** @type {import('~/t').LocalState<boolean>} */
+  const [ createInProgress, setCreateInProgress ] = useState(false);
+  const createFn = useCallback(
+    getCreateObjectFunction(swr, opts),
+    [ swr, opts ]
   );
-  const create = {
+  /** @type {import('~/t').RemoteOperation<CreateShape>} */
+  const doCreate = {
+    busy: createInProgress,
     error: createError,
-    execute: async function() {
+    execute: async function(newObject) {
+      setCreateError(undefined);
+      setCreateInProgress(true);
+
       try {
-        setCreateError(undefined);
-        setCreateState(`busy`);
-        await doCreate();
-        setCreateState(`ready`);
+        await createFn(newObject);
       }
       catch (ex) {
-        setCreateState(`error`);
         setCreateError(ex);
       }
-    },
-    state: createState
-  };
-  /* remote update operation */
 
-  /** @type {import('preact/hooks').StateUpdater<Error>} */
+      setCreateInProgress(false);
+    }
+  };
+
+  /* build the remote update operation */
+
+  /** @type {import('~/t').LocalState<string|Error>} */
   const [ updateError, setUpdateError ] = useState(null);
-  /** @type {import('preact/hooks').StateUpdater<import('~/t').RemoteOperationState>} */
-  const [ updateState, setUpdateState ] = useState(`ready`);
-  const doUpdate = useCallbackFactory(
-    getUpdateDataFunction,
-    [ apiEndpoint, swr, updateOpts ]
+  /** @type {import('~/t').LocalState<boolean>} */
+  const [ updateInProgress, setUpdateInProgress ] = useState(false);
+  const updateFn = useCallback(
+    getUpdateObjectFunction(swr, opts),
+    [ swr, opts ]
   );
-  const update = {
+  /** @type {import('~/t').RemoteOperation<UpdateShape>} */
+  const doUpdate = {
+    busy: updateInProgress,
     error: updateError,
     execute: async function(next) {
+      setUpdateError(undefined);
+      setUpdateInProgress(true);
+
       try {
-        setUpdateError(undefined);
-        setUpdateState(`busy`);
-        await doUpdate(next);
-        setUpdateState(`success`);
+        await updateFn(next);
       }
       catch (ex) {
-        setUpdateState(`error`);
         setUpdateError(ex);
       }
-    },
-    state: updateState
-  };
-  /* remote delete operation */
-  const [ deleteError, setDeleteError ] = useState(null);
-  const [ deleteState, setDeleteState ] = useState(`ready`);
-  const doDelete = useCallbackFactory(
-    getDeleteDataFunction,
-    [ apiEndpoint, swr, deleteOpts ]
-  );
-  const del = {
-    error: deleteError,
-    execute: async function() {
-      try {
-        setDeleteError(undefined);
-        setDeleteState(`busy`);
-        await doDelete();
-        setDeleteState(`success`);
-      }
-      catch (ex) {
-        setDeleteState(`error`);
-        setDeleteError(ex);
-      }
-    },
-    state: deleteState
+
+      setUpdateInProgress(false);
+    }
   };
 
+  /* build the remote delete operation */
+
+  /** @type {import('~/t').LocalState<string|Error>} */
+  const [ deleteError, setDeleteError ] = useState(null);
+  /** @type {import('~/t').LocalState<boolean>} */
+  const [ deleteInProgress, setDeleteInProgress ] = useState(false);
+  const deleteFn = useCallback(
+    getDeleteObjectFunction(swr, opts),
+    [ swr, opts ]
+  );
+  /** @type {import('~/t').RemoteOperation<void>} */
+  const doDelete = {
+    busy: deleteInProgress,
+    error: deleteError,
+    execute: async function() {
+      setDeleteError(undefined);
+      setDeleteInProgress(true);
+
+      try {
+        await deleteFn();
+      }
+      catch (ex) {
+        setDeleteError(ex);
+      }
+
+      setDeleteInProgress(false);
+    }
+  };
+  const getInProgress = (!metadata && !error);
+  const busy =
+    [ getInProgress, createInProgress, updateInProgress, deleteInProgress ]
+      .reduce(
+        (acc, st) => (acc && !!st),
+        true
+      );
+
   return {
-    create,
-    data, // deprecated
-    del, /* sigh */
-    get,
-    metadata, // deprecated
-    update
+    busy,
+    data,
+    doCreate,
+    doDelete,
+    doUpdate,
+    error,
+    metadata
   };
 }
 
 /**
- * @param {import('~/t').RemoteCollectionOpts} opts}
- * @return {import('~/t').RemoteCollection}
+ * @description hook for manipulating a single piece of backend data
+ *
+ * @param {import('~/t').RemoteDataOpts} opts
+ * @return {import('~/t').RemoteCollection<Payload, CreateShape, DeleteShape, UpdateShape>}
+ * @template Payload
+ * @template CreateShape = Partial<Payload>
+ * @template UpdateShape = Indexed<Payload>
+ * @template DeleteShape = Indexed<Payload>
  */
 function useRemoteCollection(opts) {
   const {
     apiEndpoint,
-    createOpts = {},
-    deleteOpts = {},
-    initialData,
-    raw,
-    updateOpts = {}
+    fetchOpts: otherOpts
   } = opts;
-  const swrOpts = {
+  const {
+    createOpts: _createOpts,
+    deleteOpts: _deleteOpts,
+    raw,
+    updateOpts: _updateOpts,
+    ...userSwrOpts
+  } = otherOpts ?? {};
+  const swrInstance = {
     ...defaultSwrOpts,
-    initialData
+    ...userSwrOpts
   };
-  const swr = useSWR(apiEndpoint, rawRequest, swrOpts);
+  const swr = useSWR(apiEndpoint, rawRequest, swrInstance);
   const {
     data: swrData,
     error
@@ -312,97 +420,107 @@ function useRemoteCollection(opts) {
     ? undefined
     : (swrData?.metadata ?? {});
 
-  /* remote get operation */
-  const get = {
-    data: {
-      data,
-      metadata
-    },
-    error: swr.error,
-    execute: swr.mutate
-  };
+  /* build the remote create operation */
 
-  /* remote create operation */
+  /** @type {import('~/t').LocalState<string|Error|null>} */
   const [ createError, setCreateError ] = useState(null);
-  const [ createState, setCreateState ] = useState(`ready`);
-  const doCreate = useCallbackFactory(
-    getCreateDataFunction,
-    [ apiEndpoint, swr, createOpts ]
+  /** @type {import('~/t').LocalState<boolean>} */
+  const [ createInProgress, setCreateInProgress ] = useState(false);
+  const createFn = useCallback(
+    getCreateCollectionObjectFunction(swr, opts),
+    [ swr, opts ]
   );
-  const create = {
+  /** @type {import('~/t').RemoteOperation<CreateShape>} */
+  const doCreate = {
+    busy: createInProgress,
     error: createError,
-    execute: async function() {
+    execute: async function(newObject) {
+      setCreateInProgress(true);
+      setCreateError(undefined);
+
       try {
-        setCreateError(undefined);
-        setCreateState(`busy`);
-        await doCreate();
-        setCreateState(`ready`);
+        await createFn(newObject);
       }
       catch (ex) {
-        setCreateState(`error`);
         setCreateError(ex);
       }
-    },
-    state: createState
-  };
-  /* remote update operation */
 
-  /** @type {import('preact/hooks').StateUpdater<Error>} */
+      setCreateInProgress(false);
+    }
+  };
+
+  /* build the remote update operation */
+
+  /** @type {import('~/t').LocalState<string|Error|null>} */
   const [ updateError, setUpdateError ] = useState(null);
-  /** @type {import('preact/hooks').StateUpdater<import('~/t').RemoteOperationState>} */
-  const [ updateState, setUpdateState ] = useState(`ready`);
-  const doUpdate = useCallbackFactory(
-    getUpdateDataFunction,
-    [ apiEndpoint, swr, updateOpts, true ]
+  /** @type {import('~/t').LocalState<boolean>} */
+  const [ updateInProgress, setUpdateInProgress ] = useState(false);
+  const updateFn = useCallback(
+    getUpdateCollectionObjectFunction(swr, opts),
+    [ swr, opts ]
   );
-  const update = {
+  /** @type {import('~/t').RemoteOperation<UpdateShape>} */
+  const doUpdate = {
+    busy: updateInProgress,
     error: updateError,
-    execute: async function(next) {
+    execute: async function(newObject) {
+      setUpdateInProgress(true);
+
       try {
         setUpdateError(undefined);
-        setUpdateState(`busy`);
-        await doUpdate(next);
-        setUpdateState(`success`);
+        await updateFn(newObject);
       }
       catch (ex) {
-        setUpdateState(`error`);
         setUpdateError(ex);
       }
-    },
-    state: updateState
-  };
-  /* remote delete operation */
-  const [ deleteError, setDeleteError ] = useState(null);
-  const [ deleteState, setDeleteState ] = useState(`ready`);
-  const doDelete = useCallbackFactory(
-    getDeleteDataFunction,
-    [ apiEndpoint, swr, deleteOpts ]
-  );
-  const del = {
-    error: deleteError,
-    execute: async function() {
-      try {
-        setDeleteError(undefined);
-        setDeleteState(`busy`);
-        await doDelete();
-        setDeleteState(`success`);
-      }
-      catch (ex) {
-        setDeleteState(`error`);
-        setDeleteError(ex);
-      }
-    },
-    state: deleteState
+
+      setUpdateInProgress(false);
+    }
   };
 
+  /* build the remote delete operation */
+
+  /** @type {import('~/t').LocalState<string|Error|null>} */
+  const [ deleteError, setDeleteError ] = useState(null);
+  /** @type {import('~/t').LocalState<boolean>} */
+  const [ deleteInProgress, setDeleteInProgress ] = useState(false);
+  const deleteFn = useCallback(
+    getDeleteCollectionObjectFunction(swr, opts),
+    [ swr, opts ]
+  );
+  /** @type {import('~/t').RemoteOperation<DeleteShape>} */
+  const doDelete = {
+    busy: deleteInProgress,
+    error: deleteError,
+    execute: async function(obj) {
+      setDeleteInProgress(true);
+
+      try {
+        setDeleteError(undefined);
+        await deleteFn(obj);
+      }
+      catch (ex) {
+        setDeleteError(ex);
+      }
+
+      setDeleteInProgress(false);
+    }
+  };
+  const getInProgress = (!metadata && !error);
+  const busy =
+    [ getInProgress, createInProgress, updateInProgress, deleteInProgress ]
+      .reduce(
+        (acc, st) => (acc && !!st),
+        true
+      );
+
   return {
-    create,
-    data, // deprecated
-    del,
-    error, // deprecated
-    get,
-    metadata, // deprecated
-    update
+    busy,
+    data,
+    doCreate,
+    doDelete,
+    doUpdate,
+    metadata
   };
 }
 

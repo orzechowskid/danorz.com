@@ -23,18 +23,23 @@ import busyStyles from '~/components/Busy.module.css';
 import layoutStyles from '~/components/Layout.module.css';
 import styles from './index.module.css';
 
+/**
+ * @typedef {Object} AboutDocument
+ * @property {string} text
+ */
+
 function useAbout() {
+  /** @type {import('~/t').RemoteResource<AboutDocument>} */
   const {
+    busy,
     data,
-    error,
-    metadata,
-    remoteCreate,
-    remoteUpdate
+    doCreate,
+    doUpdate,
+    metadata
   } = useRemoteData({
     apiEndpoint: `content/bio`
   });
   const pageContents = data?.text;
-  const busy = metadata.error === undefined;
   const [ previewContents, setPreviewContents ] = useState(pageContents);
   const [ editMode, setEditMode ] = useState(false);
   const [ editPreviewMode, setEditPreviewMode ] = useState(false);
@@ -61,14 +66,13 @@ function useAbout() {
     e.preventDefault();
 
     if (pageContents) {
-      remoteUpdate({
+      doUpdate.execute({
         ...data[0],
         text: previewContents
       });
     }
     else {
-      remoteCreate({
-        name: `bio`,
+      doCreate.execute({
         text: previewContents
       });
     }
@@ -84,7 +88,7 @@ function useAbout() {
     content,
     editMode,
     editPreviewMode,
-    error,
+    error: metadata.error,
     onCancel,
     onChange,
     onEdit,
