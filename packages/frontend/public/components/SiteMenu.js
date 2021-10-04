@@ -1,13 +1,4 @@
 import {
-  useOverlay,
-  usePreventScroll,
-  useModal,
-  OverlayContainer
-} from '@react-aria/overlays';
-import {
-  useDialog
-} from '@react-aria/dialog';
-import {
   FocusScope
 } from '@react-aria/focus';
 import {
@@ -20,60 +11,56 @@ import {
   useRef
 } from 'preact/hooks';
 
-import Input from '~/components/Input.js';
-import ModalDialog from '~/components/ModalDialog.js';
+import {
+  useModalDialog,
+  ModalBackdrop
+} from '~/components/ModalDialog.js';
+import SignInForm from '~/components/SignInForm.js';
+
+import styles from './SiteMenu.module.css';
+
+function useSiteMenuContainer() {
+  return {};
+}
 
 /**
- * @typedef {Object} ModalDialogOwnProps
- * @property {string} [title]
- * @property {any} children
- *
- * @typedef {import('@react-aria/overlays').OverlayProps & import('@react-types/dialog').AriaDialogProps & ModalDialogOwnProps} ModalDialogProps
+ * @typedef {Object} SiteMenuContainerProps
+ * @property {() => void} onClose
  */
 
-/** @type {import('~/t').Component<ModalDialogProps>} */
-const xModalDialog = (props) => {
+/** @type {import('~/t').Component<SiteMenuContainerProps>} */
+const SiteMenuContainer = (props) => {
   const {
     children,
-    title
-  } = props;
-  const dialogContentsRef = useRef();
-  const {
+    dialogContentsRef,
+    dialogProps,
+    modalProps,
     overlayProps,
     underlayProps
-  } = useOverlay(props, dialogContentsRef);
-  const {
-    modalProps
-  } = useModal();
-  const {
-    dialogProps,
-    titleProps
-  } = useDialog(props, dialogContentsRef)
+  } = useModalDialog({
+    ...props,
+    isDismissable: true,
+    isOpen: true
+  });
 
-  usePreventScroll();
-
-  /*
-   * underlay: mouse interaction
-   * overlay: full-bleed translucent
-   */
   return (
-    <div style={{
-      background: '', position: 'fixed', top: 0, left: 0, bottom: 0, right: 0, zIndex: 1
-    }}>
-      <div style={{
-        width: '400px', height: '400px', display: 'flex', justifyContent: 'center', background: 'red', alignItems: 'center'
-      }} {...underlayProps}>
-        <FocusScope autoFocus contain restoreFocus>
-          <div ref={dialogContentsRef}
-            {...overlayProps} {...dialogProps} {...modalProps} style={{
-              background: 'purple'
-            }}>
-            <Input type="text" name="foo" />
-            <Input type="text" name="bar" />
-          </div>
+    <ModalBackdrop {...underlayProps}>
+      <div
+        ref={dialogContentsRef}
+        {...overlayProps}
+        {...dialogProps}
+        {...modalProps}
+        className={styles.siteMenu}
+      >
+        <FocusScope
+          autoFocus
+          contain
+          restoreFocus
+        >
+          {children}
         </FocusScope>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
 
@@ -93,27 +80,20 @@ const SiteMenu = () => {
     <>
       <button
         ref={triggerButtonRef}
+        className={styles.menuTrigger}
         {...buttonProps}
       >
-        sitemenu
+        <span className={styles.menuTriggerIcon}>
+          &#x2630;
+        </span>
       </button>
 
       {state.isOpen && (
-        <OverlayContainer>
-          <ModalDialog
-            isOpen
-            title="dialogg"
-            onClose={state.close}
-            isDismissable
-          >
-            <form style={{
-              display: 'flex', flexDirection: 'column'
-            }}>
-              <Input name="foo" type="text" />
-              <Input name="bar" type="text" />
-            </form>
-          </ModalDialog>
-        </OverlayContainer>
+        <SiteMenuContainer
+          onClose={state.close}
+        >
+          <SignInForm />
+        </SiteMenuContainer>
       )}
     </>
   );
