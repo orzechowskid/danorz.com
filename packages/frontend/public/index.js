@@ -1,5 +1,8 @@
 import 'preact/devtools';
 
+import {
+  OverlayProvider
+} from '@react-aria/overlays';
 import hydrate from 'preact-iso/hydrate';
 import {
   ErrorBoundary
@@ -107,12 +110,12 @@ const Contents = () => (
   </LocationProvider>
 )
 
-/** @type {import('~/t').Component<void>} */
+/** @type {import('~/t').Component<{}>} */
 function App() {
   const ready = usePreloadData();
 
   return (
-    <>
+    <OverlayProvider>
       <div id="app">
         <a id="skip-link" href="#main">skip to content</a>
 
@@ -128,9 +131,7 @@ function App() {
 
         <Footer />
       </div>
-
-      <dialog id="modal-dialog" />
-    </>
+    </OverlayProvider>
   );
 }
 

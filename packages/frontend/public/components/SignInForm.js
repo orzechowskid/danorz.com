@@ -55,7 +55,7 @@ function useSignInForm() {
   };
 }
 
-/** @type {import('~/t').Component<void>} */
+/** @type {import('~/t').Component<{}>} */
 const SignInForm = () => {
   const {
     decrement,

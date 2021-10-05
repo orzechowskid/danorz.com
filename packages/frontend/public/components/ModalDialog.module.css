@@ -4,6 +4,7 @@
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: var(--z-index-modal-backdrop);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,43 +12,21 @@
 }
 
 .dialogContainer {
-  align-self: flex-end;
+  position: relative;
   width: 100%;
   /* stylelint-disable-next-line magic-numbers/magic-numbers */
   max-width: 900px;
   padding: var(--gutter-sm);
   background-color: var(--color-page-background);
+  animation: var(--animation-dialog-slide-up);
 
   @media (min-width: 480px) {
     align-self: unset;
     width: var(--width-modal-dialog-480);
-  }
-}
-
-:local(.dialogContainer):global(.animate) {
-  position: relative;
-  top: var(--top-modal-dialog-transition-begin);
-
-  @media (prefers-reduced-motion: no-preference) {
-    transition: var(--transition-modal-dialog-sm);
+    animation: var(--animation-dialog-opacity);
   }
 
-  @media (min-width: 480px) {
-    position: unset;
-    top: unset;
-    opacity: var(--opacity-modal-dialog-transition-begin);
-
-    @media (prefers-reduced-motion: no-preference) {
-      transition: var(--transition-modal-dialog-lg);
-    }
-  }
-}
-
-:local(.dialogContainer):global(.animate.animate-start) {
-  top: var(--top-modal-dialog-transition-end);
-
-  @media (min-width: 480px) {
-    top: unset;
-    opacity: var(--opacity-modal-dialog-transition-end);
+  @media (prefers-reduced-motion) {
+    animation: none;
   }
 }

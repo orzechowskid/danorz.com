@@ -5,34 +5,47 @@ import {
   FocusScope
 } from '@react-aria/focus';
 import {
+  useModal,
   useOverlay,
-  usePreventScroll
+  usePreventScroll,
+  OverlayContainer
 } from '@react-aria/overlays';
 import {
-  useEffect,
   useRef
 } from 'preact/hooks';
-import {
-  createPortal
-} from 'preact/compat';
 
-import {
-  useAnimateElement
-} from '~/utils/useAnimateElement.js';
 import {
   useI18n
 } from '~/utils/useI18n.js';
 
 import styles from './ModalDialog.module.css';
 
-
 /**
- * @typedef {Object} ModalDialogProps
- * @property {import('preact').ComponentChildren} children
- * @property {string} [className]
- * @property {() => void} [onClose]
- * @property {string} title
+ * @typedef {Object} ModalDialogOwnProps
+ * @property {string} [title]
+ * @property {import('preact').ComponentChildren} [children]
+ *
+ * @typedef {import('@react-aria/overlays').OverlayProps & import('@react-types/dialog').AriaDialogProps & ModalDialogOwnProps} ModalDialogProps
  */
+
+/** @type {import('~/t').Component<{children: import('preact').ComponentChildren}> */
+const ModalBackdrop = (props) => {
+  const {
+    children,
+    ...otherProps
+  } = props;
+
+  return (
+    <OverlayContainer>
+      <div
+        className={styles.overlay}
+        {...otherProps}
+      >
+        {children}
+      </div>
+    </OverlayContainer>
+  );
+};
 
 /**
  * @param {ModalDialogProps} props
@@ -40,99 +53,76 @@ import styles from './ModalDialog.module.css';
 function useModalDialog(props) {
   const {
     children,
-    onClose
+    title
   } = props;
-  const {
-    t
-  } = useI18n();
-  const dialogContainerRef = useRef();
-  const globalDialogElRef = useRef(document.getElementById(`modal-dialog`));
-  const {
-    dialogProps,
-    titleProps
-  } = useDialog({
-    isDismissable: true
-  }, dialogContainerRef);
+  const dialogContentsRef = useRef();
   const {
     overlayProps,
     underlayProps
-  } = useOverlay({
-    'aria-details': t(`ModalDialog:description`),
-    'aria-label': `modal dialog`,
-    id: `modal`,
-    isDismissable: true,
-    isOpen: true,
-    onClose
-  }, dialogContainerRef);
+  } = useOverlay(props, dialogContentsRef);
+  const {
+    modalProps
+  } = useModal();
+  const {
+    dialogProps,
+    titleProps
+  } = useDialog(props, dialogContentsRef)
 
-  useAnimateElement({
-    className: `animate`,
-    ref: dialogContainerRef
-  });
   usePreventScroll();
-  useEffect(function setIsOpen() {
-    globalDialogElRef.current.setAttribute(`open`, ``);
-
-    return function cleanup() {
-      globalDialogElRef.current.removeAttribute(`open`);
-    };
-  }, [])
 
   return {
     children,
-    dialogContainerRef,
-    dialogEl: globalDialogElRef.current,
+    dialogContentsRef,
     dialogProps,
-    onClose,
+    modalProps,
     overlayProps,
+    title,
     titleProps,
     underlayProps
   };
 }
 
-/** @type {import('preact').FunctionComponent<ModalDialogProps>} */
+/** @type {import('~/t').Component<ModalDialogProps>} */
 const ModalDialog = function(props) {
   const {
-    className,
-    title
-  } = props;
-  const {
     children,
-    dialogContainerRef,
-    dialogEl,
+    dialogContentsRef,
     dialogProps,
-    onClose,
+    modalProps,
     overlayProps,
+    title,
     titleProps,
     underlayProps
   } = useModalDialog(props);
 
   return (
-    createPortal(
+    <ModalBackdrop>
       <div
-        className={styles.overlay}
-        onClose={onClose}
+        className={styles.dialogContainer}
         {...underlayProps}
       >
-        <FocusScope
-          autoFocus
-          contain
-          restoreFocus
-        >
+        <FocusScope autoFocus contain restoreFocus>
           <div
-            ref={dialogContainerRef}
-            className={`animate ${styles.dialogContainer} ${className}`}
+            ref={dialogContentsRef}
             {...overlayProps}
             {...dialogProps}
+            {...modalProps}
           >
-            <h3 {...titleProps}>{title}</h3>
+            {title && (
+              <h3 {...titleProps}>
+                {title}
+              </h3>
+            )}
             {children}
           </div>
         </FocusScope>
-      </div>,
-      dialogEl
-    )
+      </div>
+    </ModalBackdrop>
   );
 }
 
+export {
+  ModalBackdrop,
+  useModalDialog
+};
 export default ModalDialog;

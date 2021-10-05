@@ -19,11 +19,11 @@ function useAnimateElement(opts) {
     }
 
     const timer = setTimeout(function() {
-      ref.current.classList.add(`${className}-start`);
+      ref.current.classList.add(className, `${className}-start`);
       onStart?.();
 
       setTimeout(function() {
-        ref.current.classList.add(`${className}-end`);
+        ref.current.classList.add(className, `${className}-end`);
         onEnd?.();
       }, duration);
     }, delay);
