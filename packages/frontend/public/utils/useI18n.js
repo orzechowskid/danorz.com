@@ -8,9 +8,18 @@ import {
 } from '~/utils/useRemoteData.js';
 
 /**
+ * @typedef {Object} LocaleData
+ * @property {Record<string, string>} locales
+ */
+
+/**
+ * @typedef {Object} Dictionary
+ */
+
+/**
  * @param {string} locale
  * @param {Date} value
- * @param {{ [key: string]: any} [args={}]
+ * @param {Object} [args]
  * @return {string}
  */
 export function datestring(locale, value, args = {}) {
@@ -38,7 +47,7 @@ function number(locale, value) {
 /**
  * @param {string} locale
  * @param {Date} value
- * @param {{ [key: string]: any} [args={}]
+ * @param {Object} [args]
  * @return {string}
  */
 function timestamp(locale, value, args = {}) {
@@ -55,7 +64,7 @@ function timestamp(locale, value, args = {}) {
  * @param {string} locale
  * @param {Object} dictionary
  * @param {string} key
- * @param {{ [key: string]: any} [values={}]
+ * @param {Object} [values]
  * @return {string}
  */
 export function translate(locale, dictionary, key, values = {}) {
@@ -87,14 +96,14 @@ export function translate(locale, dictionary, key, values = {}) {
 
 /**
  * @param {string} locale
- * @return {{ [key: string]: any }}
  */
 function useDictionary(locale) {
+  /** @type {import('~/t').RemoteResource<Dictionary>} */
   const {
     data
   } = useRemoteData({
-    apiEndpoint: () => locale ? `i18n/locales/${locale}/dictionary` : null,
-    opts: {
+    apiEndpoint: `i18n/locales/${locale}/dictionary`,
+    fetchOpts: {
       /* once an hour seems fine? */
       dedupingInterval: 1000 * 60 * 60,
       raw: true
@@ -105,11 +114,12 @@ function useDictionary(locale) {
 }
 
 function useSupportedLocales() {
+  /** @type {import('~/t').RemoteResource<LocaleData>} */
   const {
     data
   } = useRemoteData({
     apiEndpoint: `i18n/locales`,
-    opts: {
+    fetchOpts: {
       raw: true
     }
   });
@@ -130,23 +140,34 @@ function useI18n() {
     locale
   } = useLocale();
   const dictionary = useDictionary(locale);
-  /** @type {(value: Date, args?: Record<string, any>) => string} */
   const date = useCallback(
+    /**
+     * @param {Date} value
+     * @param {Object} args
+     */
     (value, args) => datestring(locale, value, args),
     [ locale ]
   );
-  /** @type {(value: number) => string} */
   const num = useCallback(
+    /**
+     * @param {number} value
+     */
     (value) => number(locale, value),
     [ locale ]
   );
-  /** @type {(key: string, values?: Record<string, any>) => string} */
   const t = useCallback(
+    /**
+     * @param {string} key
+     * @param {Record<string, string|number>} values
+     */
     (key, values) => translate(locale, dictionary, key, values),
     [ locale, dictionary ]
   );
-  /** @type {(d: Date, args?: Record<string, any>) => string} */
   const time = useCallback(
+    /**
+     * @param {Date} d
+     * @param {Object} args
+     */
     (d, args) => timestamp(locale, d, args),
     [ locale ]
   );

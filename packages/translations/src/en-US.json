@@ -51,6 +51,7 @@
     "header-navigation": "header navigation"
   },
   "Home": {
+    "description": "Home page",
     "title": "Home"
   },
   "Input": {
