@@ -23,4 +23,5 @@
 
 # Provided for You
 
-you can log in to the webapp using a pre-set user with the username `r2d2` and password `starwars`
+- you can log in to the webapp using a pre-set user with the username `r2d2` and password `starwars`
+- a sample database is provided, using the mongo(ose) adapter, which contains mock data
