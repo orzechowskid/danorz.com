@@ -158,7 +158,7 @@ function useI18n() {
   const t = useCallback(
     /**
      * @param {string} key
-     * @param {Record<string, string|number>} values
+     * @param {Record<string, string|number>} [values]
      */
     (key, values) => translate(locale, dictionary, key, values),
     [ locale, dictionary ]

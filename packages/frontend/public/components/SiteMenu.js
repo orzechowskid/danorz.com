@@ -8,6 +8,7 @@ import {
   useOverlayTriggerState
 } from '@react-stately/overlays';
 import {
+  useCallback,
   useRef
 } from 'preact/hooks';
 
@@ -16,11 +17,48 @@ import {
   ModalBackdrop
 } from '~/components/ModalDialog.js';
 import SignInForm from '~/components/SignInForm.js';
+import {
+  useI18n
+} from '~/utils/useI18n.js';
+import {
+  useSession
+} from '~/utils/useSession.js';
 
 import styles from './SiteMenu.module.css';
 
-function useSiteMenuContainer() {
-  return {};
+function useSiteMenu() {
+  const {
+    t
+  } = useI18n();
+  const state = useOverlayTriggerState({});
+  const triggerButtonRef = useRef();
+  const {
+    buttonProps
+  } = useButton(
+    {
+      onPress: state.open
+    },
+    triggerButtonRef
+  );
+  const {
+    isSignedIn,
+    signOut
+  } = useSession();
+  const onSignOut = useCallback(
+    async function onSignOut() {
+      signOut();
+      state.close();
+    },
+    [ signOut, state?.close ]);
+
+  return {
+    buttonProps,
+    isSignedIn,
+    onSignOut,
+    state,
+    t,
+    triggerButtonRef
+  };
 }
 
 /**
@@ -28,8 +66,10 @@ function useSiteMenuContainer() {
  * @property {() => void} onClose
  */
 
-/** @type {import('~/t').Component<SiteMenuContainerProps>} */
-const SiteMenuContainer = (props) => {
+/**
+ * @param {SiteMenuContainerProps} props
+ */
+function useSiteMenuContainer(props) {
   const {
     children,
     dialogContentsRef,
@@ -43,13 +83,32 @@ const SiteMenuContainer = (props) => {
     isOpen: true
   });
 
+  return {
+    children,
+    dialogContentsProps: {
+      ...overlayProps,
+      ...dialogProps,
+      ...modalProps
+    },
+    dialogContentsRef,
+    underlayProps
+  };
+}
+
+/** @type {import('~/t').Component<SiteMenuContainerProps>} */
+const SiteMenuContainer = (props) => {
+  const {
+    children,
+    dialogContentsProps,
+    dialogContentsRef,
+    underlayProps
+  } = useSiteMenuContainer(props);
+
   return (
     <ModalBackdrop {...underlayProps}>
       <div
         ref={dialogContentsRef}
-        {...overlayProps}
-        {...dialogProps}
-        {...modalProps}
+        {...dialogContentsProps}
         className={styles.siteMenu}
       >
         <FocusScope
@@ -65,16 +124,14 @@ const SiteMenuContainer = (props) => {
 }
 
 const SiteMenu = () => {
-  const state = useOverlayTriggerState({});
-  const triggerButtonRef = useRef();
   const {
-    buttonProps
-  } = useButton(
-    {
-      onPress: state.open
-    },
+    buttonProps,
+    isSignedIn,
+    onSignOut,
+    state,
+    t,
     triggerButtonRef
-  );
+  } = useSiteMenu();
 
   return (
     <>
@@ -89,10 +146,11 @@ const SiteMenu = () => {
       </button>
 
       {state.isOpen && (
-        <SiteMenuContainer
-          onClose={state.close}
-        >
-          <SignInForm />
+        <SiteMenuContainer onClose={state.close}>
+          {isSignedIn
+            ? <button onClick={onSignOut}>{t(`sign-out`)}</button>
+            : <SignInForm />
+          }
         </SiteMenuContainer>
       )}
     </>
