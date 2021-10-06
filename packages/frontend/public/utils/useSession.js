@@ -7,8 +7,14 @@ import {
  * @property {string} name
  */
 
+/**
+ * @typedef {Object} SignInShape
+ * @property {string} name
+ * @property {string} password
+ */
+
 function useSession() {
-  /** @type {import('~/t').RemoteResource<Session>} */
+  /** @type {import('~/t').RemoteResource<Session, SignInShape>} */
   const remoteData = useRemoteData({
     apiEndpoint: `auth/session`,
     fetchOpts: {
