@@ -4,6 +4,7 @@ import {
 } from 'preact/hooks';
 
 import Markdown from './Markdown.js';
+import Textarea from './Textarea.js';
 
 /**
  * @typedef {Object} MarkdownPreviewPaneProps
@@ -56,13 +57,13 @@ const MarkdownPreviewPane = function(props) {
         />
       </>
     ) : (
-      <textarea
+      <Textarea
         className={className}
         name={name}
         onChange={onTextChange}
       >
         {value}
-      </textarea>
+      </Textarea>
     );
 }
 

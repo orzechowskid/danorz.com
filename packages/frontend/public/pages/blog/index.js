@@ -23,21 +23,20 @@ import layoutStyles from '~/components/Layout.module.css';
 import styles from './index.module.css';
 
 function useBlogPage() {
-  /** @type {import('~/t').RemoteDataResult<import('~/t').BlogPost>} */
+  /** @type {import('~/t').RemoteCollection<import('~/t').BlogPost>} */
   const {
     data,
-    doUpdate,
-    localError,
-    metadata
+    metadata,
+    busy
   } = useRemoteCollection({
     apiEndpoint: `blog/posts`
   });
   const {
     t
   } = useI18n();
-  const ready = metadata?.total !== undefined;
   const page = `Blog`;
   const pageTitle = t(`${page}:title`);
+  const ready = !busy;
 
   usePageMeta(function setPageMeta() {
     return {
