@@ -177,7 +177,6 @@ const BlogPost = function() {
 
       {editMode && (
         <EditPostDialog
-          className={"derp"}
           error={editPostError}
           initialValue={text}
           onCancel={onCancelEdit}
