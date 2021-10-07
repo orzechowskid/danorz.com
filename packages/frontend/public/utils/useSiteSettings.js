@@ -6,27 +6,35 @@ import {
 } from '~/utils/useRemoteData.js';
 
 /**
- * @param {{ raw: boolean }} [opts]
+ * @typedef {Object} Settings
+ * @property {string} name
+ * @property {Object} values
  */
-function useSiteSettings(opts = {}) {
-  const {
-    raw = false
-  } = opts;
+
+function useSiteSettings() {
+  /** @type {import('~/t').RemoteResource<Settings>} */
   const {
     data,
     error,
     doUpdate
   } = useRemoteData({
     apiEndpoint: `env/settings`,
-    opts: {
+    fetchOpts: {
       raw: true
     }
   });
 
+  /**
+   * @param {string} path
+   */
   function getSetting(path) {
     return _get(data?.values ?? {}, path);
   }
 
+  /**
+   * @param {string} path
+   * @param {any} value
+   */
   function updateSetting(path, value) {
     if (!data?.values) {
       console.warn(`setting at ${path} could not be set`);
@@ -37,13 +45,15 @@ function useSiteSettings(opts = {}) {
     /* `lodash.set` mutates in place so we shallow-clone here */
     const nextData = {
       ...data,
-      values: _set({ ...data.values }, path, value)
+      values: _set({
+        ...data.values
+      }, path, value)
     };
-    doUpdate(nextData);
+    doUpdate.execute(nextData);
   }
 
   return {
-    data: raw ? data : undefined,
+    data,
     getSetting,
     updateSetting
   };

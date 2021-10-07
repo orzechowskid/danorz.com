@@ -14,21 +14,18 @@ import {
   useRef
 } from 'preact/hooks';
 
-import {
-  useI18n
-} from '~/utils/useI18n.js';
-
 import styles from './ModalDialog.module.css';
 
 /**
  * @typedef {Object} ModalDialogOwnProps
  * @property {string} [title]
  * @property {import('preact').ComponentChildren} [children]
+ * @property {string} [className]
  *
  * @typedef {import('@react-aria/overlays').OverlayProps & import('@react-types/dialog').AriaDialogProps & ModalDialogOwnProps} ModalDialogProps
  */
 
-/** @type {import('~/t').Component<{children: import('preact').ComponentChildren}> */
+/** @type {import('~/t').Component<{children: import('preact').ComponentChildren}>} */
 const ModalBackdrop = (props) => {
   const {
     children,
@@ -53,6 +50,7 @@ const ModalBackdrop = (props) => {
 function useModalDialog(props) {
   const {
     children,
+    className,
     title
   } = props;
   const dialogContentsRef = useRef();
@@ -72,6 +70,7 @@ function useModalDialog(props) {
 
   return {
     children,
+    className,
     dialogContentsRef,
     dialogProps,
     modalProps,
@@ -86,6 +85,7 @@ function useModalDialog(props) {
 const ModalDialog = function(props) {
   const {
     children,
+    className,
     dialogContentsRef,
     dialogProps,
     modalProps,
@@ -107,6 +107,7 @@ const ModalDialog = function(props) {
             {...overlayProps}
             {...dialogProps}
             {...modalProps}
+            className={className}
           >
             {title && (
               <h3 {...titleProps}>

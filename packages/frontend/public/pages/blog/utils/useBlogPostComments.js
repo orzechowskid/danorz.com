@@ -17,32 +17,29 @@ function useBlogPostComments(opts) {
   } = opts;
   /** @type {import('~/t').RemoteCollection<import('~/t').BlogPostComment>} */
   const {
-    create,
-    get
+    data,
+    doCreate
   } = useRemoteCollection({
     apiEndpoint: `blog/posts/${id}/comments`,
-    initialData
+    fetchOpts: {
+      initialData
+    }
   });
-  const {
-    data
-  } = get;
   const {
     currentUser
   } = useSession();
   /** @type {(commentText: string) => Promise<void>} */
   const createComment = useCallback(async function createComment(commentText) {
-    create.execute({
+    doCreate.execute({
       name: currentUser,
-      text: commentText
+      text: commentText,
+      timestamp: new Date().toUTCString()
     });
-  }, [ currentUser, create.execute ]);
+  }, [ currentUser, doCreate.execute ]);
 
   return {
     comments: data || initialData,
-    createComment: {
-      ...create,
-      execute: createComment
-    }
+    createComment
   };
 }
 

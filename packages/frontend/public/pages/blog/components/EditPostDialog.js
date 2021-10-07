@@ -21,7 +21,7 @@ import styles from './EditPostDialog.module.css';
  * @property {Error} [error]
  * @property {string} initialValue
  * @property {() => void} onCancel
- * @property {(string) => void} onSubmit
+ * @property {(newText: string) => void} onSubmit
  */
 
 /** @param {EditPostDialogProps} props */

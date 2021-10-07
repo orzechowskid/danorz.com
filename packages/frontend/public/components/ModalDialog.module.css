@@ -12,17 +12,19 @@
 }
 
 .dialogContainer {
-  position: relative;
+  align-self: flex-end;
   width: 100%;
   /* stylelint-disable-next-line magic-numbers/magic-numbers */
   max-width: 900px;
+  /* stylelint-disable-next-line magic-numbers/magic-numbers */
+  max-height: 90vh;
   padding: var(--gutter-sm);
+  overflow: hidden;
   background-color: var(--color-page-background);
   animation: var(--animation-dialog-slide-up);
 
   @media (min-width: 480px) {
     align-self: unset;
-    width: var(--width-modal-dialog-480);
     animation: var(--animation-dialog-opacity);
   }
 
