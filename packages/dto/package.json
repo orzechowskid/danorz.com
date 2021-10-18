@@ -1,0 +1,5 @@
+{
+  "name": "dto",
+  "private": true,
+  "types": "./index.d.ts"
+}
