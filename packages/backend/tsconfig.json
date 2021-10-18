@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "checkJs": true,
+    "lib": [ "es2017" ],
+    "moduleResolution": "node",
+    "paths": {
+      "~/*": [ "./*" ]
+    }
+  },
+  "exclude": [ "node_modules" ]
+}

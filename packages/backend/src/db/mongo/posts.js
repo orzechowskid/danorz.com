@@ -1,5 +1,3 @@
-import * as types from '../../types.js';
-
 import mongoose from 'mongoose';
 
 import {
@@ -7,11 +5,13 @@ import {
   CommentSchema
 } from './comments.js';
 
+/** @type {import('mongoose').SchemaOptions} */
 const opts = {
   collection: `posts`,
   strict: `throw`
 };
 
+/** @type {import('mongoose').Schema<import('dto').BlogPost} */
 export const PostSchema = new mongoose.Schema({
   author: {
     required: true,
@@ -39,7 +39,6 @@ export const PostSchema = new mongoose.Schema({
 
 let Post = null;
 
-/** @type {types.DBQueryFunction<types.BlogPostComment>} */
 export async function addComment(dbQuery) {
   const {
     data: newComment,
