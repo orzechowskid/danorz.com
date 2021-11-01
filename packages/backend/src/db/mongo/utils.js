@@ -1,24 +1,48 @@
-import * as types from '../../types.js';
+/**
+ * @param {import('mongoose').Model<import('~/t').Indexed<Payload>>} model
+ * @param {import('~/t').DBQuery<Payload>} dbQuery
+ * @return {Promise<import('~/t').DBQueryResult<Payload>>}
+ * @template Payload
+ */
+export async function runStandardCreateQuery(model, dbQuery) {
+  const {
+    data
+  } = dbQuery;
+
+  try {
+    const newItem = new model(data);
+    const newItemJson = await newItem.save();
+
+    return {
+      data: [ newItemJson ],
+      metadata: {
+        total: 1
+      }
+    };
+  }
+  catch (ex) {
+  }
+}
 
 /**
- * @param {import('mongoose').Model} model
- * @param {types.DBQuery<T>} dbQuery
- * @return {types.DBQueryResult}
- * @template T
+ * @param {import('mongoose').Model<Payload>} model
+ * @param {import('~/t').DBQuery<Payload>} dbQuery
+ * @return {Promise<import('~/t').DBQueryResult<Payload>>}
+ * @template Payload
  */
-async function runStandardGetQuery(model, dbQuery) {
+export async function runStandardGetQuery(model, dbQuery) {
   let data = null;
   let error = null;
   let total = null;
 
   try {
     const {
-      count = 1,
+      count,
       start = 0,
       which
     } = dbQuery;
     const dataQuery = model.find(which)
-      .sort(`field -_id`)
+      .sort(`field -_id`) // TODO: make this part of the dbquery
       .skip(+start)
       .limit(+count)
       .lean()
@@ -45,12 +69,12 @@ async function runStandardGetQuery(model, dbQuery) {
 }
 
 /**
- * @param {import('mongoose').Model} model
- * @param {types.DBQuery<T>} dbQuery
- * @return {types.DBQueryResult}
- * @template T
+ * @param {import('mongoose').Model<Payload>} model
+ * @param {import('~/t').DBQuery<Payload>} dbQuery
+ * @return {Promise<import('~/t').DBQueryResult<Payload>>}
+ * @template Payload
  */
-async function runStandardSingleItemQuery(model, dbQuery) {
+export async function runStandardSingleItemQuery(model, dbQuery) {
   const {
     which = {}
   } = dbQuery;
@@ -59,8 +83,3 @@ async function runStandardSingleItemQuery(model, dbQuery) {
     .lean()
     .exec();
 }
-
-export {
-  runStandardGetQuery,
-  runStandardSingleItemQuery
-};

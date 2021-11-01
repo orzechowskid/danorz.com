@@ -1,101 +1,72 @@
-import * as types from '../types.js';
+import Router from '@koa/router';
 
-import express from 'express';
-
-const router = express();
+const router = new Router();
 
 // TODO: require auth for all blog routes
 
-router.get(`/posts`, async function getBlogPosts(req, res, next) {
-  /** @type {types.DBConnection} */
-  const db = res.locals.db;
-  let err = null;
+router.get(
+  `/posts`,
+  async function getBlogPosts(ctx, next) {
+    const db = ctx.db;
 
-  try {
     // TODO: req.query
     const response = await db.getBlogPosts({
       count: 5
     });
 
-    res.json(response)
-      .end();
-  }
-  catch (ex) {
-    err = ex;
-  }
+    ctx.status = 200;
+    ctx.body = response;
 
-  next(err);
-});
+    await next();
+  });
 
-router.get(`/posts/:id`, async function getSingleBlogPost(req, res, next) {
-  /** @type {types.DBConnection} */
-  const db = res.locals.db;
-  let err = null;
-
-  try {
+router.get(
+  `/posts/:id`,
+  async function getSingleBlogPost(ctx, next) {
+    const db = ctx.db;
     const response = await db.getBlogPosts({
       which: {
-        _id: req.params.id
+        _id: ctx.params.id
       }
     });
 
-    res.json(response)
-      .end();
-  }
-  catch (ex) {
-    err = ex;
-  }
+    ctx.status = 200;
+    ctx.body = response;
 
-  next(err);
-});
+    await next();
+  });
 
 router.get(
   `/posts/:id/comments`,
-  async function getBlogPostComments(req, res, next) {
-    /** @type {types.DBConnection} */
-    const db = res.locals.db;
-    let err = null;
+  async function getBlogPostComments(ctx, next) {
+    const db = ctx.db;
+    const response = await db.getBlogPostComments({
+      which: {
+        id: ctx.params.id
+      }
+    });
 
-    try {
-      const response = await db.getBlogPostComments({
-        which: {
-          id: req.params.id
-        }
-      });
+    ctx.status = 200;
+    ctx.body = response;
 
-      res.json(response)
-        .end();
-    }
-    catch (ex) {
-      err = ex;
-    }
-
-    next(err);
+    await next();
   });
 
 router.post(
   `/posts/:id/comments`,
-  async function createBlogPostComment(req, res, next) {
-    /** @type {types.DBConnection} */
-    const db = res.locals.db;
-    let err = null;
+  async function createBlogPostComment(ctx, next) {
+    const db = ctx.db;
+    const response = await db.createBlogPostComment({
+      data: ctx.body,
+      which: {
+        id: ctx.params.id
+      }
+    });
 
-    try {
-      const response = await db.createBlogPostComment({
-        data: req.body,
-        which: {
-          id: req.params.id
-        }
-      });
+    ctx.status = 201;
+    ctx.body = response;
 
-      res.json(response)
-        .end();
-    }
-    catch (ex) {
-      err = ex;
-    }
-
-    next(err);
+    await next();
   });
 
 export default router;

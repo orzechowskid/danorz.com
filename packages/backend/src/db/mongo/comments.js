@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+/** @type {import('mongoose').SchemaOptions} */
 const opts = {
   strict: `throw`
 };

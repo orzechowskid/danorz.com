@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
 
-import * as types from '../../types.js';
-
 import {
   runStandardGetQuery
 } from './utils.js';
 
+/** @type {import('mongoose').SchemaOptions} */
 const opts = {
   collection: `linkpreviews`,
   strict: `throw`
@@ -23,14 +22,12 @@ export const LinkPreviewSchema = new mongoose.Schema({
   }
 }, opts);
 
-let LinkPreview = null;
+const LinkPreview = mongoose.model(`LinkPreview`, LinkPreviewSchema);
 
 /** @type {types.DBQueryFunction<types.LinkPreview>} */
 export async function createLinkPreview(dbQuery) {
   const newLinkPreview = new LinkPreview(dbQuery.data);
   const response = await newLinkPreview.save();
-
-  console.log({response});
 
   return {};
 }
@@ -45,10 +42,4 @@ export function deleteLinkPreview(findArgs = {}) {
 /** @type {types.DBQueryFunction<types.LinkPreview>} */
 export async function getLinkPreview(dbQuery) {
   return runStandardGetQuery(LinkPreview, dbQuery);
-}
-
-export function init(dbConnection) {
-  LinkPreview = dbConnection.model(`LinkPreview`, LinkPreviewSchema);
-
-  return LinkPreview;
 }

@@ -1,10 +1,11 @@
+/* eslint-disable-next-line import/no-nodejs-modules */
 import http from 'http';
 
 import appFactory from '../src/index.js';
 
 async function go() {
   const app = await appFactory();
-  const server = http.createServer(app);
+  const server = http.createServer(app.callback());
 
   await new Promise(function(res, rej) {
     server.once(`error`, rej);

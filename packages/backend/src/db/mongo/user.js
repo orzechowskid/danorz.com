@@ -1,5 +1,3 @@
-import * as types from '../../types.js';
-
 import mongoose from 'mongoose';
 import mongoosePassportPlugin from 'passport-local-mongoose';
 
@@ -7,6 +5,7 @@ import {
   runStandardGetQuery
 } from './utils.js';
 
+/** @type {import('mongoose').SchemaOptions} */
 const opts = {
   strict: `throw`
 };
@@ -30,7 +29,7 @@ UserSchema.plugin(mongoosePassportPlugin, {
   usernameField: `name`
 });
 
-let User = null;
+const User = mongoose.model(`User`, UserSchema);
 
 /** @type {types.DBQueryFunction<types.User>} */
 export async function createUser(dbQuery) {
@@ -46,7 +45,9 @@ export async function createUser(dbQuery) {
       name,
       password
     } = data;
-    const newUser = new User({ name });
+    const newUser = new User({
+      name
+    });
 
     const response = await new Promise(function doCreate(res, rej) {
       User.register(newUser, password, (e, u) => e ? rej(e) : res(u));
@@ -55,7 +56,9 @@ export async function createUser(dbQuery) {
       _id
     } = response;
 
-    result = [].concat({ _id, name });
+    result = [].concat({
+      _id, name
+    });
     total = 1;
   }
   catch (ex) {
@@ -87,7 +90,11 @@ export async function updateUser(dbQuery) {
   let error;
 
   try {
-    const response = await User.findOneAndUpdate(which, { $set: data }, { lean: true, new: true }).exec();
+    const response = await User.findOneAndUpdate(which, {
+      $set: data
+    }, {
+      lean: true, new: true
+    }).exec();
 
     result = [].concat(response);
     total = 1;
@@ -106,7 +113,7 @@ export async function updateUser(dbQuery) {
 }
 
 /**
- * @return {Function} a Passport strategy
+ * @return {import('passport').Strategy}
  */
 export function createPassportStrategy() {
   return User.createStrategy();
@@ -124,10 +131,4 @@ export function serializeUser() {
  */
 export function deserializeUser() {
   return User.deserializeUser();
-}
-
-export function init(dbConnection) {
-  User = dbConnection.model(`User`, UserSchema);
-
-  return User;
 }

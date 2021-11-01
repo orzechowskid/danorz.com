@@ -1,17 +1,26 @@
+/* eslint-disable-next-line import/no-nodejs-modules */
 const path = require('path');
 
-const ProgressBarWebpackPlugin = require('progress-bar-webpack-plugin');
+const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 
 const entryPath = path.resolve(__dirname, `bin`);
 const outputPath = path.resolve(__dirname, `dist`);
-const sourcePath = path.resolve(__dirname, `src`);
+const monorepoNodeModules = path.resolve(__dirname, `../../node_modules`);
 
 module.exports = {
   context: entryPath,
   devtool: `eval`,
   entry: `./index.dev`,
-  externals: [ nodeExternals() ], // skips bundling of everything in /node_modules
+  externals: [
+    /* skip bundling (almost) everything in /node_modules */
+    nodeExternals({
+      allowlist: [ 'unique-string', 'crypto-random-string' ],
+      additionalModuleDirs: [
+        monorepoNodeModules
+      ]
+    })
+  ],
   mode: `development`,
   node: {
     __dirname: false
@@ -22,7 +31,8 @@ module.exports = {
     path: outputPath
   },
   plugins: [
-    new ProgressBarWebpackPlugin()
+    /* silence some harmless mongoose warnings */
+    new webpack.ContextReplacementPlugin(/.*/)
   ],
   stats: `errors-warnings`,
   target: `node` // skips bundling of built-in modules

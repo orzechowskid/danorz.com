@@ -1,89 +1,65 @@
-import express from 'express';
-
-import * as types from '../types.js';
+import Router from '@koa/router';
 
 import {
   ensureSignedIn
 } from './utils.js';
 
-const router = express();
+const router = new Router();
 
 router.get(
   `/:documentName`,
-  async function getContent(req, res, next) {
-    /** @type {types.DBConnection} */
-    const db = res.locals.db;
-    let err = null;
+  async function getContent(ctx, next) {
+    const db = ctx.db;
+    const response = await db.getContent({
+      which: {
+        name: ctx.params.documentName
+      }
+    });
 
-    try {
-      const response = await db.getContent({
-        which: {
-          name: req.params.documentName
-        }
-      });
+    ctx.status = 200;
+    ctx.body = response;
 
-      res.json(response)
-        .end();
-    }
-    catch (ex) {
-      err = ex;
-    }
-
-    next(err);
+    await next();
   });
 
 router.post(
   `/:documentName`,
   ensureSignedIn,
-  async function createContent(req, res, next) {
-    /** @type {types.DBConnection} */
-    const db = res.locals.db;
-    let err = null;
+  async function createContent(ctx, next) {
+    const db = ctx.db;
 
-    if (req.body.name !== req.params.documentName) {
-      res.status(400).end();
+    if (ctx.body.name !== ctx.params.documentName) {
+      ctx.status = 400;
+      ctx.body = undefined;
     }
     else {
-      try {
-        const response = await db.createContent({
-          data: req.body
-        });
+      const response = await db.createContent({
+        data: ctx.body
+      });
 
-        res.json(response)
-          .end();
-      }
-      catch (ex) {
-        err = ex;
-      }
+      ctx.status = 201;
+      ctx.body = response;
     }
 
-    next(err);
+    await next();
   });
 
 router.put(
   `/:documentName`,
   ensureSignedIn,
-  async function updateContent(req, res, next) {
-    /** @type {types.DBConnection} */
-    const db = res.locals.db;
-    let err = null;
+  async function updateContent(ctx, next) {
+    const db = ctx.db;
+    const response = await db.updateContent({
+      data: ctx.body,
+      which: {
+        name: ctx.params.documentName
+      }
+    });
 
-    try {
-      const response = await db.updateContent({
-        data: req.body,
-        which: {
-          name: req.params.documentName
-        }
-      });
+    ctx.status = 200;
+    ctx.body = response;
 
-      res.json(response)
-        .end();
-    }
-    catch (ex) {
-      err = ex;
-    }
-
-    next(err);
+    await next();
   });
 
 export default router;

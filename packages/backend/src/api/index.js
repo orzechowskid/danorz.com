@@ -1,27 +1,25 @@
-import express from 'express';
+import Router from '@koa/router';
 
-import analyticsRoutes from './analyticsRoutes.js';
-import authRoutes from './authRoutes.js';
-import blogRoutes from './blogRoutes.js';
-import contentRoutes from './contentRoutes.js';
-import envRoutes from './envRoutes.js';
-import i18nRoutes from './i18nRoutes.js';
-import linkPreviewRoutes from './linkpreview.js';
-import privateRoutes from './privateRoutes.js';
+import analyticsRouter from './analyticsRoutes.js';
+import authRouter from './authRoutes.js';
+import blogRouter from './blogRoutes.js';
+import contentRouter from './contentRoutes.js';
+import envRouter from './envRoutes.js';
+import i18nRouter from './i18nRoutes.js';
+import linkPreviewRouter from './linkpreview.js';
+import privateRouter from './privateRoutes.js';
 
 function factory() {
-  const router = express.Router({
-    mergeParams: true
-  });
+  const router = new Router();
 
-  router.use(`/analytics`, analyticsRoutes);
-  router.use(`/auth`, authRoutes);
-  router.use(`/blog`, blogRoutes);
-  router.use(`/content`, contentRoutes);
-  router.use(`/env`, envRoutes);
-  router.use(`/i18n`, i18nRoutes);
-  router.use(`/linkpreview`, linkPreviewRoutes);
-  router.use(`/my`, privateRoutes);
+  router.use(`/analytics`, analyticsRouter.routes(), analyticsRouter.allowedMethods());
+  router.use(`/auth`, authRouter.routes(), authRouter.allowedMethods());
+  router.use(`/blog`, blogRouter.routes());
+  router.use(`/content`, contentRouter.routes());
+  router.use(`/i18n`, i18nRouter.routes(), i18nRouter.allowedMethods());
+  router.use(`/env`, envRouter.routes(), envRouter.allowedMethods());
+  router.use(`/linkpreview`, linkPreviewRouter.routes());
+  router.use(`/my`, privateRouter.routes());
 
   return router;
 }
