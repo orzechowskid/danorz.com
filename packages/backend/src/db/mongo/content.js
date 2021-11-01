@@ -1,11 +1,10 @@
-import * as types from '../../types.js';
-
 import mongoose from 'mongoose';
 
 import {
   runStandardGetQuery
 } from './utils.js';
 
+/** @type {import('mongoose').SchemaOptions} */
 const opts = {
   collection: `text`,
   strict: `throw`
@@ -22,7 +21,7 @@ export const ContentSchema = new mongoose.Schema({
   }
 }, opts);
 
-let Content = null;
+const Content = mongoose.model(`Text`, ContentSchema);
 
 /** @type {types.DBQueryFunction<types.Content>} */
 export async function getContent(dbQuery) {
@@ -73,7 +72,11 @@ export async function updateContent(dbQuery) {
   let error;
 
   try {
-    const response = await Content.findOneAndUpdate(which, { $set: data }, { lean: true, new: true }).exec();
+    const response = await Content.findOneAndUpdate(which, {
+      $set: data
+    }, {
+      lean: true, new: true
+    }).exec();
 
     result = [].concat(response);
     total = 1;
@@ -89,8 +92,4 @@ export async function updateContent(dbQuery) {
       total
     }
   };
-}
-
-export function init(dbConnection) {
-  Content = dbConnection.model(`Text`, ContentSchema);
 }

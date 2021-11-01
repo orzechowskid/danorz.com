@@ -1,11 +1,10 @@
-import * as types from '../../types.js';
-
 import mongoose from 'mongoose';
 
 import {
   runStandardSingleItemQuery
 } from './utils.js';
 
+/** @type {import('mongoose').SchemaOptions} */
 const opts = {
   collection: `settings`,
   strict: `throw`
@@ -22,14 +21,14 @@ export const SettingsSchema = new mongoose.Schema({
   }
 }, opts);
 
-let Settings = null;
+const Settings = mongoose.model(`Settings`, SettingsSchema);
 
-/** @type {types.DBQueryFunction<types.Settings>} */
+/** @type {import('~/t').DBQueryFunction<import('~/t').Settings>} */
 export async function getSettings(dbQuery) {
   return runStandardSingleItemQuery(Settings, dbQuery);
 }
 
-/** @type {types.DBQueryFunction<types.Settings>} */
+/** @type {import('~/t').DBQueryFunction<import('~/t').Settings>} */
 export async function updateSettings(dbQuery) {
   const {
     data,
@@ -40,7 +39,11 @@ export async function updateSettings(dbQuery) {
   let error;
 
   try {
-    const response = await Settings.findOneAndUpdate(which, { $set: data }, { lean: true, new: true }).exec();
+    const response = await Settings.findOneAndUpdate(which, {
+      $set: data
+    }, {
+      lean: true, new: true
+    }).exec();
 
     result = [].concat(response);
     total = 1;
@@ -56,8 +59,4 @@ export async function updateSettings(dbQuery) {
       total
     }
   };
-}
-
-export function init(dbConnection) {
-  Settings = dbConnection.model(`Settings`, SettingsSchema);
 }

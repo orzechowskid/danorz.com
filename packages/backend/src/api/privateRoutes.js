@@ -1,12 +1,12 @@
-import express from 'express';
+import Router from '@koa/router';
 
-import {
-  ensureSignedIn
-} from './utils.js';
+// import {
+//   ensureSignedIn
+// } from './utils.js';
 
-const router = express();
+const router = new Router();
 
 /* require auth on all private routes */
-router.use(ensureSignedIn);
+//router.use(ensureSignedIn);
 
 export default router;

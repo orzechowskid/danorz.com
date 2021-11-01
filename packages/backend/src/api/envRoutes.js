@@ -1,30 +1,22 @@
-import * as types from '../types.js';
+import Router from '@koa/router';
 
-import express from 'express';
-
-const router = express();
+/** @type {import('~/t').ApiRouter} */
+const router = new Router();
 
 router.get(
   `/settings`,
-  async function getSettings(req, res, next) {
-    const db = res.locals.db;
-    let err;
+  async function getSettings(ctx, next) {
+    const db = ctx.db;
+    const response = await db.getSettings({
+      which: {
+        name: `site`
+      }
+    });
 
-    try {
-      const response = await db.getSettings({
-        which: {
-          name: `site`
-        }
-      });
+    ctx.status = 200;
+    ctx.body = response;
 
-      res.json(response)
-        .end();
-    }
-    catch (ex) {
-      err = ex;
-    }
-
-    next(err);
+    await next();
   }
 );
 

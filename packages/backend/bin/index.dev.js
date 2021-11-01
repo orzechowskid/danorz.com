@@ -1,16 +1,18 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies,import/no-nodejs-modules */
 import http from 'http';
 import path from 'path';
 
 import dotenv from 'dotenv';
 import sourceMapSupport from 'source-map-support';
 
-dotenv.config({ path: path.resolve(__dirname, `../../..`, `.env.local`) });
+dotenv.config({
+  path: path.resolve(__dirname, `../../..`, `.env.local`)
+});
 sourceMapSupport.install();
 
 async function go() {
   const appFactory = (await require('../src/index')).default;
-  const app = await appFactory();
+  const app = (await appFactory()).callback();
   const server = http.createServer(app);
 
   server.listen(process.env.WEB_BACKEND_PORT);
@@ -30,7 +32,7 @@ async function go() {
 
       const nextAppFactory = (await require(`../src/index`)).default;
 
-      currentApp = await nextAppFactory();
+      currentApp = (await nextAppFactory()).callback();
 
       server.on(`request`, currentApp);
       console.info(`server reloaded`);

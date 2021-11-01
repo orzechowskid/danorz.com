@@ -1,6 +1,4 @@
-import * as types from '../types.js';
-
-import express from 'express';
+import Router from '@koa/router';
 
 import locales from '../../../translations/src/locales.json';
 import enUS from '../../../translations/src/en-US.json';
@@ -25,70 +23,32 @@ function getDictionary(locale) {
   }
 }
 
-const router = express();
+/** @type {import('~/t').ApiRouter} */
+const router = new Router();
 
-router.get(`/locales`, async function getLocales(req, res) {
-  res.status(200).json(locales).end();
-});
+router.get(
+  `/`,
+  async function getLocales(ctx, next) {
+    ctx.status = 200;
+    ctx.body = locales;
 
-router.get(`/locales/:locale/dictionary`, async function getDictionaryForLocale(req, res, next) {
-  let err = null;
+    await next();
+  }
+);
 
-  try {
+router.get(
+  `/locales/:locale/dictionary`,
+  async function getDictionaryForLocale(ctx, next) {
     const {
       locale
-    } = req.params;
+    } = ctx.params;
     const dictionary = getDictionary(locale);
 
-    res.status(200).json(dictionary).end();
+    ctx.status = 200;
+    ctx.body = dictionary;
+
+    await next();
   }
-  catch (ex) {
-    err = ex;
-  }
-
-  next(err);
-});
-// TODO: require auth for all blog routes
-
-router.get(`/posts`, async function getBlogPosts(req, res, next) {
-  /** @type {types.DBConnection} */
-  const db = res.locals.db;
-  let err = null;
-
-  try {
-    // TODO: req.query
-    const response = await db.getBlogPosts({ count: 5 });
-
-    res.json(response)
-      .end();
-  }
-  catch (ex) {
-    err = ex;
-  }
-
-  next(err);
-});
-
-router.get(`/posts/:id`, async function getSingleBlogPost(req, res, next) {
-  /** @type {types.DBConnection} */
-  const db = res.locals.db;
-  let err = null;
-
-  try {
-    const response = await db.getBlogPost({
-      which: {
-        _id: req.params.id
-      }
-    });
-
-    res.json(response)
-      .end();
-  }
-  catch (ex) {
-    err = ex;
-  }
-
-  next(err);
-});
+);
 
 export default router;

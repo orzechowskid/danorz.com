@@ -1,78 +1,66 @@
-import express from 'express';
-import { getLinkPreview } from 'link-preview-js';
+import Router from '@koa/router';
+import {
+  getLinkPreview
+} from 'link-preview-js';
 
 import {
   ensureSignedIn
 } from './utils.js';
 
-const router = express();
+const router = new Router();
 
 router.get(
   `/`,
-  async function getPreview(req, res, next) {
-    /** @type {types.DBConnection} */
-    const db = res.locals.db;
-    let err = null;
+  async function getPreview(ctx, next) {
+    const db = ctx.db;
+    const slug = ctx.query.url.split(`://`)[1];
+    const result = await db.getLinkPreview({
+      which: {
+        url: slug
+      }
+    });
 
-    try {
-      const slug = req.query.url.split(`://`)[1];
-      const result = await db.getLinkPreview({
-        which: {
-          url: slug
-        }
-      });
+    ctx.status = 200;
+    ctx.body = result;
 
-      res.status(200)
-        .json(result)
-        .end();
-    }
-    catch (ex) {
-      err = ex;
-    }
-
-    next(err);
+    await next();
   });
 
 router.post(
   `/`,
   ensureSignedIn,
-  async function createPreview(req, res, next) {
-    /** @type {types.DBConnection} */
-    const db = res.locals.db;
+  async function createPreview(ctx, next) {
+    const db = ctx.db;
     let result = null;
     let err = null;
+    const slug = ctx.query.url.split(`://`)[1];
 
-    try {
-      const slug = req.query.url.split(`://`)[1];
+    result = await db.getLinkPreview({
+      which: {
+        url: slug
+      }
+    });
 
-      result = await db.getLinkPreview({
-        which: {
+    if (result.metadata.total === 0) {
+      /* already exists */
+      ctx.status = 200;
+    }
+    else {
+      const linkPreviewData = await getLinkPreview(ctx.query.url);
+
+      result = await db.createLinkPreview({
+        data: {
+          metadata: linkPreviewData,
           url: slug
         }
       });
 
-      if (result.metadata.total) {
-        /* already exists */
-        res.status(200).json(result).end();
-      }
-      else {
-        const linkPreviewData = await getLinkPreview(req.query.url);
-
-        result = await db.createLinkPreview({
-          data: {
-            metadata: linkPreviewData,
-            url: slug
-          }
-        });
-
-        res.status(201).json(result).end();
-      }
-    }
-    catch(ex) {
-      err = ex;
+      ctx.status = 201;
     }
 
-    next(err);
+    ctx.body = result;
+
+    await next();
   });
 
 export default router;

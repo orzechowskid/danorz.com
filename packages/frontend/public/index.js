@@ -88,9 +88,7 @@ function usePreloadData() {
   const dictionary = useDictionary(locale);
   const {
     data: siteSettings
-  } = useSiteSettings({
-    raw: true
-  });
+  } = useSiteSettings();
   const {
     isSignedIn
   } = useSession();

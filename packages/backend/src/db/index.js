@@ -1,14 +1,13 @@
-import * as types from '../types.js';
-
 import {
-  init
+  init as initMongo
 } from './mongo/index.js';
 
 /**
- * @return {Promise<types.DBConnection>}
+ * @return {Promise<import('~/t').DBConnection>}
  */
 async function initDB() {
-  return init();
+  // switch process.env.WEB_BACKEND_DB_DRIVER
+  return initMongo();
 }
 
 export {

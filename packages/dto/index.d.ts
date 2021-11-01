@@ -27,3 +27,11 @@ export interface BlogPost {
   title: string;
 }
 
+export interface User {
+  emailAddress: string;
+  name: string;
+}
+
+export interface Settings {
+  name: string;
+}

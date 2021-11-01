@@ -11,7 +11,6 @@ const opts = {
   strict: `throw`
 };
 
-/** @type {import('mongoose').Schema<import('dto').BlogPost} */
 export const PostSchema = new mongoose.Schema({
   author: {
     required: true,
@@ -37,8 +36,9 @@ export const PostSchema = new mongoose.Schema({
   }
 }, opts);
 
-let Post = null;
+export const Post = mongoose.model(`Post`, PostSchema);
 
+/** @type {import('~/t').DBQueryFunction<import('~/t').BlogPostComment>} */
 export async function addComment(dbQuery) {
   const {
     data: newComment,
@@ -163,8 +163,4 @@ export async function getBlogPostComments(dbQuery) {
       total
     }
   };
-}
-
-export function init(dbConnection) {
-  Post = dbConnection.model(`Post`, PostSchema);
 }

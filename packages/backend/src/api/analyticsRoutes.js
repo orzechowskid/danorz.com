@@ -1,15 +1,13 @@
-import * as types from '../types.js';
+import Router from '@koa/router';
 
-import express from 'express';
+/** @type {import('~/t').ApiRouter} */
+const router = new Router();
 
-const router = express();
-
-router.use(`*`, async function doAnalytics(req, res, next) {
-  //  /** @type {types.DBConnection} */
-  //  const db = res.locals.db;
-  let err = null;
-
-  try {
+router.use(
+  `/`,
+  async function doAnalytics(ctx, next) {
+    //  /** @type {types.DBConnection} */
+    //  const db = ctx.db;
     const response = {
       data: [ `ok` ],
       metadata: {
@@ -17,14 +15,10 @@ router.use(`*`, async function doAnalytics(req, res, next) {
       }
     };
 
-    res.json(response)
-      .end();
-  }
-  catch (ex) {
-    err = ex;
-  }
+    ctx.response.body = response;
 
-  next(err);
-});
+    next();
+  }
+);
 
 export default router;
