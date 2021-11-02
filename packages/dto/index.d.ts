@@ -32,6 +32,12 @@ export interface User {
   name: string;
 }
 
+export interface UserCreate {
+  emailAddress: string;
+  name?: string;
+  password: string;
+}
+
 export interface Settings {
   name: string;
 }

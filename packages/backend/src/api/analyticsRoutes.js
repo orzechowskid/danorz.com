@@ -3,21 +3,20 @@ import Router from '@koa/router';
 /** @type {import('~/t').ApiRouter} */
 const router = new Router();
 
-router.use(
-  `/`,
-  async function doAnalytics(ctx, next) {
-    //  /** @type {types.DBConnection} */
-    //  const db = ctx.db;
-    const response = {
-      data: [ `ok` ],
+router.post(
+  `/event`,
+  async function recordEvent(ctx, next) {
+    const event = JSON.parse(Buffer.from(ctx.request.body.event, `base64`).toString());
+
+    ctx.body = {
+      data: [ event ],
       metadata: {
         count: 1
       }
     };
+    ctx.status = 201;
 
-    ctx.response.body = response;
-
-    next();
+    await next();
   }
 );
 

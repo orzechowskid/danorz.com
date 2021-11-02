@@ -29,9 +29,10 @@ UserSchema.plugin(mongoosePassportPlugin, {
   usernameField: `name`
 });
 
+/** @type {import('./index').MongooseModel<import('dto').User>} */
 const User = mongoose.model(`User`, UserSchema);
 
-/** @type {types.DBQueryFunction<types.User>} */
+/** @type {import('~/t').DBWriteFunction<import('dto').UserCreate, import('dto').User>} */
 export async function createUser(dbQuery) {
   let result;
   let total = -1;
@@ -50,7 +51,7 @@ export async function createUser(dbQuery) {
     });
 
     const response = await new Promise(function doCreate(res, rej) {
-      User.register(newUser, password, (e, u) => e ? rej(e) : res(u));
+      User.register(newUser, password, (err, u) => err ? rej(err) : res(u));
     });
     const {
       _id
@@ -74,12 +75,14 @@ export async function createUser(dbQuery) {
   }
 }
 
-/** @type {types.DBQueryFunction<types.User>} */
+/** @type {import('~/t').DBQueryFunction<import('dto').User>} */
 export async function getUser(dbQuery) {
-  return runStandardGetQuery(User, dbQuery);
+  const x = runStandardGetQuery(User, dbQuery);
+
+  return x;
 }
 
-/** @type {types.DBQueryFunction<types.User>} */
+/** @type {import('~/t').DBWriteFunction<import('dto').User>} */
 export async function updateUser(dbQuery) {
   const {
     data,

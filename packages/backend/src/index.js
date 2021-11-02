@@ -25,7 +25,7 @@ async function factory() {
   /** @type {import('~/t').RouterMiddleware} */
   async function routeDiagnostics(ctx, next) {
     /* eslint-disable-next-line no-console */
-    console.log(ctx.method, ctx.path, ctx.query, ctx.body);
+    console.log(ctx.method, ctx.path, ctx.query, ctx.request.body);
 
     await next();
   }

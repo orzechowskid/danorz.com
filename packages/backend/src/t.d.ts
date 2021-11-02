@@ -28,7 +28,8 @@ export interface DBQueryResult<Payload> {
   }
 }
 
-export type DBQueryFunction<Payload, WritePayload = void> = (dbQuery: DBQuery<Payload, WritePayload>) => Promise<DBQueryResult<Payload>>;
+export type DBQueryFunction<Payload> = (dbQuery: DBQuery<Payload, void>) => Promise<DBQueryResult<Payload>>;
+export type DBWriteFunction<WritePayload, Payload = WritePayload> = (dbQuery: DBQuery<Payload, WritePayload>) => Promise<DBQueryResult<Payload>>;
 
 export interface BlogPostComment {
   name: string;
