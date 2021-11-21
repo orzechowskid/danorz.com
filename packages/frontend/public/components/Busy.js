@@ -9,9 +9,9 @@ import styles from './Busy.module.css';
  *
  * @typedef {BusyContainerSelfProps & import('preact').JSX.HTMLAttributes} BusyContainerProps
  *
- * @typedef {Record<Els, import('~/t').Component<BusyContainerProps>>} Augmented
+ * @typedef {Record<Els, import('~/t').Component<BusyContainerProps>>} Helpers
  *
- * @typedef {Augmented & import('~/t').Component<BusyContainerProps>} FinalForm
+ * @typedef {Helpers & import('~/t').Component<BusyContainerProps>} AugmentedComponent
  */
 
 /** @type {import('~/t').Component<BusyContainerProps>} */
@@ -37,7 +37,7 @@ const BusyContainer = function(props) {
 
 /**
  * @param {import('~/t').Component<BusyContainerSelfProps>} Fn
- * @return {FinalForm}
+ * @return {AugmentedComponent}
  */
 export function factory(Fn) {
   /** @type {Record<Els, import('~/t').Component<BusyContainerProps>>} */

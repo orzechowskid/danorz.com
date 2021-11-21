@@ -8,6 +8,7 @@ import {
   JSX
 } from 'preact';
 import * as PreactHooks from 'preact/hooks';
+
 import { SWRConfiguration, SWRResponse } from 'swr';
 
 export type Component<Props = {}> = FunctionComponent<JSX.HTMLAttributes & Props>;
