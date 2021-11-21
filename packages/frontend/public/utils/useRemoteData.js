@@ -205,7 +205,7 @@ function getDeleteObjectFunction(swrInstance, remoteDataOpts) {
  *
  * @param {import('~/t').SWR<Payload>} swrInstance}
  * @param {import('~/t').RemoteDataOpts} remoteDataOpts}
- * @return {(obj: import('~/t').Indexed<Payload>) => Promise<void>}
+ * @return {(obj: import('dto').Id) => Promise<void>}
  * @template Payload
  */
 function getDeleteCollectionObjectFunction(swrInstance, remoteDataOpts) {
@@ -219,9 +219,10 @@ function getDeleteCollectionObjectFunction(swrInstance, remoteDataOpts) {
     fetchOpts
   } = remoteDataOpts;
 
-  return async function doDeleteFromCollection(oldObj) {
+  return async function doDeleteFromCollection(id) {
     /* step 1: optimistic local update */
     const idx = prevState.data.findIndex((obj) => obj._id === oldObj._id);
+    const oldObj = prevState.data[idx];
     mutate({
       ...prevState,
       data: [
@@ -267,6 +268,7 @@ function useRemoteData(opts) {
   const swr = useSWR(apiEndpoint, rawRequest, swrInstance);
   const {
     data: swrData,
+    isValidating: busy,
     error
   } = swr;
   /* data data data data */
@@ -281,19 +283,15 @@ function useRemoteData(opts) {
 
   /** @type {import('~/t').LocalState<string|Error|null>} */
   const [ createError, setCreateError ] = useState(null);
-  /** @type {import('~/t').LocalState<boolean>} */
-  const [ createInProgress, setCreateInProgress ] = useState(false);
   const createFn = useCallback(
     getCreateObjectFunction(swr, opts),
     [ swr, opts ]
   );
   /** @type {import('~/t').RemoteOperation<CreateShape>} */
   const doCreate = {
-    busy: createInProgress,
     error: createError,
     execute: async function(newObject) {
       setCreateError(undefined);
-      setCreateInProgress(true);
 
       try {
         await createFn(newObject);
@@ -301,8 +299,6 @@ function useRemoteData(opts) {
       catch (ex) {
         setCreateError(ex);
       }
-
-      setCreateInProgress(false);
     }
   };
 
@@ -310,19 +306,15 @@ function useRemoteData(opts) {
 
   /** @type {import('~/t').LocalState<string|Error>} */
   const [ updateError, setUpdateError ] = useState(null);
-  /** @type {import('~/t').LocalState<boolean>} */
-  const [ updateInProgress, setUpdateInProgress ] = useState(false);
   const updateFn = useCallback(
     getUpdateObjectFunction(swr, opts),
     [ swr, opts ]
   );
   /** @type {import('~/t').RemoteOperation<UpdateShape>} */
   const doUpdate = {
-    busy: updateInProgress,
     error: updateError,
     execute: async function(next) {
       setUpdateError(undefined);
-      setUpdateInProgress(true);
 
       try {
         await updateFn(next);
@@ -330,8 +322,6 @@ function useRemoteData(opts) {
       catch (ex) {
         setUpdateError(ex);
       }
-
-      setUpdateInProgress(false);
     }
   };
 
@@ -339,19 +329,15 @@ function useRemoteData(opts) {
 
   /** @type {import('~/t').LocalState<string|Error>} */
   const [ deleteError, setDeleteError ] = useState(null);
-  /** @type {import('~/t').LocalState<boolean>} */
-  const [ deleteInProgress, setDeleteInProgress ] = useState(false);
   const deleteFn = useCallback(
     getDeleteObjectFunction(swr, opts),
     [ swr, opts ]
   );
   /** @type {import('~/t').RemoteOperation<void>} */
   const doDelete = {
-    busy: deleteInProgress,
     error: deleteError,
     execute: async function() {
       setDeleteError(undefined);
-      setDeleteInProgress(true);
 
       try {
         await deleteFn();
@@ -359,17 +345,8 @@ function useRemoteData(opts) {
       catch (ex) {
         setDeleteError(ex);
       }
-
-      setDeleteInProgress(false);
     }
   };
-  const getInProgress = (!metadata && !error);
-  const busy =
-    [ getInProgress, createInProgress, updateInProgress, deleteInProgress ]
-      .reduce(
-        (acc, st) => (acc && !!st),
-        true
-      );
 
   return {
     busy,
@@ -390,7 +367,7 @@ function useRemoteData(opts) {
  * @template Payload
  * @template CreateShape = Partial<Payload>
  * @template UpdateShape = Indexed<Payload>
- * @template DeleteShape = Indexed<Payload>
+ * @template DeleteShape = Id
  */
 function useRemoteCollection(opts) {
   const {
@@ -424,18 +401,14 @@ function useRemoteCollection(opts) {
 
   /** @type {import('~/t').LocalState<string|Error|null>} */
   const [ createError, setCreateError ] = useState(null);
-  /** @type {import('~/t').LocalState<boolean>} */
-  const [ createInProgress, setCreateInProgress ] = useState(false);
   const createFn = useCallback(
     getCreateCollectionObjectFunction(swr, opts),
     [ swr, opts ]
   );
   /** @type {import('~/t').RemoteOperation<CreateShape>} */
   const doCreate = {
-    busy: createInProgress,
     error: createError,
     execute: async function(newObject) {
-      setCreateInProgress(true);
       setCreateError(undefined);
 
       try {
@@ -444,8 +417,6 @@ function useRemoteCollection(opts) {
       catch (ex) {
         setCreateError(ex);
       }
-
-      setCreateInProgress(false);
     }
   };
 
@@ -453,28 +424,22 @@ function useRemoteCollection(opts) {
 
   /** @type {import('~/t').LocalState<string|Error|null>} */
   const [ updateError, setUpdateError ] = useState(null);
-  /** @type {import('~/t').LocalState<boolean>} */
-  const [ updateInProgress, setUpdateInProgress ] = useState(false);
   const updateFn = useCallback(
     getUpdateCollectionObjectFunction(swr, opts),
     [ swr, opts ]
   );
   /** @type {import('~/t').RemoteOperation<UpdateShape>} */
   const doUpdate = {
-    busy: updateInProgress,
     error: updateError,
     execute: async function(newObject) {
-      setUpdateInProgress(true);
+      setUpdateError(undefined);
 
       try {
-        setUpdateError(undefined);
         await updateFn(newObject);
       }
       catch (ex) {
         setUpdateError(ex);
       }
-
-      setUpdateInProgress(false);
     }
   };
 
@@ -482,40 +447,26 @@ function useRemoteCollection(opts) {
 
   /** @type {import('~/t').LocalState<string|Error|null>} */
   const [ deleteError, setDeleteError ] = useState(null);
-  /** @type {import('~/t').LocalState<boolean>} */
-  const [ deleteInProgress, setDeleteInProgress ] = useState(false);
   const deleteFn = useCallback(
     getDeleteCollectionObjectFunction(swr, opts),
     [ swr, opts ]
   );
   /** @type {import('~/t').RemoteOperation<DeleteShape>} */
   const doDelete = {
-    busy: deleteInProgress,
     error: deleteError,
     execute: async function(obj) {
-      setDeleteInProgress(true);
+      setDeleteError(undefined);
 
       try {
-        setDeleteError(undefined);
         await deleteFn(obj);
       }
       catch (ex) {
         setDeleteError(ex);
       }
-
-      setDeleteInProgress(false);
     }
   };
-  const getInProgress = (!metadata && !error);
-  const busy =
-    [ getInProgress, createInProgress, updateInProgress, deleteInProgress ]
-      .reduce(
-        (acc, st) => (acc && !!st),
-        true
-      );
 
   return {
-    busy,
     data,
     doCreate,
     doDelete,

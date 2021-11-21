@@ -1,8 +1,10 @@
+import Heading from '~/components/Heading.js';
 import Restricted from '~/components/Restricted.js';
 import {
   usePageTitle
 } from '~/utils/usePageTitle.js';
 
+import layoutStyles from './Layout.module.css';
 import styles from './PageTitleContainer.module.css';
 
 /** @type {Component<PageTitleProps>} */
@@ -16,7 +18,7 @@ function PageTitle(props) {
   usePageTitle(titleString);
 
   return (
-    <h2>{titleString}</h2>
+    <Heading>{titleString}</Heading>
   );
 }
 
@@ -41,7 +43,7 @@ function PageTitleContainer(props) {
   } = props;
 
   return (
-    <div className={styles.pageTitleContainer}>
+    <div className={`${layoutStyles.layout} ${styles.pageTitleContainer}`}>
       {children}
     </div>
   );

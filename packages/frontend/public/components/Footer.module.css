@@ -9,3 +9,7 @@
   line-height: var(--line-height-footer-nav);
   color: var(--color-footer-foreground);
 }
+
+.footer .hidden {
+  display: none;
+}

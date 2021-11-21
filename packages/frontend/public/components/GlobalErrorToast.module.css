@@ -1,0 +1,8 @@
+.toaster {
+  position: fixed;
+  top: var(--gutter-sm);
+  right: var(--gutter-sm);
+  z-index: var(--z-index-error-toast);
+  padding: var(--gutter-sm);
+  background-color: var(--color-severity-info);
+}

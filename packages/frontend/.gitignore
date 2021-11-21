@@ -1,6 +1,4 @@
-dist
 .cache
-.log
-.projectile
 node_modules
-*~
+dist
+stats.html

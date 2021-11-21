@@ -49,7 +49,7 @@ const Strikethrough = (props) => (
   </span>
 )
 
-/** @type {import('~/t').Component<MarkdownProps>} */
+/** @type {import('../t').Component<MarkdownProps>} */
 const Markdown = (props) => {
   const {
     children = ``,

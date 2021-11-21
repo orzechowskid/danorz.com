@@ -17,6 +17,7 @@ function useHeader() {
   }
 }
 
+/** @type {import('~/t').Component} */
 function Header() {
   const {
     siteName
@@ -30,7 +31,7 @@ function Header() {
       <SiteBanner />
 
       <div className={`${layoutStyles.layout} ${styles.headerContents}`}>
-        <h1>{siteName}</h1>
+      <span>{siteName ?? 'herpaderp'}</span>
 
         <SiteMenu />
       </div>

@@ -1,16 +1,32 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./public",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
     "checkJs": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact",
+    "downlevelIteration": true,
+    "jsx": "preserve",
+    "jsxFactory": "preact.h",
+    "jsxFragmentFactory": "preact.Fragment",
     "lib": [ "dom", "es2017" ],
+    "module": "esnext",
     "moduleResolution": "node",
+    "noEmit": true,
     "paths": {
-      "~/*": [ "./*" ]
+      "~/*": [ "./public/*" ]
     },
-    "reactNamespace": "createElement",
-    "target": "es6"
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ESNext"
   },
-  "exclude": [ "node_modules" ]
+  "include": [
+    "./public/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "typeAcquisition": {
+    "enable": false
+  }
 }

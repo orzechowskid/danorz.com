@@ -1,6 +1,7 @@
 import {
   useCallback,
-  useEffect
+  useEffect,
+  useState
 } from 'preact/hooks';
 import {
   useLocation
@@ -14,6 +15,9 @@ import PageTitleContainer, {
   PageTitle
 } from '~/components/PageTitleContainer.js';
 import {
+  useGlobalErrorToast
+} from '~/utils/useGlobalErrorToast.js';
+import {
   useI18n
 } from '~/utils/useI18n.js';
 import {
@@ -22,9 +26,6 @@ import {
 import {
   usePageMeta
 } from '~/utils/usePageTitle.js';
-import {
-  useToggle
-} from '~/utils/useToggle.js';
 import AddCommentDialog from './components/AddCommentDialog.js';
 import Byline from './components/Byline.js';
 import Comments from './components/Comments.js';
@@ -33,7 +34,7 @@ import {
   useBlogPost
 } from './utils/useBlogPost.js';
 
-import layoutStyles from '~/components/Layout.module.css';
+import layoutStyles from '../../components/Layout.module.css';
 import styles from './post.module.css';
 
 function useBlogPostPage() {
@@ -43,72 +44,81 @@ function useBlogPostPage() {
   const {
     t
   } = useI18n();
-  const postId = path.split(`/`).pop();
+  const postId = path?.split(`/`).pop();
   const {
+    busy,
     createComment,
     data,
-    editPost
+    deleteComment,
+    error,
+    updateComment,
+    updatePost
   } = useBlogPost({
-    id: postId
+    postId
   });
   const {
-    disable: disableEditMode,
-    enable: enableEditMode,
-    on: editMode
-  } = useToggle(false);
-  const {
-    disable: disableAddCommentMode,
-    enable: enableAddCommentMode,
-    on: addCommentMode
-  } = useToggle(false);
-  const onEdit = useCallback(function onEdit(e) {
-    e.preventDefault();
-    enableEditMode();
-  }, [ ]);
-  const onAddComment = useCallback(function onAddComment(e) {
-    e.preventDefault();
-    enableAddCommentMode();
-  }, []);
-  const onCancelAddComment = useCallback(function onCancelAddComment() {
-    disableAddCommentMode();
-  }, [ disableAddCommentMode ]);
-  const onCancelEdit = useCallback(function onCancelEdit() {
-    disableEditMode();
-  }, [ disableEditMode ]);
-
-  useEffect(function handleSubmitCommentStateChange() {
-    if (createComment.state === `success`) {
-      disableAddCommentMode();
-    }
-  }, [ disableAddCommentMode, createComment.state ]);
-
-  useEffect(function handleSubmitEditStateChange() {
-    if (editPost.state === `success`) {
-      disableEditMode();
-    }
-  }, [ disableEditMode, editPost.state ]);
+    errorToast
+  } = useGlobalErrorToast();
+  const ready = !busy;
+  const [editMode, setEditMode] = useState(
+    /** @type {() => boolean} */
+    () => false
+  );
+  const onEdit = useCallback(() => setEditMode(true), []);
+  const onEditCancel = useCallback(
+    function onEditCancel() {
+      setEditMode(false);
+    }, []
+  );
+  const onEditSubmit = useCallback(
+    function onEditSubmit() {
+      setEditMode(false);
+    }, []
+  );
+  const [addCommentMode, setAddCommentMode] = useState(
+    /** @type {() => boolean} */
+    () => false
+  );
+  const onAddComment = useCallback(() => setAddCommentMode(true), []);
+  const onAddCommentCancel = useCallback(
+    function onAddCommentCancel() {
+      setAddCommentMode(false);
+    }, []
+  );
+  const onAddCommentSubmit = useCallback(
+    function onAddCommentSubmit() {
+      setAddCommentMode(false);
+    }, []
+  );
 
   usePageMeta(function setPageMeta() {
     return {
       description: t(`BlogPost:description`)
     };
   }, [ t ]);
-  usePageLoadTracker([ !!data ]);
+  usePageLoadTracker([ ready ]);
+  useEffect(function showError() {
+    if (error) {
+      errorToast(error);
+    }
+  }, [error]);
 
   return {
-    addCommentError: createComment.error,
     addCommentMode,
+    createComment,
     data,
-    disableEditMode,
+    deleteComment,
     editMode,
-    editPostError: editPost.error,
     onAddComment,
-    onCancelAddComment,
-    onCancelEdit,
+    onAddCommentCancel,
+    onAddCommentSubmit,
     onEdit,
-    onSubmitComment: createComment.execute,
-    onSubmitEdit: editPost.execute,
-    t
+    onEditCancel,
+    onEditSubmit,
+    ready,
+    t,
+    updateComment,
+    updatePost
   };
 }
 
@@ -116,20 +126,22 @@ function useBlogPostPage() {
 const BlogPost = function() {
   const {
     addCommentMode,
+    createComment,
     data,
+    deleteComment,
     editMode,
-    editPostError,
-    error,
     onAddComment,
-    onCancelAddComment,
-    onCancelEdit,
+    onAddCommentCancel,
+    onAddCommentSubmit,
     onEdit,
-    onSubmitComment,
-    onSubmitEdit,
-    t
+    onEditCancel,
+    onEditSubmit,
+    ready,
+    t,
+    updateComment,
+    updatePost
   } = useBlogPostPage();
   const {
-    _id,
     author,
     comments,
     tags,
@@ -138,9 +150,9 @@ const BlogPost = function() {
   } = data ?? {};
 
   return (
-    <Busy
-      className={`${layoutStyles.layout} ${styles.post}`}
-      ready={!!data || !!error}
+    <Busy.div
+      class={`${layoutStyles.layout} ${styles.post}`}
+      ready={ready}
     >
       <form>
         <PageTitleContainer>
@@ -177,20 +189,19 @@ const BlogPost = function() {
 
       {editMode && (
         <EditPostDialog
-          error={editPostError}
           initialValue={text}
-          onCancel={onCancelEdit}
-          onSubmit={onSubmitEdit}
+          onCancel={onEditCancel}
+          onSubmit={onEditSubmit}
         />
       )}
 
       {addCommentMode && (
         <AddCommentDialog
-          onCancel={onCancelAddComment}
-          onSubmit={onSubmitComment}
+          onCancel={onAddCommentCancel}
+          onSubmit={onAddCommentSubmit}
         />
       )}
-    </Busy>
+    </Busy.div>
   );
 }
 

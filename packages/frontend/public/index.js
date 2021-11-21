@@ -1,31 +1,34 @@
-import 'preact/devtools';
+import 'preact/debug';
 
 import {
   OverlayProvider
 } from '@react-aria/overlays';
-import hydrate from 'preact-iso/hydrate';
 import {
-  ErrorBoundary
-} from 'preact-iso/lazy';
-import {
+  ErrorBoundary,
   LocationProvider,
-  Router
-} from 'preact-iso/router';
+  Router,
+  Route,
+  lazy,
+  hydrate,
+  prerender as ssr
+} from 'preact-iso';
+
+import Home from './pages/home/index.js';
+import NotFound from './pages/_404.js';
 
 import Busy from './components/Busy.js';
 import Footer from './components/Footer.js';
+import GlobalErrorToast from './components/GlobalErrorToast.js';
 import Header from './components/Header.js';
-import PrivateRoute from './components/PrivateRoute.js';
-import About from './pages/about/index.js';
-import Blog from './pages/blog/index.js';
-import BlogPost from './pages/blog/post.js';
-import Home from './pages/home/index.js';
-import Me from './pages/me/index.js';
-import NotFound from './pages/not-found/index.js';
-import Settings from './pages/settings/index.js';
 import {
   fireEvent
 } from './utils/analytics.js';
+import {
+  DocumentLevelProvider
+} from './utils/useDocumentLevel.js';
+import {
+  GlobalErrorToastProvider
+} from './utils/useGlobalErrorToast.js';
 import {
   useDictionary,
   useLocale
@@ -37,51 +40,24 @@ import {
   useSiteSettings
 } from './utils/useSiteSettings.js';
 
-import './theme.css';
-import './global.css';
+const About = lazy(() => import('./pages/about/index.js'));
+const Blog = lazy(() => import('./pages/blog/index.js'));
+const BlogPost = lazy(() => import('./pages/blog/post.js'));
 
-const publicRoutes = {
-  '*': NotFound,
-  '/': Home,
-  '/about': About,
-  '/blog': Blog,
-  '/blog/posts/:postId': BlogPost
-};
-
-const privateRoutes = {
-  '/me': Me,
-  '/settings': Settings
-};
-
-const routes = [
-  ...Object.entries(publicRoutes).map(
-    ([ path, C ]) => <C key={path} path={path} />
-  ),
-  ...Object.entries(privateRoutes).map(
-    ([ path, C ]) => <PrivateRoute key={path} component={C} path={path} />
-  ),
-  <NotFound key="404" default />
-];
-
-function onNavigate() {
-  /* Router.onLoadEnd() gets called before the router re-renders upon route change */
-  setTimeout(function onNav() {
-    if (window.location.hash) {
-      document.getElementById(window.location.hash)?.scrollIntoView();
-    }
-  }, 0);
-}
-
-function onAppError() {
+/**
+ * @param {Error} err
+ */
+function onAppError(err) {
   fireEvent({
     eventData: JSON.stringify({
+      message: err.message,
       url: window.location.href
     }),
     eventType: `appError`
   });
 }
 
-function usePreloadData() {
+function useApp() {
   const {
     locale
   } = useLocale();
@@ -97,42 +73,50 @@ function usePreloadData() {
   return [ locale, dictionary, siteSettings, sessionCheck ].every(Boolean);
 }
 
-/** @type {import('~/t').Component<{}>} */
-const Contents = () => (
-  <LocationProvider>
-    <ErrorBoundary onError={onAppError}>
-      <Router onLoadEnd={onNavigate}>
-        {routes}
-      </Router>
-    </ErrorBoundary>
-  </LocationProvider>
-)
-
-/** @type {import('~/t').Component<{}>} */
-function App() {
-  const ready = usePreloadData();
+function AppContents() {
+  const ready = useApp();
 
   return (
-    <OverlayProvider>
-      <div id="app">
-        <a id="skip-link" href="#main">skip to content</a>
-
-        <Header />
-
-        <Busy
-          as="main"
-          ready={ready}
-          id="main"
-        >
-          {ready && <Contents />}
-        </Busy>
-
-        <Footer />
-      </div>
-    </OverlayProvider>
+    <div id="app">
+      <a id="skip-link" href="#main">skip to content</a>
+      <Header />
+      <Busy
+        as="main"
+        ready={ready}
+      >
+        <Router>
+          <Route path="/" component={Home} />
+          <Route path="/about" component={About} />
+          <Route path="/blog" component={Blog} />
+          <Route path="/blog/posts/:id" component={BlogPost} />
+          <Route default component={NotFound} />
+        </Router>
+      </Busy>
+      <Footer />
+    </div>
   );
 }
 
-hydrate(<App />, document.body);
+export function App() {
+  return (
+    <ErrorBoundary onError={onAppError}>
+      <GlobalErrorToastProvider>
+        <LocationProvider>
+          <DocumentLevelProvider value={1}>
+            <OverlayProvider>
+              <AppContents />
+            </OverlayProvider>
+            <GlobalErrorToast />
+          </DocumentLevelProvider>
+        </LocationProvider>
+      </GlobalErrorToastProvider>
+    </ErrorBoundary>
+  );
+}
 
-export default App;
+hydrate(<App />);
+
+/** @param {any} data */
+export async function prerender(data) {
+  return await ssr(<App {...data} />);
+}

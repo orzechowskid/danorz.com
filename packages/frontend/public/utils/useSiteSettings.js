@@ -1,16 +1,16 @@
-import _get from 'lodash/get';
-import _set from 'lodash/set';
-
+import {
+  get,
+  set
+} from './getSet.js';
 import {
   useRemoteData
-} from '~/utils/useRemoteData.js';
+} from './useRemoteData.js';
 
 /**
  * @typedef {Object} Settings
  * @property {string} name
  * @property {Object} values
  */
-
 function useSiteSettings() {
   /** @type {import('~/t').RemoteResource<Settings>} */
   const {
@@ -28,7 +28,7 @@ function useSiteSettings() {
    * @param {string} path
    */
   function getSetting(path) {
-    return _get(data?.values ?? {}, path);
+    return get(data?.values ?? {}, path);
   }
 
   /**
@@ -42,10 +42,9 @@ function useSiteSettings() {
       return;
     }
 
-    /* `lodash.set` mutates in place so we shallow-clone here */
     const nextData = {
       ...data,
-      values: _set({
+      values: set({
         ...data.values
       }, path, value)
     };
