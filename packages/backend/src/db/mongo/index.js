@@ -90,6 +90,12 @@ class DBConnection {
   }
 
   async disconnect() {
+    /* HMR support in development envs, since mongoose doesn't support the
+     * re-declaration of models and schemas */
+    // @ts-ignore
+    delete this.connection.models;
+    // @ts-ignore
+    this.connection.models = {};
   }
 }
 

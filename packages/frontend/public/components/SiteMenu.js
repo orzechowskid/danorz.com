@@ -148,7 +148,7 @@ const SiteMenu = () => {
       {state.isOpen && (
         <SiteMenuContainer onClose={state.close}>
           {isSignedIn
-            ? <button onClick={onSignOut}>{t(`sign-out`)}</button>
+            ? <button onClick={onSignOut}>{t(`SiteMenu:sign-out`)}</button>
             : <SignInForm />
           }
         </SiteMenuContainer>

@@ -6,13 +6,15 @@ import {
 import Markdown from './Markdown.js';
 import Textarea from './Textarea.js';
 
+import styles from './MarkdownPreviewPane.module.css';
+
 /**
- * @typedef {Object} MarkdownPreviewPaneProps
+ * @typedef MarkdownPreviewPaneProps
  * @property {string} [className]
- * @property {(string) => void} onChange
+ * @property {string} [initialValue]
+ * @property {(arg0: string) => void} onChange
  * @property {string} name
  * @property {boolean} previewMode
- * @property {string} value
  */
 
 /** @param {MarkdownPreviewPaneProps} props */
@@ -34,7 +36,7 @@ function useMarkdownPreviewPane(props) {
   };
 }
 
-/** @type {import('preact').FunctionComponent<MarkdownPreviewPaneProps>} */
+/** @type {import('~/t').Component<MarkdownPreviewPaneProps>} */
 const MarkdownPreviewPane = function(props) {
   const {
     className,
@@ -47,7 +49,7 @@ const MarkdownPreviewPane = function(props) {
   return previewMode
     ? (
       <>
-        <Markdown className={className}>
+        <Markdown class={`${className} ${styles.previewMode}`}>
           {value}
         </Markdown>
         <input
@@ -58,7 +60,7 @@ const MarkdownPreviewPane = function(props) {
       </>
     ) : (
       <Textarea
-        className={className}
+        class={className}
         name={name}
         onChange={onTextChange}
       >

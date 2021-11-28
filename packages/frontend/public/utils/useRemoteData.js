@@ -265,6 +265,7 @@ function useRemoteData(opts) {
     ...defaultSwrOpts,
     ...userSwrOpts
   };
+  /** @type {import('~/t').SWR<Payload>} */
   const swr = useSWR(apiEndpoint, rawRequest, swrInstance);
   const {
     data: swrData,

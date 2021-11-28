@@ -3,19 +3,16 @@ import {
   set
 } from './getSet.js';
 import {
+  useGlobalToast
+} from './useGlobalToast.js';
+import {
   useRemoteData
 } from './useRemoteData.js';
 
-/**
- * @typedef {Object} Settings
- * @property {string} name
- * @property {Object} values
- */
 function useSiteSettings() {
-  /** @type {import('~/t').RemoteResource<Settings>} */
+  /** @type {import('~/t').RemoteResource<import('dto').Settings>} */
   const {
     data,
-    error,
     doUpdate
   } = useRemoteData({
     apiEndpoint: `env/settings`,
@@ -23,6 +20,9 @@ function useSiteSettings() {
       raw: true
     }
   });
+  const {
+    toast
+  } = useGlobalToast();
 
   /**
    * @param {string} path
@@ -37,18 +37,18 @@ function useSiteSettings() {
    */
   function updateSetting(path, value) {
     if (!data?.values) {
-      console.warn(`setting at ${path} could not be set`);
+      toast({
+        message: `setting at ${path} could not be set`,
+        severity: `warn`
+      });
 
       return;
     }
 
-    const nextData = {
+    doUpdate.execute({
       ...data,
-      values: set({
-        ...data.values
-      }, path, value)
-    };
-    doUpdate.execute(nextData);
+      values: set(data.values, path, value)
+    });
   }
 
   return {

@@ -18,13 +18,20 @@
     },
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "typeRoots": [
+      ".",
+      "./node_modules",
+      "../../mode_modules"
+    ],
+    "useUnknownInCatchVariables": false
   },
   "include": [
     "./public/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "../../node_modules"
   ],
   "typeAcquisition": {
     "enable": false

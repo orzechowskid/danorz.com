@@ -14,8 +14,8 @@ function Footer() {
   } = useI18n();
 
   return (
-    <div class={layoutStyles.layout}>
-      <footer className={styles.footer}>
+    <div class={`${styles.footer} ${layoutStyles.layout}`}>
+      <footer>
         <Section as="nav">
           <Heading at-only>
             {t(`Footer:nav-title`)}

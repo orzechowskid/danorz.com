@@ -5,18 +5,15 @@ import {
 } from 'preact/hooks';
 import {
   useLocation
-} from 'preact-iso/router';
+} from 'preact-iso';
 
 import Busy from '~/components/Busy.js';
-import LinkButton from '~/components/LinkButton.js';
+import Heading from '~/components/Heading.js';
 import Markdown from '~/components/Markdown.js';
-import PageTitleContainer, {
-  PageActions,
-  PageTitle
-} from '~/components/PageTitleContainer.js';
+import PageTitle from '~/components/PageTitle.js';
 import {
-  useGlobalErrorToast
-} from '~/utils/useGlobalErrorToast.js';
+  useGlobalToast
+} from '~/utils/useGlobalToast.js';
 import {
   useI18n
 } from '~/utils/useI18n.js';
@@ -26,6 +23,9 @@ import {
 import {
   usePageMeta
 } from '~/utils/usePageTitle.js';
+import {
+  useSession
+} from '~/utils/useSession.js';
 import AddCommentDialog from './components/AddCommentDialog.js';
 import Byline from './components/Byline.js';
 import Comments from './components/Comments.js';
@@ -57,13 +57,13 @@ function useBlogPostPage() {
     postId
   });
   const {
-    errorToast
-  } = useGlobalErrorToast();
+    toast
+  } = useGlobalToast();
+  const {
+    isSignedIn
+  } = useSession();
   const ready = !busy;
-  const [editMode, setEditMode] = useState(
-    /** @type {() => boolean} */
-    () => false
-  );
+  const [ editMode, setEditMode ] = useState(false);
   const onEdit = useCallback(() => setEditMode(true), []);
   const onEditCancel = useCallback(
     function onEditCancel() {
@@ -71,14 +71,22 @@ function useBlogPostPage() {
     }, []
   );
   const onEditSubmit = useCallback(
-    function onEditSubmit() {
-      setEditMode(false);
+    /** @param {import('dto').BlogPost} updatedPost */
+    async function onEditSubmit(updatedPost) {
+      try {
+        updatePost(updatedPost);
+        setEditMode(false);
+        throw new Error('no.');
+      }
+      catch (ex) {
+        toast({
+          message: ex.message,
+          severity: `error`
+        });
+      }
     }, []
   );
-  const [addCommentMode, setAddCommentMode] = useState(
-    /** @type {() => boolean} */
-    () => false
-  );
+  const [ addCommentMode, setAddCommentMode ] = useState(false);
   const onAddComment = useCallback(() => setAddCommentMode(true), []);
   const onAddCommentCancel = useCallback(
     function onAddCommentCancel() {
@@ -97,11 +105,14 @@ function useBlogPostPage() {
     };
   }, [ t ]);
   usePageLoadTracker([ ready ]);
-  useEffect(function showError() {
+  useEffect(function onError() {
     if (error) {
-      errorToast(error);
+      toast({
+        message: error.message,
+        severity: `error`
+      });
     }
-  }, [error]);
+  }, [ error ]);
 
   return {
     addCommentMode,
@@ -109,6 +120,7 @@ function useBlogPostPage() {
     data,
     deleteComment,
     editMode,
+    isSignedIn,
     onAddComment,
     onAddCommentCancel,
     onAddCommentSubmit,
@@ -122,14 +134,13 @@ function useBlogPostPage() {
   };
 }
 
-/** @type {import('preact').FunctionComponent<void>} */
+/** @type {import('~/t').Component<{}>} */
 const BlogPost = function() {
   const {
     addCommentMode,
-    createComment,
     data,
-    deleteComment,
     editMode,
+    isSignedIn,
     onAddComment,
     onAddCommentCancel,
     onAddCommentSubmit,
@@ -137,50 +148,42 @@ const BlogPost = function() {
     onEditCancel,
     onEditSubmit,
     ready,
-    t,
-    updateComment,
-    updatePost
+    t
   } = useBlogPostPage();
-  const {
-    author,
-    comments,
-    tags,
-    text,
-    title
-  } = data ?? {};
 
   return (
     <Busy.div
       class={`${layoutStyles.layout} ${styles.post}`}
       ready={ready}
     >
+      <PageTitle>danorz.com - blog</PageTitle>
       <form>
-        <PageTitleContainer>
-          <PageTitle title={title} />
-          <PageActions>
-            <LinkButton
-              key="e"
-              onClick={onEdit}
-            >
-              <span>{t(`PageActions:edit-button`)}</span>
-            </LinkButton>
-          </PageActions>
-        </PageTitleContainer>
         <section>
+          <Heading>{data?.title}</Heading>
           <header>
             <Byline
-              author={author}
-              tags={tags}
-              timestamp={new Date("1981-11-28T00:00:00Z")}
+              author={data?.author}
+              tags={data?.tags}
+              timestamp={new Date().toISOString()}
             />
           </header>
-          <a href="#comments">{t(`BlogPost:skip-to-comments`)}</a>
+          <div>
+            <a href="#comments">{t(`BlogPost:skip-to-comments`)}</a>
+            {isSignedIn && (
+              <button
+                onClick={onEdit}
+                type="button"
+              >
+                {t(`BlogPost:edit`)}
+              </button>
+            )}
+          </div>
           <Markdown>
-            {text}
+            {data?.text}
           </Markdown>
           <footer id="comments">
             <Comments
-              comments={comments}
+              post={data}
               onAddComment={onAddComment}
             />
           </footer>
@@ -189,9 +192,10 @@ const BlogPost = function() {
 
       {editMode && (
         <EditPostDialog
-          initialValue={text}
           onCancel={onEditCancel}
           onSubmit={onEditSubmit}
+          /* have to have a full post loaded if we're editing something */
+          post={/** @type {import('dto').BlogPost} */(data)}
         />
       )}
 

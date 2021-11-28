@@ -7,7 +7,6 @@ import {
   FunctionComponent,
   JSX
 } from 'preact';
-import * as PreactHooks from 'preact/hooks';
 
 import { SWRConfiguration, SWRResponse } from 'swr';
 
@@ -57,16 +56,7 @@ export interface RemoteCollection<Payload, CreateShape = Partial<Payload>, Delet
   metadata?: RemoteMetadata;
 }
 
-export type SWR<Payload> = SWRResponse<DtoWrapper<Payload>, (string|Error)>;
-
-export interface UseAnimateElementOptions {
-  className?: string;
-  delay?: number;
-  duration?: number;
-  onEnd?: () => void;
-  onStart?: () => void;
-  ref: PreactHooks.Ref<HTMLElement>;
-}
+export type SWR<Payload> = SWRResponse<DtoWrapper<Payload>, Error>;
 
 export interface AnalyticsEvent {
   eventType: string;
@@ -74,3 +64,8 @@ export interface AnalyticsEvent {
 }
 
 export type HTMLAttributes<E extends EventTarget = HTMLElement> = JSX.HTMLAttributes<E>;
+
+export interface Toast {
+  message: string;
+  severity: 'log'|'info'|'warn'|'error'|'fatal';
+}

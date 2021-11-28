@@ -1,5 +1,4 @@
 .footer {
-  padding: var(--gutter-lg) 0;
   color: var(--color-footer-foreground);
   background: var(--color-footer-background);
 }

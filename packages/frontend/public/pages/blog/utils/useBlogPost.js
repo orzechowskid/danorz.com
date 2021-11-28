@@ -1,4 +1,6 @@
-import { useCallback } from 'preact/hooks';
+import {
+  useCallback
+} from 'preact/hooks';
 import {
   useRemoteCollection,
   useRemoteData
@@ -18,7 +20,7 @@ import {
  * @property {(commentText: string) => Promise<void>} createComment
  * @property {Partial<import('dto').BlogPost>} data
  * @property {(id: import('dto').Id) => Promise<void>} deleteComment
- * @property {boolean} error
+ * @property {Error} [error]
  * @property {(comment: import('dto').BlogPostComment) => Promise<void>} updateComment
  * @property {(post: import('dto').BlogPost) => Promise<void>} updatePost
  * @description a logical resource built up from data at multiple API endpoints
@@ -68,7 +70,7 @@ const useBlogPost = (opts) => {
     async function updateComment(blogPostComment) {
       return doUpdateComment.execute(blogPostComment);
     },
-    [doUpdateComment]
+    [ doUpdateComment ]
   );
   const createComment = useCallback(
     /** @param {string} newCommentText */
@@ -82,14 +84,14 @@ const useBlogPost = (opts) => {
 
       return doCreateComment.execute(newComment);
     },
-    [doCreateComment]
+    [ doCreateComment ]
   );
   const deleteComment = useCallback(
     /** @param {import('dto').Id} commentId */
     async function deleteComment(commentId) {
       return doDeleteComment.execute(commentId);
     },
-    [doDeleteComment]
+    [ doDeleteComment ]
   );
 
   return {
@@ -97,7 +99,7 @@ const useBlogPost = (opts) => {
     createComment,
     data,
     deleteComment,
-    error: !!(postError || commentsError),
+    error: postError || commentsError || undefined,
     updateComment,
     updatePost
   };

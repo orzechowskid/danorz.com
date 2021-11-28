@@ -18,7 +18,7 @@ import NotFound from './pages/_404.js';
 
 import Busy from './components/Busy.js';
 import Footer from './components/Footer.js';
-import GlobalErrorToast from './components/GlobalErrorToast.js';
+import GlobalToast from './components/GlobalToast.js';
 import Header from './components/Header.js';
 import {
   fireEvent
@@ -27,8 +27,8 @@ import {
   DocumentLevelProvider
 } from './utils/useDocumentLevel.js';
 import {
-  GlobalErrorToastProvider
-} from './utils/useGlobalErrorToast.js';
+  GlobalToastProvider
+} from './utils/useGlobalToast.js';
 import {
   useDictionary,
   useLocale
@@ -99,18 +99,18 @@ function AppContents() {
 
 export function App() {
   return (
-    <ErrorBoundary onError={onAppError}>
-      <GlobalErrorToastProvider>
-        <LocationProvider>
+    <LocationProvider>
+      <ErrorBoundary onError={onAppError}>
+        <GlobalToastProvider>
           <DocumentLevelProvider value={1}>
             <OverlayProvider>
               <AppContents />
             </OverlayProvider>
-            <GlobalErrorToast />
+            <GlobalToast />
           </DocumentLevelProvider>
-        </LocationProvider>
-      </GlobalErrorToastProvider>
-    </ErrorBoundary>
+        </GlobalToastProvider>
+      </ErrorBoundary>
+    </LocationProvider>
   );
 }
 

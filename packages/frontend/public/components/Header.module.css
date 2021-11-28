@@ -8,6 +8,10 @@
   background: var(--color-page-background);
 }
 
+.siteName {
+  font-weight: unset;
+}
+
 .headerContents {
   display: flex;
   align-items: baseline;

@@ -28,7 +28,6 @@ function useBlogPage() {
   /** @type {import('~/t').RemoteCollection<import('dto').BlogPost>} */
   const {
     data,
-    metadata,
     busy
   } = useRemoteCollection({
     apiEndpoint: `blog/posts`

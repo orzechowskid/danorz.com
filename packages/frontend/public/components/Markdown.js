@@ -9,7 +9,7 @@ import styles from './Markdown.module.css';
 
 /**
  * @typedef {Object} MarkdownProps
- * @property {string} children
+ * @property {string} [children]
  * @property {string} [className]
  */
 
@@ -49,7 +49,7 @@ const Strikethrough = (props) => (
   </span>
 )
 
-/** @type {import('../t').Component<MarkdownProps>} */
+/** @type {import('~/t').Component<MarkdownProps>} */
 const Markdown = (props) => {
   const {
     children = ``,

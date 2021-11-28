@@ -10,45 +10,37 @@ import styles from './Busy.module.css';
  * @typedef {BusyContainerSelfProps & import('preact').JSX.HTMLAttributes} BusyContainerProps
  *
  * @typedef {Record<Els, import('~/t').Component<BusyContainerProps>>} Helpers
- *
- * @typedef {Helpers & import('~/t').Component<BusyContainerProps>} AugmentedComponent
  */
 
 /** @type {import('~/t').Component<BusyContainerProps>} */
 const BusyContainer = function(props) {
   const {
-    as: ElementName = `div`,
+    as = `div`,
     children,
-    class: cls = ``,
+    class: cls,
     ready,
     ...otherProps
   } = props;
+  const ElementName = as;
+  const classname = cls || ``;
 
   return (
     <ElementName
       aria-busy={!ready}
-      class={`${styles.busy} ${cls}`}
+      class={`${styles.busy} ${classname}`}
       {...otherProps}
     >
-      {children}
+      {ready ? children : null}
     </ElementName>
   );
 };
 
-/**
- * @param {import('~/t').Component<BusyContainerSelfProps>} Fn
- * @return {AugmentedComponent}
- */
-export function factory(Fn) {
-  /** @type {Record<Els, import('~/t').Component<BusyContainerProps>>} */
-  const augments = {
-    div: (props) => <Fn {...props} as="div" />,
-    main: (props) => <Fn {...props} as="main" />,
-    section: (props) => <Fn {...props} as="section" />,
-    span: (props) => <Fn {...props} as="span" />
-  };
+/** @type {Helpers} */
+const augments = {
+  div: (props) => <BusyContainer {...props} as="div" />,
+  main: (props) => <BusyContainer {...props} as="main" />,
+  section: (props) => <BusyContainer {...props} as="section" />,
+  span: (props) => <BusyContainer {...props} as="span" />
+};
 
-  return Object.assign(Fn, augments);
-}
-
-export default factory(BusyContainer);
+export default Object.assign(BusyContainer, augments);

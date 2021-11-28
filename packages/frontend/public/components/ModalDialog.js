@@ -110,9 +110,9 @@ const ModalDialog = function(props) {
             className={className}
           >
             {title && (
-              <h3 {...titleProps}>
+              <div {...titleProps}>
                 {title}
-              </h3>
+              </div>
             )}
             {children}
           </div>
