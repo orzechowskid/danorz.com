@@ -1,21 +1,18 @@
-import _get from 'lodash/get';
-import _set from 'lodash/set';
-
+import {
+  get,
+  set
+} from './getSet.js';
+import {
+  useGlobalToast
+} from './useGlobalToast.js';
 import {
   useRemoteData
-} from '~/utils/useRemoteData.js';
-
-/**
- * @typedef {Object} Settings
- * @property {string} name
- * @property {Object} values
- */
+} from './useRemoteData.js';
 
 function useSiteSettings() {
-  /** @type {import('~/t').RemoteResource<Settings>} */
+  /** @type {import('~/t').RemoteResource<import('dto').Settings>} */
   const {
     data,
-    error,
     doUpdate
   } = useRemoteData({
     apiEndpoint: `env/settings`,
@@ -23,12 +20,15 @@ function useSiteSettings() {
       raw: true
     }
   });
+  const {
+    toast
+  } = useGlobalToast();
 
   /**
    * @param {string} path
    */
   function getSetting(path) {
-    return _get(data?.values ?? {}, path);
+    return get(data?.values ?? {}, path);
   }
 
   /**
@@ -37,19 +37,18 @@ function useSiteSettings() {
    */
   function updateSetting(path, value) {
     if (!data?.values) {
-      console.warn(`setting at ${path} could not be set`);
+      toast({
+        message: `setting at ${path} could not be set`,
+        severity: `warn`
+      });
 
       return;
     }
 
-    /* `lodash.set` mutates in place so we shallow-clone here */
-    const nextData = {
+    doUpdate.execute({
       ...data,
-      values: _set({
-        ...data.values
-      }, path, value)
-    };
-    doUpdate.execute(nextData);
+      values: set(data.values, path, value)
+    });
   }
 
   return {

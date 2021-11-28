@@ -1,12 +1,14 @@
 import {
   useCallback,
   useEffect,
-  useRef,
-  useState
+  useRef
 } from 'preact/hooks';
 
 import MarkdownPreviewPane from '~/components/MarkdownPreviewPane.js';
 import ModalDialog from '~/components/ModalDialog.js';
+import {
+  useGlobalToast
+} from '~/utils/useGlobalToast.js';
 import {
   useI18n
 } from '~/utils/useI18n.js';
@@ -18,16 +20,14 @@ import styles from './EditPostDialog.module.css';
 
 /**
  * @typedef {Object} EditPostDialogProps
- * @property {Error} [error]
- * @property {string} initialValue
+ * @property {import('dto').BlogPost} [post]
  * @property {() => void} onCancel
- * @property {(newText: string) => void} onSubmit
+ * @property {(post: import('dto').BlogPost) => void} onSubmit
  */
 
 /** @param {EditPostDialogProps} props */
 function useEditPostDialog(props) {
   const {
-    error,
     onSubmit
   } = props;
   const {
@@ -37,15 +37,22 @@ function useEditPostDialog(props) {
   const {
     t
   } = useI18n();
-  const [ errorMessage, setErrorMessage ] = useState(error?.message);
+  const {
+    toast
+  } = useGlobalToast();
   const onSubmitEdit = useCallback(function onSubmitEdit(e) {
     const formData = new FormData(e.target);
-    const postText = formData.get(`postText`);
+    /** @type {string|null} */
+    /* we know what it is */
+    const postText = /** @type {string|null} */(formData.get(`postText`));
 
     e.preventDefault();
 
-    if (postText.length < 10) {
-      setErrorMessage(`10 chars or more plz`);
+    if ((postText?.length ?? 0) < 10) {
+      toast({
+        message: `10 chars or more plz`,
+        severity: `warning`
+      });
     }
     else {
       // TODO: standardize on passing FormData objects?
@@ -59,13 +66,8 @@ function useEditPostDialog(props) {
     formRef.current?.querySelector(`textarea`)?.focus();
   }, []);
 
-  useEffect(function onError() {
-    setErrorMessage(error?.message ? `o no something went wrong` : undefined);
-  }, [ error?.message ]);
-
   return {
     ...props,
-    errorMessage,
     formRef,
     onSubmitEdit,
     onTogglePreview,
@@ -77,12 +79,11 @@ function useEditPostDialog(props) {
 /** @type {import('preact').FunctionComponent<EditPostDialogProps>} */
 const EditPostDialog = function(props) {
   const {
-    errorMessage,
     formRef,
-    initialValue,
     onCancel,
     onSubmitEdit,
     onTogglePreview,
+    post,
     previewMode,
     t
   } = useEditPostDialog(props);
@@ -99,13 +100,11 @@ const EditPostDialog = function(props) {
       >
         <MarkdownPreviewPane
           className={styles.markdownPreviewPane}
-          initialValue={initialValue}
+          initialValue={post?.text}
           name="postText"
+          onChange={onSubmitEdit}
           previewMode={previewMode}
         />
-        <div role="status">
-          {errorMessage}
-        </div>
         <div role="group">
           <button
             aria-pressed={previewMode}

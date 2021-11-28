@@ -110,6 +110,7 @@ md-preview {
 
 main {
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   align-items: stretch;
   margin-bottom: var(--gutter-lg);
@@ -145,4 +146,17 @@ time {
   line-height: var(--line-height-body-copy);
   color: var(--color-body-copy);
   background-color: var(--color-page-background);
+}
+
+[at-only] {
+  position: fixed;
+  top: -1px;
+  left: -1px;
+  width: 1px;
+  height: 1px;
+  color: transparent;
+  pointer-events: none;
+  background-color: transparent;
+  opacity: 0.01;
+  transform: scale(0.01);
 }

@@ -9,7 +9,7 @@ import styles from './Markdown.module.css';
 
 /**
  * @typedef {Object} MarkdownProps
- * @property {string} children
+ * @property {string} [children]
  * @property {string} [className]
  */
 

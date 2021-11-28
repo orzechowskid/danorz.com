@@ -1,11 +1,15 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "es6": true
   },
   "extends": [
     "../../.eslintrc.json",
     "plugin:react/recommended"
   ],
+  "globals": {
+    "browser": true
+  },
   "parserOptions": {
     "jsx": true,
     "sourceType": "module",
@@ -54,7 +58,10 @@
     "react/jsx-filename-extension": "off",
     "react/jsx-indent": [ "warn", 2 ],
     "react/jsx-indent-props": [ "warn", 2 ],
-    "react/no-unknown-property": [ "error" ],
+    "react/no-unknown-property": [
+      "error", {
+        "ignore": [ "class" ]
+      } ],
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off"
   },

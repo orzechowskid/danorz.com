@@ -1,3 +1,7 @@
+import {
+  useCallback
+} from 'preact/hooks';
+
 import SiteBanner from '~/components/SiteBanner.js';
 import SiteMenu from '~/components/SiteMenu.js';
 import {
@@ -9,7 +13,6 @@ import layoutStyles from './Layout.module.css';
 
 function useHeader() {
   const {
-    data,
     getSetting
   } = useSiteSettings();
   return {
@@ -17,10 +20,17 @@ function useHeader() {
   }
 }
 
+/** @type {import('~/t').Component<{}>} */
 function Header() {
   const {
     siteName
   } = useHeader();
+  const onClickHeaderLink = useCallback(
+    /** @type {import('preact').JSX.MouseEventHandler<HTMLAnchorElement>} */
+    function onClickHeaderLink(e) {
+      e?.target?.blur();
+    }, []
+  );
 
   return (
     <header
@@ -30,7 +40,13 @@ function Header() {
       <SiteBanner />
 
       <div className={`${layoutStyles.layout} ${styles.headerContents}`}>
-        <h1>{siteName}</h1>
+        <a
+          class={styles.siteName}
+          href="/"
+          onClick={onClickHeaderLink}
+        >
+          {siteName}
+        </a>
 
         <SiteMenu />
       </div>

@@ -2,14 +2,26 @@ import {
   useEffect
 } from 'preact/hooks';
 
-/** @param {import('~/t').UseAnimateElementOptions} opts */
+/**
+ * @typedef AnimateElementOptions
+ * @property {string} className
+ * @property {number} [delay]
+ * @property {number} [duration]
+ * @property {() => void} [onEnded]
+ * @property {() => void} [onStarted]
+ * @property {import('preact/hooks').Ref<HTMLElement>} ref
+ */
+
+/**
+ * @param {AnimateElementOptions} opts
+ */
 function useAnimateElement(opts) {
   const {
     className,
     delay = 0,
     duration = 0,
-    onEnd,
-    onStart,
+    onEnded,
+    onStarted,
     ref
   } = opts;
 
@@ -18,20 +30,23 @@ function useAnimateElement(opts) {
       return;
     }
 
-    const timer = setTimeout(function() {
+    /** @type {ReturnType<typeof setTimeout>} */
+    let endTimer;
+    const startTimer = setTimeout(function() {
       ref.current.classList.add(className, `${className}-start`);
-      onStart?.();
+      onStarted?.();
 
-      setTimeout(function() {
+      endTimer = setTimeout(function() {
         ref.current.classList.add(className, `${className}-end`);
-        onEnd?.();
+        onEnded?.();
       }, duration);
     }, delay);
 
     return function cleanup() {
-      clearTimeout(timer);
+      clearTimeout(startTimer);
+      clearTimeout(endTimer);
     }
-  }, [ delay, duration, onStart, onEnd, ref.current ]);
+  }, [ delay, duration, onStarted, onEnded ]);
 }
 
 export {

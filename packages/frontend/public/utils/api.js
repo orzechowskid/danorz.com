@@ -9,6 +9,10 @@ async function rawFetch(apiEndpoint, opts={}) {
   return window.fetch(`${API_PATH}/${apiEndpoint}`, opts);
 }
 
+/**
+ * @param {string} apiEndpoint
+ * @param {Record<string, any>} [opts]
+ */
 async function rawRequest(apiEndpoint, opts = {}) {
   const response = await rawFetch(apiEndpoint, opts);
 

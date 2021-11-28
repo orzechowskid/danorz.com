@@ -1,11 +1,10 @@
 .editPostDialog {
   display: flex;
   flex-direction: column;
-  width: var(--width-add-blog-comment-dialog-sm);
+  width: 100%;
   height: var(--height-add-blog-comment-dialog-sm);
 
   @media (min-width: 480px) {
-    width: var(--width-add-blog-comment-dialog-lg);
     height: var(--height-add-blog-comment-dialog-lg);
   }
 }

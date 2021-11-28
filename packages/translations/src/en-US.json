@@ -38,6 +38,7 @@
     "comment-counter": "comments ({commentCount})",
     "comment-link": "comments on this post",
     "description": "a single blog post",
+    "edit": "edit post",
     "noComments": "comments are disabled for this post",
     "published-on": "publish date",
     "skip-to-comments": "skip to comments",
@@ -46,6 +47,9 @@
   },
   "EditPostDialog": {
     "title": "Edit post"
+  },
+  "Footer": {
+    "nav-title": "footer navigation"
   },
   "Header": {
     "header-navigation": "header navigation"

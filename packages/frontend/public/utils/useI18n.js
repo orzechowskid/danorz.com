@@ -20,6 +20,7 @@ import {
  * @param {string} locale
  * @param {Date} value
  * @param {Object} [args]
+ * @param {string} [args.type]
  * @return {string}
  */
 export function datestring(locale, value, args = {}) {
@@ -48,6 +49,7 @@ function number(locale, value) {
  * @param {string} locale
  * @param {Date} value
  * @param {Object} [args]
+ * @param {string} [args.type]
  * @return {string}
  */
 function timestamp(locale, value, args = {}) {
@@ -62,7 +64,7 @@ function timestamp(locale, value, args = {}) {
 
 /**
  * @param {string} locale
- * @param {Object} dictionary
+ * @param {Record<string, any>} dictionary
  * @param {string} key
  * @param {Object} [values]
  * @return {string}
@@ -143,7 +145,7 @@ function useI18n() {
   const date = useCallback(
     /**
      * @param {Date} value
-     * @param {Object} args
+     * @param {Object} [args]
      */
     (value, args) => datestring(locale, value, args),
     [ locale ]

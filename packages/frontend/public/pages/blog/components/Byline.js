@@ -5,14 +5,14 @@ import {
 import styles from './Byline.module.css';
 
 /**
- * @typedef {Object} BylineProps
- * @property {string} author
- * @property {string[]} tags
- * @property {number} timestamp
+ * @typedef BylineProps
+ * @property {string} [author]
+ * @property {string[]} [tags]
+ * @property {import('dto').Timestamp} [timestamp]
  */
 
-/** @type {import('~/t').Component<{tags: BylineProps['tags']}>} */
-function TagList(props) {
+/** @type {import('~/t').Component<BylineProps>} */
+const TagList = function(props) {
   const {
     tags
   } = props;
@@ -25,18 +25,17 @@ function TagList(props) {
       aria-label={t(`BlogPost:tags`)}
       className={styles.tagList}
     >
-      {tags?.map(
-        (tag) => (
-          <li key={tag}>
-            <a key={tag} href={`/blog/tags/${tag}`}>{tag}</a>
-          </li>
-        )
-      )}
+      {tags?.map((tag) => (
+        <li key={tag}>
+          <a key={tag} href={`/blog/tags/${tag}`}>{tag}</a>
+        </li>
+      ))}
     </ul>
   );
 }
 
-function Timestamp(props) {
+/** @type {import('~/t').Component<{timestamp?: import('dto').Timestamp}>} */
+const Timestamp = (props) => {
   const {
     timestamp
   } = props;
@@ -49,8 +48,8 @@ function Timestamp(props) {
   }
 
   return (
-    <time dateTime={new Date(timestamp).toISOString()}>
-      {date(timestamp)}
+    <time dateTime={timestamp}>
+      {date(new Date(timestamp))}
     </time>
   );
 }

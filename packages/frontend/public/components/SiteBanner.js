@@ -12,41 +12,37 @@ import {
 import styles from './SiteBanner.module.css';
 import layoutStyles from './Layout.module.css';
 
-/** @typedef {'info' | 'warning'} BannerSeverity */
-/**
- * @typedef {Object} SiteBannerData
- * @property {BannerSeverity} bannerSeverity
- * @property {string} bannerText
- * @property {boolean} dismissed
- */
+const FIVE_MINUTES = 1000 * 60 * 5;
 
 function useSiteBanner() {
   const {
     data: dismissedBanners,
     update: updateDismissedBanners
   } = useLocalStorage(`site/banner`);
-  /** @type {import('~/utils/useRemoteData').RemoteData<SiteBannerData>} */
+  /** @type {import('~/t').RemoteResource<import('dto').SiteBannerData>} */
   const {
     data,
     error
   } = useRemoteData({
     apiEndpoint: `site/banner`,
-    opts: {
-      /* checking for a banner more than once a minute seems wasteful */
-      dedupingInterval: 60000,
+    fetchOpts: {
+      /* seems wasteful to do this too often */
+      dedupingInterval: FIVE_MINUTES,
       revalidateOnFocus: false
     }
   });
   const {
     _id
-  } = data;
-  const activeBanner = dismissedBanners?.[_id]
+  } = data ?? {};
+  const activeBanner = !_id || dismissedBanners?.[_id]
     ? null
     : data;
 
   function dismissBanner() {
     updateDismissedBanners({
-      ...dismissedBanners, [_id]: true
+      ...dismissedBanners,
+      /* must exist or else there would be nothing to render or dismiss */
+      [/** @type {string} */(_id).toString()]: true
     });
   }
 
@@ -57,7 +53,7 @@ function useSiteBanner() {
   };
 }
 
-/** @type {import('preact').FunctionComponent<void>} */
+/** @type {import('~/t').Component<{}>} */
 function SiteBanner() {
   const {
     data,
@@ -69,7 +65,7 @@ function SiteBanner() {
     bannerSeverity,
     bannerText,
     dismissed
-  } = data;
+  } = data ?? {};
   const {
     t
   } = useI18n();

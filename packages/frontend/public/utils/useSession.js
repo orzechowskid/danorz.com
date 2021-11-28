@@ -4,7 +4,7 @@ import {
 
 /**
  * @typedef {Object} Session
- * @property {string} name
+ * @property {boolean} isLoggedIn
  */
 
 /**
@@ -27,18 +27,11 @@ function useSession() {
     doDelete,
     error
   } = remoteData;
-  /** @type {boolean|undefined} */
   let isSignedIn;
 
-  if (data === undefined && error === undefined) {
-    isSignedIn = undefined;
-  }
-  else if (error) {
-    isSignedIn = false;
-  }
-  else {
-    isSignedIn = !error;
-  }
+  isSignedIn = !!error
+    ? false
+    : data?.isLoggedIn;
 
   return {
     currentUser: data?.name,

@@ -1,18 +1,19 @@
 import {
   useCallback,
-  useEffect
+  useEffect,
+  useState
 } from 'preact/hooks';
 import {
   useLocation
-} from 'preact-iso/router';
+} from 'preact-iso';
 
 import Busy from '~/components/Busy.js';
-import LinkButton from '~/components/LinkButton.js';
+import Heading from '~/components/Heading.js';
 import Markdown from '~/components/Markdown.js';
-import PageTitleContainer, {
-  PageActions,
-  PageTitle
-} from '~/components/PageTitleContainer.js';
+import PageTitle from '~/components/PageTitle.js';
+import {
+  useGlobalToast
+} from '~/utils/useGlobalToast.js';
 import {
   useI18n
 } from '~/utils/useI18n.js';
@@ -23,8 +24,8 @@ import {
   usePageMeta
 } from '~/utils/usePageTitle.js';
 import {
-  useToggle
-} from '~/utils/useToggle.js';
+  useSession
+} from '~/utils/useSession.js';
 import AddCommentDialog from './components/AddCommentDialog.js';
 import Byline from './components/Byline.js';
 import Comments from './components/Comments.js';
@@ -33,7 +34,7 @@ import {
   useBlogPost
 } from './utils/useBlogPost.js';
 
-import layoutStyles from '~/components/Layout.module.css';
+import layoutStyles from '../../components/Layout.module.css';
 import styles from './post.module.css';
 
 function useBlogPostPage() {
@@ -43,132 +44,146 @@ function useBlogPostPage() {
   const {
     t
   } = useI18n();
-  const postId = path.split(`/`).pop();
+  const postId = path?.split(`/`).pop();
   const {
+    busy,
     createComment,
     data,
-    editPost
+    deleteComment,
+    error,
+    updateComment,
+    updatePost
   } = useBlogPost({
-    id: postId
+    postId
   });
   const {
-    disable: disableEditMode,
-    enable: enableEditMode,
-    on: editMode
-  } = useToggle(false);
+    toast
+  } = useGlobalToast();
   const {
-    disable: disableAddCommentMode,
-    enable: enableAddCommentMode,
-    on: addCommentMode
-  } = useToggle(false);
-  const onEdit = useCallback(function onEdit(e) {
-    e.preventDefault();
-    enableEditMode();
-  }, [ ]);
-  const onAddComment = useCallback(function onAddComment(e) {
-    e.preventDefault();
-    enableAddCommentMode();
-  }, []);
-  const onCancelAddComment = useCallback(function onCancelAddComment() {
-    disableAddCommentMode();
-  }, [ disableAddCommentMode ]);
-  const onCancelEdit = useCallback(function onCancelEdit() {
-    disableEditMode();
-  }, [ disableEditMode ]);
-
-  useEffect(function handleSubmitCommentStateChange() {
-    if (createComment.state === `success`) {
-      disableAddCommentMode();
-    }
-  }, [ disableAddCommentMode, createComment.state ]);
-
-  useEffect(function handleSubmitEditStateChange() {
-    if (editPost.state === `success`) {
-      disableEditMode();
-    }
-  }, [ disableEditMode, editPost.state ]);
+    isSignedIn
+  } = useSession();
+  const ready = !busy;
+  const [ editMode, setEditMode ] = useState(false);
+  const onEdit = useCallback(() => setEditMode(true), []);
+  const onEditCancel = useCallback(
+    function onEditCancel() {
+      setEditMode(false);
+    }, []
+  );
+  const onEditSubmit = useCallback(
+    /** @param {import('dto').BlogPost} updatedPost */
+    async function onEditSubmit(updatedPost) {
+      try {
+        updatePost(updatedPost);
+        setEditMode(false);
+        throw new Error('no.');
+      }
+      catch (ex) {
+        toast({
+          message: ex.message,
+          severity: `error`
+        });
+      }
+    }, []
+  );
+  const [ addCommentMode, setAddCommentMode ] = useState(false);
+  const onAddComment = useCallback(() => setAddCommentMode(true), []);
+  const onAddCommentCancel = useCallback(
+    function onAddCommentCancel() {
+      setAddCommentMode(false);
+    }, []
+  );
+  const onAddCommentSubmit = useCallback(
+    function onAddCommentSubmit() {
+      setAddCommentMode(false);
+    }, []
+  );
 
   usePageMeta(function setPageMeta() {
     return {
       description: t(`BlogPost:description`)
     };
   }, [ t ]);
-  usePageLoadTracker([ !!data ]);
+  usePageLoadTracker([ ready ]);
+  useEffect(function onError() {
+    if (error) {
+      toast({
+        message: error.message,
+        severity: `error`
+      });
+    }
+  }, [ error ]);
 
   return {
-    addCommentError: createComment.error,
     addCommentMode,
+    createComment,
     data,
-    disableEditMode,
+    deleteComment,
     editMode,
-    editPostError: editPost.error,
+    isSignedIn,
     onAddComment,
-    onCancelAddComment,
-    onCancelEdit,
+    onAddCommentCancel,
+    onAddCommentSubmit,
     onEdit,
-    onSubmitComment: createComment.execute,
-    onSubmitEdit: editPost.execute,
-    t
+    onEditCancel,
+    onEditSubmit,
+    ready,
+    t,
+    updateComment,
+    updatePost
   };
 }
 
-/** @type {import('preact').FunctionComponent<void>} */
+/** @type {import('~/t').Component<{}>} */
 const BlogPost = function() {
   const {
     addCommentMode,
     data,
     editMode,
-    editPostError,
-    error,
+    isSignedIn,
     onAddComment,
-    onCancelAddComment,
-    onCancelEdit,
+    onAddCommentCancel,
+    onAddCommentSubmit,
     onEdit,
-    onSubmitComment,
-    onSubmitEdit,
+    onEditCancel,
+    onEditSubmit,
+    ready,
     t
   } = useBlogPostPage();
-  const {
-    _id,
-    author,
-    comments,
-    tags,
-    text,
-    title
-  } = data ?? {};
 
   return (
-    <Busy
-      className={`${layoutStyles.layout} ${styles.post}`}
-      ready={!!data || !!error}
+    <Busy.div
+      class={`${layoutStyles.layout} ${styles.post}`}
+      ready={ready}
     >
+      <PageTitle>danorz.com - blog</PageTitle>
       <form>
-        <PageTitleContainer>
-          <PageTitle title={title} />
-          <PageActions>
-            <LinkButton
-              key="e"
-              onClick={onEdit}
-            >
-              <span>{t(`PageActions:edit-button`)}</span>
-            </LinkButton>
-          </PageActions>
-        </PageTitleContainer>
         <section>
+          <Heading>{data?.title}</Heading>
           <header>
             <Byline
-              author={author}
-              tags={tags}
-              timestamp={new Date("1981-11-28T00:00:00Z")}
+              author={data?.author}
+              tags={data?.tags}
+              timestamp={new Date().toISOString()}
             />
           </header>
-          <a href="#comments">{t(`BlogPost:skip-to-comments`)}</a>
+          <div>
+            <a href="#comments">{t(`BlogPost:skip-to-comments`)}</a>
+            {isSignedIn && (
+              <button
+                onClick={onEdit}
+                type="button"
+              >
+                {t(`BlogPost:edit`)}
+              </button>
+            )}
+          </div>
           <Markdown>
-            {text}
+            {data?.text}
           </Markdown>
           <footer id="comments">
             <Comments
-              comments={comments}
+              post={data}
               onAddComment={onAddComment}
             />
           </footer>
@@ -177,20 +192,20 @@ const BlogPost = function() {
 
       {editMode && (
         <EditPostDialog
-          error={editPostError}
-          initialValue={text}
-          onCancel={onCancelEdit}
-          onSubmit={onSubmitEdit}
+          onCancel={onEditCancel}
+          onSubmit={onEditSubmit}
+          /* have to have a full post loaded if we're editing something */
+          post={/** @type {import('dto').BlogPost} */(data)}
         />
       )}
 
       {addCommentMode && (
         <AddCommentDialog
-          onCancel={onCancelAddComment}
-          onSubmit={onSubmitComment}
+          onCancel={onAddCommentCancel}
+          onSubmit={onAddCommentSubmit}
         />
       )}
-    </Busy>
+    </Busy.div>
   );
 }
 

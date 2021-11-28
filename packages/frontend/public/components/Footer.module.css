@@ -1,5 +1,4 @@
 .footer {
-  padding: var(--gutter-lg) 0;
   color: var(--color-footer-foreground);
   background: var(--color-footer-background);
 }
@@ -8,4 +7,8 @@
 .footer a:visited {
   line-height: var(--line-height-footer-nav);
   color: var(--color-footer-foreground);
+}
+
+.footer .hidden {
+  display: none;
 }

@@ -13,6 +13,11 @@ router.get(
   ensureSignedIn,
   async function getSession(ctx, next) {
     ctx.status = 200;
+    ctx.response.body = {
+      isLoggedIn: true
+    };
+
+    await next();
   }
 );
 

@@ -1,17 +1,13 @@
-.page {
+.busy {
+  align-self: center;
+  margin: auto;
+}
+
+[role="feed"] {
   display: flex;
   flex-direction: column;
 }
 
-.page article + article {
-  margin-top: var(--gutter-xl);
-}
-
-.page article > * ~ * {
-  margin-top: var(--gutter-md);
-}
-
-.busy {
-  align-self: center;
-  margin: auto;
+[role="feed"] article header {
+  padding-top: var(--gutter-xl);
 }

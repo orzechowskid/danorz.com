@@ -1,32 +1,46 @@
 import styles from './Busy.module.css';
 
 /**
- * @typedef {Object} BusyContainerProps
- * @property {string} [as]
- * @property {import('preact').ComponentChildren} children
- * @property {string} [className]
- * @property {boolean} [ready]
+ * @typedef {'div'|'main'|'section'|'span'} Els
+ *
+ * @typedef BusyContainerSelfProps
+ * @property {Els} [as]
+ * @property {boolean} ready;
+ *
+ * @typedef {BusyContainerSelfProps & import('preact').JSX.HTMLAttributes} BusyContainerProps
+ *
+ * @typedef {Record<Els, import('~/t').Component<BusyContainerProps>>} Helpers
  */
 
 /** @type {import('~/t').Component<BusyContainerProps>} */
 const BusyContainer = function(props) {
   const {
-    as: ElementName = `div`,
+    as = `div`,
     children,
-    className = ``,
+    class: cls,
     ready,
     ...otherProps
   } = props;
+  const ElementName = as;
+  const classname = cls || ``;
 
   return (
     <ElementName
       aria-busy={!ready}
-      className={`${styles.busy} ${className}`}
+      class={`${styles.busy} ${classname}`}
       {...otherProps}
     >
-      {children}
+      {ready ? children : null}
     </ElementName>
   );
 };
 
-export default BusyContainer;
+/** @type {Helpers} */
+const augments = {
+  div: (props) => <BusyContainer {...props} as="div" />,
+  main: (props) => <BusyContainer {...props} as="main" />,
+  section: (props) => <BusyContainer {...props} as="section" />,
+  span: (props) => <BusyContainer {...props} as="span" />
+};
+
+export default Object.assign(BusyContainer, augments);

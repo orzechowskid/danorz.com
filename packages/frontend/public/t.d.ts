@@ -1,22 +1,16 @@
 import {
-  BlogPostComment,
   DtoWrapper,
   Id,
   Indexed
 } from 'dto';
 import {
-  FunctionComponent
+  FunctionComponent,
+  JSX
 } from 'preact';
-import * as PreactHooks from 'preact/hooks';
+
 import { SWRConfiguration, SWRResponse } from 'swr';
 
-export type Component<Props> = FunctionComponent<Props>;
-
-export type LocalStateSetter<T> = T | ((arg0: T) => T);
-export type LocalState<T> = [
-  T,
-  PreactHooks.StateUpdater<T>
-];
+export type Component<Props = {}> = FunctionComponent<JSX.HTMLAttributes & Props>;
 
 export interface RemoteDataOpts {
   apiEndpoint: string;
@@ -62,27 +56,16 @@ export interface RemoteCollection<Payload, CreateShape = Partial<Payload>, Delet
   metadata?: RemoteMetadata;
 }
 
-export type SWR<Payload> = SWRResponse<DtoWrapper<Payload>, (string|Error)>;
-
-export interface UseBlogPost {
-  id: string;
-}
-
-export interface UseBlogPostComments {
-  id: string;
-  initialData?: BlogPostComment[];
-}
-
-export interface UseAnimateElementOptions {
-  className?: string;
-  delay?: number;
-  duration?: number;
-  onEnd?: () => void;
-  onStart?: () => void;
-  ref: PreactHooks.Ref<HTMLElement>;
-}
+export type SWR<Payload> = SWRResponse<DtoWrapper<Payload>, Error>;
 
 export interface AnalyticsEvent {
   eventType: string;
   eventData?: string; /* serialized JSON */
+}
+
+export type HTMLAttributes<E extends EventTarget = HTMLElement> = JSX.HTMLAttributes<E>;
+
+export interface Toast {
+  message: string;
+  severity: 'log'|'info'|'warn'|'error'|'fatal';
 }

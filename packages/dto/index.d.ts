@@ -40,4 +40,14 @@ export interface UserCreate {
 
 export interface Settings {
   name: string;
+  values: Record<string, any>;
 }
+
+export type Timestamp = ReturnType<typeof Date.prototype.toISOString>;
+
+export type SiteBannerData = Indexed<{
+  bannerDismissable: boolean;
+  bannerSeverity: 'info' | 'warning';
+  bannerText: string;
+  dismissed: boolean;
+}>;

@@ -5,6 +5,7 @@ import {
 
 import Markdown from '~/components/Markdown.js';
 import LinkButton from '~/components/LinkButton.js';
+import Section from '~/components/Section.js';
 import PageTitleContainer, {
   PageActions,
   PageTitle
@@ -122,7 +123,7 @@ function About() {
   }, [ t ]);
 
   return (
-    <div className={layoutStyles.layout}>
+    <Section className={layoutStyles.layout}>
       <PageTitleContainer>
         <PageTitle title={pageTitle} />
         <PageActions>
@@ -185,7 +186,7 @@ function About() {
           {busy ? `` : (content || t(`About:no-content`))}
         </Markdown>
       )}
-    </div>
+    </Section>
   );
 }
 
