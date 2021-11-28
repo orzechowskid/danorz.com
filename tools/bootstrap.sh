@@ -12,14 +12,6 @@ message "running top-level npm install..."
 
 npm install
 
-for i in `find ./packages -mindepth 1 -maxdepth 1`; do
-    message "running npm install in $i..."
-
-    pushd $i > /dev/null
-    npm install
-    popd > /dev/null
-done
-
 message "bootstrapping local database..."
 pushd ./tools > /dev/null
 ./bootstrap-localdb.sh > /dev/null
