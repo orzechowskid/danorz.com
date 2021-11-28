@@ -7,7 +7,7 @@ import {
 import styles from './Footer.module.css';
 import layoutStyles from './Layout.module.css';
 
-/** @type {import('~/t').Component} */
+/** @type {import('~/t').Component<{}>} */
 function Footer() {
   const {
     t

@@ -38,8 +38,6 @@
 
 .slice {
   padding: var(--gutter-md);
-/*  padding: var(--gutter-lg);*/
-/*  margin: var(--gutter-sm);*/
   color: white;
   border-radius: var(--border-radius-toast);
 }

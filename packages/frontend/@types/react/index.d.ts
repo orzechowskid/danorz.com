@@ -1,5 +1,9 @@
 /* this is just to make swr happy */
 
 declare module 'react' {
-  export type FC<T> = any;
+  import {
+    FunctionComponent
+  } from 'preact';
+
+  export type FC<T> = FunctionComponent<T>;
 }
