@@ -82,6 +82,7 @@ function AppContents() {
       <Header />
       <Busy
         as="main"
+        id="main"
         ready={ready}
       >
         <Router>
