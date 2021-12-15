@@ -28,7 +28,7 @@ async function rawRequest(apiEndpoint, opts = {}) {
  *
  * @param {string} apiEndpoint
  * @param {Object} [opts]
- * @return {Promise<import('~/t').RemoteData<T>>}
+ * @return {Promise<T|import('dto').DtoWrapper<T>>}
  * @template T
  */
 async function getData(apiEndpoint, opts = {}) {
@@ -59,20 +59,21 @@ async function getData(apiEndpoint, opts = {}) {
  * posts JSON data to API endpoint
  *
  * @param {string} apiEndpoint
- * @param {T} payload
+ * @param {Partial<T>} payload
  * @param {RequestInit} [opts]
- * @returns {Promise<import('~/t').RemoteData<T>>}
+ * @returns {Promise<import('dto').DtoWrapper<T>>}
  * @template T
  */
 async function postData(apiEndpoint, payload, opts = {}) {
   try {
     const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
       body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': `application/json`
-      },
       method: `POST`,
-      ...opts
+      ...opts,
+      headers: {
+        'Content-Type': `application/json`,
+        ...(opts.headers ?? {})
+      }
     });
     const json = await response.json();
 
@@ -95,7 +96,7 @@ async function postData(apiEndpoint, payload, opts = {}) {
  * @param {String} apiEndpoint
  * @param {T} payload
  * @param {RequestInit} [opts]
- * @returns {Promise<import('~/t').RemoteData<T>>}
+ * @returns {Promise<import('dto').DtoWrapper<T>>}
  * @throws {Error}
  * @template T
  */
@@ -103,11 +104,12 @@ async function putData(apiEndpoint, payload, opts = {}) {
   try {
     const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
       body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': `application/json`
-      },
       method: `PUT`,
-      ...opts
+      ...opts,
+      headers: {
+        'Content-Type': `application/json`,
+        ...(opts.headers ?? {})
+      }
     });
     const json = await response.json();
 

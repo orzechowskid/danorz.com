@@ -1,43 +1,35 @@
 import {
-  useRemoteData
+  useRemoteObject
 } from './useRemoteData.js';
 
 /**
- * @typedef {Object} Session
+ * @typedef Session
  * @property {boolean} isLoggedIn
+ * @property {string} [name]
  */
 
 /**
- * @typedef {Object} SignInShape
+ * @typedef SignInShape
  * @property {string} name
  * @property {string} password
  */
 
 function useSession() {
-  /** @type {import('~/t').RemoteResource<Session, SignInShape>} */
-  const remoteData = useRemoteData({
-    apiEndpoint: `auth/session`,
-    fetchOpts: {
-      raw: true
-    }
-  });
+  /** @type {import('~/t').RemoteObject<Session>} */
   const {
     data,
-    doCreate,
-    doDelete,
-    error
-  } = remoteData;
-  let isSignedIn;
-
-  isSignedIn = !!error
-    ? false
-    : data?.isLoggedIn;
+    del,
+    post
+  } = useRemoteObject(`auth/session`, {
+    raw: true
+  });
+  const isSignedIn = data?.isLoggedIn;
 
   return {
     currentUser: data?.name,
     isSignedIn,
-    signIn: doCreate.execute,
-    signOut: doDelete.execute
+    signIn: post,
+    signOut: del
   };
 }
 

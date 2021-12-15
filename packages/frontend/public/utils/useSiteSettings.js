@@ -6,19 +6,16 @@ import {
   useGlobalToast
 } from './useGlobalToast.js';
 import {
-  useRemoteData
+  useRemoteObject
 } from './useRemoteData.js';
 
 function useSiteSettings() {
-  /** @type {import('~/t').RemoteResource<import('dto').Settings>} */
+  /** @type {import('~/t').RemoteObject<import('dto').Settings>} */
   const {
     data,
-    doUpdate
-  } = useRemoteData({
-    apiEndpoint: `env/settings`,
-    fetchOpts: {
-      raw: true
-    }
+    put
+  } = useRemoteObject(`env/settings`, {
+    raw: true
   });
   const {
     toast
@@ -45,7 +42,7 @@ function useSiteSettings() {
       return;
     }
 
-    doUpdate.execute({
+    put({
       ...data,
       values: set(data.values, path, value)
     });

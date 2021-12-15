@@ -16,7 +16,7 @@ export interface BlogPostComment {
   gravatarHash: string;
   name: string;
   text: string;
-  timestamp: string;
+  timestamp: string; /* ISO-8601 */
 }
 
 export interface BlogPost {
@@ -24,6 +24,7 @@ export interface BlogPost {
   comments: BlogPostComment[];
   tags: string[];
   text: string;
+  timestamp: string; /* ISO-8601 */
   title: string;
 }
 
@@ -51,3 +52,16 @@ export type SiteBannerData = Indexed<{
   bannerText: string;
   dismissed: boolean;
 }>;
+
+export interface GalleryItem {
+  description?: string;
+  mimeType: string;
+  path: string;
+  thumbnailPath: string;
+  timestamp: string; /* ISO-8601 */
+}
+
+export interface PhotoGallery {
+  items: GalleryItem[];
+  name: string;
+}

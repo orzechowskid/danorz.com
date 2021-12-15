@@ -14,8 +14,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.5",
+    "@babel/eslint-parser": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
     "@types/eslint": "^7.28.1",
     "@types/estree": "^0.0.50",
+    "babel-preset-preact": "^2.0.0",
     "eslint": "^7.15.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsdoc": "^35.2.0",

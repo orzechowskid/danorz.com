@@ -1,5 +1,6 @@
 import * as KoaRouter from '@koa/router';
 import {
+  BlogPost,
   Settings,
   User
 } from 'dto';
@@ -31,34 +32,6 @@ export interface DBQueryResult<Payload> {
 export type DBQueryFunction<Payload> = (dbQuery: DBQuery<Payload, void>) => Promise<DBQueryResult<Payload>>;
 export type DBWriteFunction<WritePayload, Payload = WritePayload> = (dbQuery: DBQuery<Payload, WritePayload>) => Promise<DBQueryResult<Payload>>;
 
-export interface BlogPostComment {
-  name: string;
-  text: string;
-  timestamp: string; /* ISO-8601 */
-}
-
-export interface BlogPost {
-  author: string;
-  comments: BlogPostComment[];
-  peerResourceId?: string;
-  tags: string[];
-  timestamp: string; /* ISO-8601 */
-  title: string;
-}
-
-export interface GalleryItem {
-  description?: string;
-  mimeType: string;
-  path: string;
-  thumbnailPath: string;
-  timestamp: string; /* ISO-8601 */
-}
-
-export interface PhotoGallery {
-  items: GalleryItem[];
-  name: string;
-}
-
 export interface DBConnection {
   disconnect: () => Promise<void>;
   getDeserializeUserFunction: () => (id: string) => Object; // User
@@ -69,6 +42,7 @@ export interface DBConnection {
   getBlogPosts: DBQueryFunction<BlogPost>;
   getSettings: DBQueryFunction<Settings>;
   getUser: DBQueryFunction<User>;
+  updateSettings: DBQueryFunction<Partial<Settings>>;
 }
 
 export interface Storage {
@@ -94,18 +68,6 @@ export interface Storage {
     path: string
   }>;
 }
-
-// export interface ApiRouteLocals {
-//   db: DBConnection;
-//   storage: Storage;
-// }
-
-// export type ApiRouteHandler<Payload, RouteParams = any, ReqQuery = void, ReqBody = void> = RequestHandler<RouteParams, DBQueryResult<Payload>, ReqBody, ReqQuery, ApiRouteLocals>;
-
-// export type CreateApiRouteHandler<Payload, RouteParams = void> = ApiRouteHandler<Payload, RouteParams, Indexed<Payload>>;
-
-// export type MediaRouteHandler<RouteParams = any> = RequestHandler<RouteParams, any, any, any, ApiRouteLocals>;
-
 
 type CustomContext = Koa.Context & {
   db: DBConnection;

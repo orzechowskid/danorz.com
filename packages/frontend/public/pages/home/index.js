@@ -21,6 +21,7 @@ function useHomePage() {
   } = useSession();
   const page = `Home`;
   const pageTitle = t(`${page}:title`);
+
   usePageTitle(pageTitle);
   usePageMeta(function setPageMetaTags() {
     return {
@@ -40,9 +41,12 @@ function Home() {
 
   return (
     <section className={layoutStyles.layout}>
-      {isSignedIn
-        ? <span>private</span>
-        : <PublicHome />}
+      {isSignedIn === true && (
+        <span>private</span>
+      )}
+      {isSignedIn === false && (
+        <PublicHome />
+      )}
     </section>
   );
 }

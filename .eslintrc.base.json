@@ -88,8 +88,6 @@
     "import/no-webpack-loader-syntax": "error",
     "import/prefer-default-export": "off",
 
-    "jsdoc/no-undefined-types": "warn",
-
     "modules-newline/import-declaration-newline": "warn"
   },
   "settings": {

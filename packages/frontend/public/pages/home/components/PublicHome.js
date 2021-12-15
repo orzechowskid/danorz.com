@@ -1,14 +1,12 @@
 import Markdown from '~/components/Markdown.js';
 import {
-  useRemoteData
+  useRemoteObject
 } from "~/utils/useRemoteData.js";
 
 function usePublicHome() {
   const {
     data
-  } = useRemoteData({
-    apiEndpoint: `content/home`
-  });
+  } = useRemoteObject(`content/home`);
 
   return {
     data

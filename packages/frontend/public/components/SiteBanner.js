@@ -6,31 +6,22 @@ import {
   useLocalStorage
 } from '~/utils/useLocalStorage.js';
 import {
-  useRemoteData
+  useRemoteObject
 } from '~/utils/useRemoteData.js';
 
 import styles from './SiteBanner.module.css';
 import layoutStyles from './Layout.module.css';
-
-const FIVE_MINUTES = 1000 * 60 * 5;
 
 function useSiteBanner() {
   const {
     data: dismissedBanners,
     update: updateDismissedBanners
   } = useLocalStorage(`site/banner`);
-  /** @type {import('~/t').RemoteResource<import('dto').SiteBannerData>} */
+  /** @type {import('~/t').RemoteObject<import('dto').SiteBannerData>} */
   const {
     data,
     error
-  } = useRemoteData({
-    apiEndpoint: `site/banner`,
-    fetchOpts: {
-      /* seems wasteful to do this too often */
-      dedupingInterval: FIVE_MINUTES,
-      revalidateOnFocus: false
-    }
-  });
+  } = useRemoteObject(`site/banner`);
   const {
     _id
   } = data ?? {};
