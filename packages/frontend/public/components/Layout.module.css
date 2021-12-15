@@ -3,14 +3,11 @@
 .layout {
   display: block;
   width: 100vw;
-  padding: var(--gutter-sm);
 }
 
 @media (min-width: 900px) {
   .layout {
-    min-width: 900px;
-    max-width: calc(900px - (2 * var(--gutter-md)));
-    padding: var(--gutter-md);
+    width: 900px;
     margin: 0 auto;
   }
 }
