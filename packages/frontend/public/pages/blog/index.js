@@ -27,11 +27,9 @@ import styles from './index.module.css';
 function useBlogPage() {
   /** @type {import('~/t').RemoteCollection<import('dto').BlogPost>} */
   const {
-    data,
-    busy
-  } = useRemoteCollection({
-    apiEndpoint: `blog/posts`
-  });
+    busy,
+    data
+  } = useRemoteCollection(`blog/posts`);
   const {
     t
   } = useI18n();
@@ -54,7 +52,7 @@ function useBlogPage() {
   }
 }
 
-/** @type {import('~/t').Component<void>} */
+/** @type {import('~/t').Component<{}>} */
 function Blog() {
   const {
     data,

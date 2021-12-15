@@ -59,8 +59,8 @@ function useEditPostDialog(props) {
       onSubmit(postText);
     }
   }, [ onSubmit ]);
-  /** @type {import('preact').RefObject<HTMLFormElement>} */
-  const formRef = useRef();
+  /** @type {import('preact/hooks').Ref<HTMLFormElement>} */
+  const formRef = useRef(null);
 
   useEffect(function onMount() {
     formRef.current?.querySelector(`textarea`)?.focus();
@@ -95,8 +95,8 @@ const EditPostDialog = function(props) {
       title={t(`EditPostDialog:title`)}
     >
       <form
-        onSubmit={onSubmitEdit}
         ref={formRef}
+        onSubmit={onSubmitEdit}
       >
         <MarkdownPreviewPane
           className={styles.markdownPreviewPane}

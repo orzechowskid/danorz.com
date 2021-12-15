@@ -17,7 +17,7 @@ import {
   usePageMeta
 } from '~/utils/usePageTitle.js';
 import {
-  useRemoteData
+  useRemoteObject
 } from '~/utils/useRemoteData.js';
 
 import busyStyles from '~/components/Busy.module.css';
@@ -29,21 +29,21 @@ import styles from './index.module.css';
  * @property {string} text
  */
 
-function useAbout() {
-  /** @type {import('~/t').RemoteResource<AboutDocument>} */
+function useAboutPage() {
+  /** @type {import('~/t').RemoteObject<AboutDocument>} */
   const {
     busy,
     data,
-    doCreate,
-    doUpdate,
-    metadata
-  } = useRemoteData({
-    apiEndpoint: `content/bio`
-  });
+    post,
+    put
+  } = useRemoteObject(`content/bio`);
   const pageContents = data?.text;
   const [ previewContents, setPreviewContents ] = useState(pageContents);
   const [ editMode, setEditMode ] = useState(false);
   const [ editPreviewMode, setEditPreviewMode ] = useState(false);
+  const {
+    t
+  } = useI18n();
   const onEdit = useCallback(function onEdit() {
     setEditMode(true);
     setPreviewContents(pageContents);
@@ -67,13 +67,13 @@ function useAbout() {
     e.preventDefault();
 
     if (pageContents) {
-      doUpdate.execute({
-        ...data[0],
+      put({
+        ...data,
         text: previewContents
       });
     }
     else {
-      doCreate.execute({
+      post({
         text: previewContents
       });
     }
@@ -84,17 +84,23 @@ function useAbout() {
     ? previewContents
     : pageContents;
 
+  usePageMeta(function setPageMetaTags() {
+    return {
+      description: t(`About:description`)
+    }
+  }, [ t ]);
+
   return {
     busy,
     content,
     editMode,
     editPreviewMode,
-    error: metadata.error,
     onCancel,
     onChange,
     onEdit,
     onPreview,
-    onSubmit
+    onSubmit,
+    t
   };
 }
 
@@ -104,23 +110,15 @@ function About() {
     content,
     editMode,
     editPreviewMode,
-    error,
     onCancel,
     onChange,
     onEdit,
     onPreview,
-    onSubmit
-  } = useAbout();
-  const {
+    onSubmit,
     t
-  } = useI18n();
+  } = useAboutPage();
   const page = `About`;
   const pageTitle = t(`${page}:title`);
-  usePageMeta(function setPageMetaTags() {
-    return {
-      description: t(`About:description`)
-    }
-  }, [ t ]);
 
   return (
     <Section className={layoutStyles.layout}>
@@ -161,7 +159,6 @@ function About() {
           )}
         </PageActions>
       </PageTitleContainer>
-      {error && <div>{error}</div>}
       {editMode ? (
         <form
           id={page}

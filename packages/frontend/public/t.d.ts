@@ -1,62 +1,36 @@
 import {
-  DtoWrapper,
-  Id,
   Indexed
 } from 'dto';
 import {
   FunctionComponent,
   JSX
 } from 'preact';
-
-import { SWRConfiguration, SWRResponse } from 'swr';
+import {
+  StateUpdater,
+} from 'preact/hooks';
 
 export type Component<Props = {}> = FunctionComponent<JSX.HTMLAttributes & Props>;
 
-export interface RemoteDataOpts {
-  apiEndpoint: string;
-  cacheKey?: string;
-  fetchOpts?: SWRConfiguration & {
-    createOpts?: RequestInit;
-    deleteOpts?: RequestInit;
-    raw?: boolean;
-    updateOpts?: RequestInit;
-  };
-}
-
-export interface RemoteMetadata {
-  error?: string;
-  total?: number;
-}
-
-export interface RemoteOperation<Request, Response = Promise<void>> {
+export interface RemoteObject<T> {
   busy: boolean;
-  error?: string | Error;
-  execute: (arg0: Request) => Response;
+  data?: T;
+  del: () => Promise<void>;
+  get: () => Promise<void>;
+  post: (payload: Partial<T>) => Promise<void>;
+  put: (data: T) => Promise<void>;
 }
 
-/* a container for manipulating a single piece of backend data */
-export interface RemoteResource<Payload, CreateShape = Partial<Payload>, DeleteShape = void, UpdateShape = Payload> {
+export interface RemoteCollection<T, CreateShape = Partial<T>, DeleteShape = Indexed<T>, UpdateShape = Indexed<T>> {
   busy: boolean;
-  data?: Payload;
-  doCreate: RemoteOperation<CreateShape>;
-  doDelete: RemoteOperation<DeleteShape>;
-  doUpdate: RemoteOperation<UpdateShape>;
-  error?: string | Error;
-  metadata?: RemoteMetadata;
+  data?: Indexed<T>[];
+  del: (what: DeleteShape) => Promise<void>;
+  get: () => Promise<void>;
+  post: (what: CreateShape) => Promise<void>;
+  put: (what: UpdateShape) => Promise<void>;
 }
 
-/* a container for manipulating a collection of backend data */
-export interface RemoteCollection<Payload, CreateShape = Partial<Payload>, DeleteShape = Id, UpdateShape = Payload> {
-  busy: boolean;
-  data?: Indexed<Payload>[];
-  doCreate: RemoteOperation<CreateShape>;
-  doDelete: RemoteOperation<DeleteShape>;
-  doUpdate: RemoteOperation<UpdateShape>;
-  error?: string | Error;
-  metadata?: RemoteMetadata;
-}
+export type LocalState<T> = [T, StateUpdater<T>]
 
-export type SWR<Payload> = SWRResponse<DtoWrapper<Payload>, Error>;
 
 export interface AnalyticsEvent {
   eventType: string;

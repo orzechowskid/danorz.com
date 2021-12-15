@@ -183,7 +183,7 @@ const BlogPost = function() {
           </Markdown>
           <footer id="comments">
             <Comments
-              post={data}
+              comments={data.comments}
               onAddComment={onAddComment}
             />
           </footer>

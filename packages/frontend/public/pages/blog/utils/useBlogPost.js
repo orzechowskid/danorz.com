@@ -3,7 +3,7 @@ import {
 } from 'preact/hooks';
 import {
   useRemoteCollection,
-  useRemoteData
+  useRemoteObject
 } from '~/utils/useRemoteData.js';
 import {
   useSession
@@ -31,15 +31,13 @@ const useBlogPost = (opts) => {
   const {
     postId
   } = opts;
-  /** @type {import('~/t').RemoteResource<import('dto').BlogPost>} */
+  /** @type {import('~/t').RemoteObject<import('dto').BlogPost>} */
   const {
     busy: postBusy,
     data: postData,
     doUpdate: doUpdatePost,
     error: postError
-  } = useRemoteData({
-    apiEndpoint: `blog/posts/${postId}`
-  });
+  } = useRemoteObject(`blog/posts/${postId}`);
   const {
     currentUser
   } = useSession();
@@ -51,9 +49,7 @@ const useBlogPost = (opts) => {
     doDelete: doDeleteComment,
     doUpdate: doUpdateComment,
     error: commentsError
-  } = useRemoteCollection({
-    apiEndpoint: `blog/posts/${postId}/comments`
-  });
+  } = useRemoteCollection(`blog/posts/${postId}/comments`);
   const data = {
     ...postData,
     comments: commentData

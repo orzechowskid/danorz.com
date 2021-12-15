@@ -4,7 +4,7 @@ import {
 } from 'preact/hooks';
 
 import {
-  useRemoteData
+  useRemoteObject
 } from '~/utils/useRemoteData.js';
 
 /**
@@ -13,7 +13,8 @@ import {
  */
 
 /**
- * @typedef {Object} Dictionary
+ * @typedef Dictionary
+ * @property {string} locale
  */
 
 /**
@@ -27,10 +28,11 @@ export function datestring(locale, value, args = {}) {
   const {
     type = `short`
   } = args;
-
-  return new IntlMessageFormat(`{x, date, ${type}}`, locale).format({
+  const str = new IntlMessageFormat(`{x, date, ${type}}`, locale).format({
     x: value
   });
+
+  return /** @type {string} */(str);
 }
 
 /**
@@ -40,9 +42,11 @@ export function datestring(locale, value, args = {}) {
  * @return {string}
  */
 function number(locale, value) {
-  return new IntlMessageFormat(`{x, number}`, locale).format({
+  const str = new IntlMessageFormat(`{x, number}`, locale).format({
     x: value
   });
+
+  return /** @type {string} */(str);
 }
 
 /**
@@ -56,17 +60,18 @@ function timestamp(locale, value, args = {}) {
   const {
     type = `short`
   } = args;
-
-  return new IntlMessageFormat(`{x, time, ${type}}`, locale).format({
+  const str = new IntlMessageFormat(`{x, time, ${type}}`, locale).format({
     x: value
   });
+
+  return /** @type {string} */(str);
 }
 
 /**
  * @param {string} locale
  * @param {Record<string, any>} dictionary
  * @param {string} key
- * @param {Object} [values]
+ * @param {Record<string, string>} [values]
  * @return {string}
  */
 export function translate(locale, dictionary, key, values = {}) {
@@ -78,16 +83,18 @@ export function translate(locale, dictionary, key, values = {}) {
     namespace,
     realKey
   ] = key.split(`:`);
-  const str = dictionary[namespace]?.[realKey];
+  const entry = dictionary[namespace]?.[realKey];
 
-  if (!str) {
+  if (!entry) {
     console.warn(`no entry in ${locale} dictionary found for ${namespace || '<undefined>'}:${realKey || '<undefined>'}`);
 
     return key;
   }
 
   try {
-    return new IntlMessageFormat(str, locale).format(values);
+    const str = new IntlMessageFormat(entry, locale).format(values);
+
+    return /** @type {string} */(str);
   }
   catch (ex) {
     console.warn(ex);
@@ -100,31 +107,21 @@ export function translate(locale, dictionary, key, values = {}) {
  * @param {string} locale
  */
 function useDictionary(locale) {
-  /** @type {import('~/t').RemoteResource<Dictionary>} */
+  /** @type {import('~/t').RemoteObject<Dictionary>} */
   const {
     data
-  } = useRemoteData({
-    apiEndpoint: `i18n/locales/${locale}/dictionary`,
-    fetchOpts: {
-      /* once an hour seems fine? */
-      dedupingInterval: 1000 * 60 * 60,
-      raw: true
-    }
+  } = useRemoteObject(`i18n/locales/${locale}/dictionary`, {
+    raw: true
   });
 
   return data;
 }
 
 function useSupportedLocales() {
-  /** @type {import('~/t').RemoteResource<LocaleData>} */
+  /** @type {import('~/t').RemoteObject<LocaleData>} */
   const {
     data
-  } = useRemoteData({
-    apiEndpoint: `i18n/locales`,
-    fetchOpts: {
-      raw: true
-    }
-  });
+  } = useRemoteObject(`i18n/locales`);
 
   return data?.locales ?? {};
 }

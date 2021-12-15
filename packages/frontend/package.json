@@ -17,15 +17,16 @@
     "lodash": "^4.17.21",
     "markdown-to-jsx": "^7.1.2",
     "md5.js": "^1.3.5",
+    "mitt": "^3.0.0",
     "preact": "^10.5.15",
-    "preact-iso": "^2.3.0",
-    "swr": "^1.0.1"
+    "preact-iso": "^2.3.0"
   },
   "devDependencies": {
     "@orzechowskid/eslint-import-resolver-parcel": "^1.0.4",
     "@rollup/plugin-alias": "^3.1.8",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "stylelint": "^14.1.0",
     "stylelint-config-recess-order": "^3.0.0",
     "stylelint-config-standard": "^24.0.0",

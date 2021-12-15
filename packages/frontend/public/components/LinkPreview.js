@@ -1,5 +1,5 @@
 import {
-  useRemoteData
+  useRemoteObject
 } from '~/utils/useRemoteData.js';
 
 import styles from './LinkPreview.module.css';
@@ -16,11 +16,8 @@ const LinkPreview = (props) => {
     url
   } = props;
   const {
-    data,
-    error
-  } = useRemoteData({
-    apiEndpoint: `linkpreview?url=${encodeURIComponent(url)}`
-  });
+    data
+  } = useRemoteObject(`linkpreview?url=${encodeURIComponent(url)}`);
   const {
     favicons,
     images,
@@ -30,7 +27,6 @@ const LinkPreview = (props) => {
 
   return (
     <div className={styles.linkPreview}>
-      {error && <div>{error}</div>}
       <a
         href={linkUrl}
         rel="noopener noreferrer"
