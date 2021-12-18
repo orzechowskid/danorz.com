@@ -7,9 +7,11 @@ import styles from './Busy.module.css';
  * @property {Els} [as]
  * @property {boolean} ready;
  *
- * @typedef {BusyContainerSelfProps & import('preact').JSX.HTMLAttributes} BusyContainerProps
+ * @typedef {BusyContainerSelfProps & import('preact').JSX.HTMLAttributes<HTMLElement>} BusyContainerProps
  *
- * @typedef {Record<Els, import('~/t').Component<BusyContainerProps>>} Helpers
+ * @typedef {Omit<BusyContainerProps, 'as'>} BusyContainerHelperProps
+ *
+ * @typedef {Record<Els, import('~/t').Component<BusyContainerHelperProps>>} Helpers
  */
 
 /** @type {import('~/t').Component<BusyContainerProps>} */

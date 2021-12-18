@@ -1,6 +1,5 @@
 import Heading from '~/components/Heading.js';
 import {
-  usePageMeta,
   usePageTitle
 } from '~/utils/usePageTitle.js';
 

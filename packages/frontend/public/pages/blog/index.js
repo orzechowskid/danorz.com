@@ -2,10 +2,7 @@ import Busy from '~/components/Busy.js';
 import Heading from '~/components/Heading.js';
 import LinkButton from '~/components/LinkButton.js';
 import Markdown from '~/components/Markdown.js';
-import PageTitleContainer, {
-  PageActions,
-  PageTitle
-} from '~/components/PageTitleContainer.js';
+import PageTitle from '~/components/PageTitle.js';
 import Section from '~/components/Section.js';
 import {
   useI18n
@@ -62,56 +59,48 @@ function Blog() {
   } = useBlogPage();
 
   return (
-    <>
-      <PageTitleContainer>
-        <PageTitle title={pageTitle} />
-        <PageActions>
-          <LinkButton
-            key="new-post-action"
-          >
-            <span>{t(`Blog:new-post-action`)}</span>
-          </LinkButton>
-        </PageActions>
-      </PageTitleContainer>
-      <Busy
-        className={`${layoutStyles.layout} ${styles.page}`}
-        ready={ready}
-        role="feed"
-      >
-        {data?.map((post) => (
-          <Section
-            as="article"
-            key={post._id}
-          >
-            <header>
-              <Heading>
-                <a
-                  aria-label={t(`BlogPost:title-link`)}
-                  className="unstyled"
-                  href={`/blog/posts/${post._id}`}
-                >
-                  {post.title}
-                </a>
-              </Heading>
-              <Byline author={post.author} tags={post.tags} timestamp={new Date()} />
-            </header>
-            <Markdown>
-              {post.text}
-            </Markdown>
-            <footer>
+    <Busy.div
+      class={`${layoutStyles.layout} ${styles.page}`}
+      ready={ready}
+      role="feed"
+    >
+      <PageTitle>
+        {pageTitle}
+      </PageTitle>
+
+      {data?.map((post) => (
+        <Section
+          as="article"
+          key={post._id}
+        >
+          <header>
+            <Heading>
               <a
-                aria-label={t(`BlogPost:comment-link`)}
-                href={`blog/posts/${post._id}#comments`}
+                aria-label={t(`BlogPost:title-link`)}
+                className="unstyled"
+                href={`/blog/posts/${post._id}`}
               >
-                {t(`BlogPost:comment-counter`, {
-                  commentCount: post.comments.length
-                })}
+                {post.title}
               </a>
-            </footer>
-          </Section>
-        ))}
-      </Busy>
-    </>
+            </Heading>
+            <Byline author={post.author} tags={post.tags} timestamp={new Date()} />
+          </header>
+          <Markdown>
+            {post.text}
+          </Markdown>
+          <footer>
+            <a
+              aria-label={t(`BlogPost:comment-link`)}
+              href={`blog/posts/${post._id}#comments`}
+            >
+              {t(`BlogPost:comment-counter`, {
+                commentCount: post.comments.length
+              })}
+            </a>
+          </footer>
+        </Section>
+      ))}
+    </Busy.div>
   );
 }
 

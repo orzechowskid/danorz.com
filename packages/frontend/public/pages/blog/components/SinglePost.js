@@ -11,6 +11,12 @@ import {
 
 import styles from './SinglePost.module.css';
 
+/**
+ * @typedef SinglePostProps
+ * @property {boolean} [full]
+ * @property {import('dto').Indexed<import('dto').BlogPost>} post
+ */
+
 /** @type {import('~/t').Component<{tags: string[]}>} */
 const TagList = (props) => {
   const {
@@ -144,17 +150,20 @@ function Timestamp(props) {
   );
 }
 
-/** @type {import('~/t').Component<import('~/t').BlogPost>} */
+/** @type {import('~/t').Component<SinglePostProps>} */
 const FeedItem = (props) => {
+  const {
+    full,
+    post
+  } = props;
   const {
     _id,
     author,
-    comments = [],
-    full,
-    tags = [],
+    comments,
+    tags,
     text,
     title
-  } = props;
+  } = post;
   const {
     num,
     t
@@ -175,9 +184,11 @@ const FeedItem = (props) => {
             <Comments comments={comments} />
           </footer>
         ) : (
-          <a href={`/blog/posts/${_id}#comments`}>{t(`BlogPost:comment-counter`, {
-            commentCount: num(comments.length)
-          })}</a>
+          <a href={`/blog/posts/${_id}#comments`}>
+            {t(`BlogPost:comment-counter`, {
+              commentCount: num(comments.length)
+            })}
+          </a>
         )}
     </article>
   );
