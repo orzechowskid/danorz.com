@@ -37,9 +37,9 @@ async function factory() {
   app.use(bodyParser());
   app.use(passport.initialize());
   app.use(passport.session());
-  passport.use(db.getPassportStrategyFunction());
   passport.serializeUser(db.getSerializeUserFunction());
   passport.deserializeUser(db.getDeserializeUserFunction());
+  passport.use(db.getPassportStrategyFunction());
   app.use(augmentContext);
   app.use(routeDiagnostics);
   apiRouter.prefix(`/api/1`);

@@ -25,7 +25,7 @@ router.get(
 );
 
 router.patch(
-  `/settings/:objName`,
+  `/settings`,
   ensureSignedIn,
   async function updateSettingsObject(ctx, next) {
     const db = ctx.db;

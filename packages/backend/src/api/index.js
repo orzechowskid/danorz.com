@@ -13,7 +13,7 @@ function factory() {
   const router = new Router();
 
   router.use(`/analytics`, analyticsRouter.routes(), analyticsRouter.allowedMethods());
-  router.use(`/auth`, authRouter.routes(), authRouter.allowedMethods());
+  router.use(`/auth`, authRouter.routes());
   router.use(`/blog`, blogRouter.routes());
   router.use(`/content`, contentRouter.routes());
   router.use(`/i18n`, i18nRouter.routes(), i18nRouter.allowedMethods());

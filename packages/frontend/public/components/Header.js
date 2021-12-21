@@ -15,7 +15,15 @@ function useHeader() {
   const {
     getSetting
   } = useSiteSettings();
+  const onClickHeaderLink = useCallback(
+    /** @type {import('preact').JSX.MouseEventHandler<HTMLAnchorElement>} */
+    function onClickHeaderLink(e) {
+      e?.currentTarget.blur();
+    }, []
+  );
+
   return {
+    onClickHeaderLink,
     siteName: getSetting(`site.title`)
   }
 }
@@ -23,14 +31,9 @@ function useHeader() {
 /** @type {import('~/t').Component<{}>} */
 function Header() {
   const {
+    onClickHeaderLink,
     siteName
   } = useHeader();
-  const onClickHeaderLink = useCallback(
-    /** @type {import('preact').JSX.MouseEventHandler<HTMLAnchorElement>} */
-    function onClickHeaderLink(e) {
-      e?.target?.blur();
-    }, []
-  );
 
   return (
     <header

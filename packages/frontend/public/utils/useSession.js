@@ -17,13 +17,15 @@ import {
 function useSession() {
   /** @type {import('~/t').RemoteObject<Session>} */
   const {
+    busy,
     data,
     del,
     post
-  } = useRemoteObject(`auth/session`, {
-    raw: true
-  });
-  const isSignedIn = data?.isLoggedIn;
+  } = useRemoteObject(`auth/session`);
+
+  const isSignedIn = busy
+    ? undefined
+    : data?.isLoggedIn ?? false;
 
   return {
     currentUser: data?.name,

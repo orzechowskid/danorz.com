@@ -10,6 +10,7 @@ const opts = {
   strict: `throw`
 };
 
+/** @type {import('mongoose').Schema<import('dto').SiteSettings>} */
 export const SettingsSchema = new mongoose.Schema({
   name: {
     required: true,
@@ -23,12 +24,12 @@ export const SettingsSchema = new mongoose.Schema({
 
 const Settings = mongoose.model(`Settings`, SettingsSchema);
 
-/** @type {import('~/t').DBQueryFunction<import('~/t').Settings>} */
+/** @type {import('~/t').DBQueryFunction<import('dto').SiteSettings>} */
 export async function getSettings(dbQuery) {
   return runStandardSingleItemQuery(Settings, dbQuery);
 }
 
-/** @type {import('~/t').DBQueryFunction<import('~/t').Settings>} */
+/** @type {import('~/t').DBWriteFunction<import('dto').SettingsUpdate, import('dto').SiteSettings>} */
 export async function updateSettings(dbQuery) {
   const {
     data,
@@ -40,7 +41,9 @@ export async function updateSettings(dbQuery) {
 
   try {
     const response = await Settings.findOneAndUpdate(which, {
-      $set: data
+      $set: {
+        [`${data.path}.value`]: data.value
+      }
     }, {
       lean: true, new: true
     }).exec();

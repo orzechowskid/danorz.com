@@ -1,5 +1,5 @@
 import Router from '@koa/router';
-import passport from 'passport';
+import passport from 'koa-passport';
 
 import {
   ensureSignedIn
@@ -11,27 +11,49 @@ const router = new Router();
 router.get(
   `/session`,
   ensureSignedIn,
-  async function getSession(ctx, next) {
-    ctx.status = 200;
+  async function getSession(ctx) {
+    ctx.response.status = 200;
     ctx.response.body = {
-      isLoggedIn: true
+      data: [{
+        isLoggedIn: true,
+        name: ctx.state.user.name
+      }],
+      metadata: {
+        count: 1,
+        error: null
+      }
     };
-
-    await next();
   }
 );
 
 router.post(
   `/session`,
   /* koa-passport and passport-local do the heavy lifting here */
-  passport.authenticate(`local`, {
-    session: true
-  }),
   async function handleAuth(ctx, next) {
-    ctx.status = 201;
+    return passport.authenticate(`local`,
+      /** @param {import('dto').User} user */
+      async function(err, user) {
+        if (err) {
+          ctx.response.status = 401;
+        }
+        else {
+          await ctx.login(user);
 
-    await next();
-  });
+          ctx.response.status = 201;
+          ctx.response.body = {
+            data: [{
+              isLoggedIn: true,
+              name: user.name
+            }],
+            metadata: {
+              count: 1,
+              error: null
+            }
+          };
+        }
+      })(ctx, next)
+  }
+);
 
 router.delete(
   `/session`,

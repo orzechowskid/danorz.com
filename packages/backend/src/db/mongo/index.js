@@ -1,7 +1,6 @@
 import KoaSessionStore from 'koa-session-mongoose';
 import {
-  connect as MongooseConnect,
-  connections as MongooseConnections
+  connect as MongooseConnect
 } from 'mongoose';
 
 import * as Content from './content.js';
@@ -83,6 +82,7 @@ class DBConnection {
     this.getBlogPostComments = Posts.getBlogPostComments;
 
     this.getSettings = Settings.getSettings;
+    this.updateSettings = Settings.updateSettings;
 
     this.createUser = User.createUser;
     this.getUser = User.getUser;

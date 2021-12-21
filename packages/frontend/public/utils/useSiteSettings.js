@@ -1,7 +1,5 @@
-import {
-  get,
-  set
-} from './getSet.js';
+import _get from 'lodash/get';
+import _set from 'lodash/set';
 import {
   useGlobalToast
 } from './useGlobalToast.js';
@@ -9,13 +7,22 @@ import {
   useRemoteObject
 } from './useRemoteData.js';
 
+/**
+ * @typedef UpdateSiteSettings
+ * @property {string} path
+ * @property {boolean|number|string} value
+ */
+
 function useSiteSettings() {
-  /** @type {import('~/t').RemoteObject<import('dto').Settings>} */
+  /** @type {import('~/t').RemoteObject<import('dto').SiteSettings, never, UpdateSiteSettings>} */
   const {
     data,
     put
   } = useRemoteObject(`env/settings`, {
-    raw: true
+    raw: true,
+    putOpts: {
+      method: `PATCH`
+    }
   });
   const {
     toast
@@ -25,7 +32,7 @@ function useSiteSettings() {
    * @param {string} path
    */
   function getSetting(path) {
-    return get(data?.values ?? {}, path);
+    return _get(data?.values ?? {}, path)?.value;
   }
 
   /**
@@ -42,9 +49,14 @@ function useSiteSettings() {
       return;
     }
 
+    _set(data.values, path, {
+      ..._get(data.values, path),
+      value
+    });
+
     put({
-      ...data,
-      values: set(data.values, path, value)
+      path,
+      value
     });
   }
 

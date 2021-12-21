@@ -10,6 +10,7 @@ import {
   useSession
 } from '~/utils/useSession.js';
 
+import PrivateHome from './components/PrivateHome.js';
 import PublicHome from './components/PublicHome.js';
 
 function useHomePage() {
@@ -42,7 +43,7 @@ function Home() {
   return (
     <section className={layoutStyles.layout}>
       {isSignedIn === true && (
-        <span>private</span>
+        <PrivateHome />
       )}
       {isSignedIn === false && (
         <PublicHome />

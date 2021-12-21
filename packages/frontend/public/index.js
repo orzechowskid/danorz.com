@@ -70,7 +70,7 @@ function useApp() {
   } = useSession();
   const sessionCheck = isSignedIn !== undefined;
 
-  return [ locale, dictionary, siteSettings, sessionCheck ].every(Boolean);
+  return [ dictionary, locale, sessionCheck, siteSettings ].every(Boolean);
 }
 
 function AppContents() {

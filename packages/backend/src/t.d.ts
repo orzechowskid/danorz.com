@@ -1,7 +1,8 @@
 import * as KoaRouter from '@koa/router';
 import {
   BlogPost,
-  Settings,
+  SettingsUpdate,
+  SiteSettings,
   User
 } from 'dto';
 import * as Koa from 'koa';
@@ -40,9 +41,9 @@ export interface DBConnection {
   getSessionStore: () => Promise<KoaSession.stores>;
 
   getBlogPosts: DBQueryFunction<BlogPost>;
-  getSettings: DBQueryFunction<Settings>;
+  getSettings: DBQueryFunction<SiteSettings>;
   getUser: DBQueryFunction<User>;
-  updateSettings: DBQueryFunction<Partial<Settings>>;
+  updateSettings: DBWriteFunction<SettingsUpdate, SiteSettings>;
 }
 
 export interface Storage {

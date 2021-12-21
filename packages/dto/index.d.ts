@@ -39,9 +39,29 @@ export interface UserCreate {
   password: string;
 }
 
-export interface Settings {
-  name: string;
-  values: Record<string, any>;
+interface BooleanValue {
+  type: 'boolean';
+  value: boolean;
+}
+
+interface StringValue {
+  type: 'string';
+  value: string;
+}
+
+export interface SiteSettings {
+  name: 'site';
+  values: {
+    offline: BooleanValue;
+    site: {
+      title: StringValue;
+    };
+  };
+}
+
+export interface SettingsUpdate {
+  path: string;
+  value: any;
 }
 
 export type Timestamp = ReturnType<typeof Date.prototype.toISOString>;
