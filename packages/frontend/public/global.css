@@ -93,6 +93,7 @@ input:invalid {
 }
 
 input[type="text"] {
+  padding: var(--gutter-sm);
   letter-spacing: 0.5px;
   border: var(--border-text-input);
 }

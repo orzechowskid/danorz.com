@@ -26,14 +26,15 @@ import {
  * @property {number} [ttl]
  */
 
-
 const dataCache = new DataCache();
 
 /**
  * @param {string} path
  * @param {RemoteObjectOpts} [opts]
- * @return {import('~/t').RemoteObject<T>}
+ * @return {import('~/t').RemoteObject<T, CreateShape, UpdateShape>}
  * @template T
+ * @template CreateShape
+ * @template UpdateShape
  */
 function useRemoteObject(path, opts) {
   const {
@@ -70,9 +71,9 @@ function useRemoteObject(path, opts) {
     [ noCache, deleteOpts, path ]
   );
   const get = useCallback(
-    async function doGet() {
+    async function doGet(force = false) {
       /** @type {import('~/utils/dataCache').CacheEntry<T>|undefined} */
-      const cacheEntry = !noCache
+      const cacheEntry = !noCache && !force
         ? dataCache.get(path)
         : undefined;
 
@@ -109,7 +110,7 @@ function useRemoteObject(path, opts) {
     [ noCache, raw, getOpts, path, ttl ]
   );
   const post = useCallback(
-    /** @param {Partial<T>} payload */
+    /** @param {CreateShape} payload */
     async function doCreate(payload) {
       setBusy(true);
 
@@ -129,16 +130,16 @@ function useRemoteObject(path, opts) {
 
       setBusy(false);
     },
-    //    [noCache, postOpts, path, ttl]
-    []
+    [ noCache, postOpts, path, ttl ]
   );
   const put = useCallback(
-    /** @param {T} payload */
+    /** @param {UpdateShape} payload */
     async function doUpdate(payload) {
       setBusy(true);
 
       try {
         await putData(path, payload, putOpts);
+        get(true);
       }
       catch (ex) {
         console.error(ex);

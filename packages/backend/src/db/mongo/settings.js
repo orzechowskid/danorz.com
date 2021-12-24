@@ -42,7 +42,7 @@ export async function updateSettings(dbQuery) {
   try {
     const response = await Settings.findOneAndUpdate(which, {
       $set: {
-        [`${data.path}.value`]: data.value
+        [`values.${data.path}.value`]: data.value
       }
     }, {
       lean: true, new: true
