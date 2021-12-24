@@ -1,5 +1,6 @@
+/** @type {import('~/t').RouteHandler} */
 function ensureSignedIn(req, res, next) {
-  if (!req.session?.passport?.user) {
+  if (!req.user) {
     res.status(401).end();
   }
   else {

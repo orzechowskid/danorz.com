@@ -21,7 +21,9 @@ function useSession() {
     data,
     del,
     post
-  } = useRemoteObject(`auth/session`);
+  } = useRemoteObject(`auth/session`, {
+    ttl: 1000  * 86400
+  });
 
   const isSignedIn = busy
     ? undefined
