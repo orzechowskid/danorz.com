@@ -12,7 +12,7 @@ sourceMapSupport.install();
 
 async function go() {
   const appFactory = (await require('../src/index')).default;
-  const app = (await appFactory()).callback();
+  const app = await appFactory();
   const server = http.createServer(app);
 
   server.listen(process.env.WEB_BACKEND_PORT);
@@ -32,7 +32,7 @@ async function go() {
 
       const nextAppFactory = (await require(`../src/index`)).default;
 
-      currentApp = (await nextAppFactory()).callback();
+      currentApp = await nextAppFactory();
 
       server.on(`request`, currentApp);
       console.info(`server reloaded`);

@@ -1,65 +1,69 @@
-import Router from '@koa/router';
+import express from 'express';
 
 import {
   ensureSignedIn
 } from './utils.js';
 
-const router = new Router();
+const router = express.Router({
+  mergeParams: true
+});
 
 router.get(
   `/:documentName`,
-  async function getContent(ctx, next) {
-    const db = ctx.db;
-    const response = await db.getContent({
-      which: {
-        name: ctx.params.documentName
-      }
-    });
+  /** @type {import('~/t').RouteHandler} */
+  async function getContent(req, res, next) {
+    try {
+      const db = res.locals.db;
+      const response = await db.getContent({
+        which: {
+          name: req.params.documentName
+        }
+      });
 
-    ctx.status = 200;
-    ctx.body = response;
-
-    await next();
+      res.status(200).json(response);
+    }
+    catch (ex) {
+      next(ex);
+    }
   });
 
 router.post(
   `/:documentName`,
   ensureSignedIn,
-  async function createContent(ctx, next) {
-    const db = ctx.db;
-
-    if (ctx.body.name !== ctx.params.documentName) {
-      ctx.status = 400;
-      ctx.body = undefined;
-    }
-    else {
+  /** @type {import('~/t').SignedInRouteHandler} */
+  async function createContent(req, res, next) {
+    try {
+      const db = res.locals.db;
       const response = await db.createContent({
-        data: ctx.body
+        data: req.body
       });
 
-      ctx.status = 201;
-      ctx.body = response;
+      res.status(201).json(response);
     }
-
-    await next();
+    catch (ex) {
+      next(ex);
+    }
   });
 
 router.put(
   `/:documentName`,
   ensureSignedIn,
-  async function updateContent(ctx, next) {
-    const db = ctx.db;
-    const response = await db.updateContent({
-      data: ctx.body,
-      which: {
-        name: ctx.params.documentName
-      }
-    });
+  /** @type {import('~/t').SignedInRouteHandler} */
+  async function updateContent(req, res, next) {
+    try {
+      const db = res.locals.db;
+      const response = await db.updateContent({
+        data: req.body,
+        which: {
+          name: req.params.documentName
+        }
+      });
 
-    ctx.status = 200;
-    ctx.body = response;
-
-    await next();
+      res.status(200).json(response);
+    }
+    catch (ex) {
+      next(ex);
+    }
   });
 
 export default router;

@@ -5,7 +5,7 @@ import appFactory from '../src/index.js';
 
 async function go() {
   const app = await appFactory();
-  const server = http.createServer(app.callback());
+  const server = http.createServer(app);
 
   await new Promise(function(res, rej) {
     server.once(`error`, rej);

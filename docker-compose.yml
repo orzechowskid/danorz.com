@@ -23,6 +23,18 @@ services:
     network_mode: "host"
     volumes:
       - ./tools/localdb/.storage:/data/db
+  sessiondb:
+    build:
+      args:
+        - UID=${USERID}
+        - USER=${USERNAME}
+      context: ./tools/sessiondb
+    command: redis-server --appendonly yes
+    depends_on:
+      - gateway
+    network_mode: "host"
+    volumes:
+      - ./tools/sessiondb/.storage:/data
   web-backend:
     build:
       # we need access to some other packages in order to build the backend
