@@ -31,7 +31,7 @@ services:
       context: ./tools/sessiondb
     command: redis-server --appendonly yes
     depends_on:
-      - gateway
+      - db
     network_mode: "host"
     volumes:
       - ./tools/sessiondb/.storage:/data
@@ -42,6 +42,7 @@ services:
       dockerfile: ./backend/Dockerfile
     depends_on:
       - db
+      - sessiondb
     environment:
       - WEB_BACKEND_DB_DRIVER=${WEB_BACKEND_DB_DRIVER}
       - WEB_BACKEND_DB_PASS=${WEB_BACKEND_DB_PASS}
