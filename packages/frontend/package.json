@@ -24,6 +24,7 @@
   "devDependencies": {
     "@orzechowskid/eslint-import-resolver-parcel": "^1.0.4",
     "@rollup/plugin-alias": "^3.1.8",
+    "@types/lodash": "^4.14.178",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.3.0",

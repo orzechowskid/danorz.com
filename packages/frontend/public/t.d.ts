@@ -11,13 +11,13 @@ import {
 
 export type Component<Props = {}> = FunctionComponent<JSX.HTMLAttributes & Props>;
 
-export interface RemoteObject<T> {
+export interface RemoteObject<T, CreateShape = Partial<T>, UpdateShape = T> {
   busy: boolean;
   data?: T;
   del: () => Promise<void>;
   get: () => Promise<void>;
-  post: (payload: Partial<T>) => Promise<void>;
-  put: (data: T) => Promise<void>;
+  post: (payload: CreateShape) => Promise<void>;
+  put: (data: UpdateShape) => Promise<void>;
 }
 
 export interface RemoteCollection<T, CreateShape = Partial<T>, DeleteShape = Indexed<T>, UpdateShape = Indexed<T>> {
@@ -30,7 +30,6 @@ export interface RemoteCollection<T, CreateShape = Partial<T>, DeleteShape = Ind
 }
 
 export type LocalState<T> = [T, StateUpdater<T>]
-
 
 export interface AnalyticsEvent {
   eventType: string;

@@ -1,18 +1,35 @@
-import * as KoaRouter from '@koa/router';
 import {
   BlogPost,
-  Settings,
+  Id,
+  Indexed,
+  SettingsUpdate,
+  SiteSettings,
   User
 } from 'dto';
-import * as Koa from 'koa';
-import * as KoaSession from 'koa-session';
-import * as Passport from 'passport';
+import {
+  NextFunction,
+  Request,
+  Response
+} from 'express';
 
-export type Id = string;
-
-export type Indexed<Payload> = Payload & {
-  _id: Id;
+export interface AugmentedResponse extends Response {
+  locals: {
+    db: DBConnection;
+  }
 }
+
+export interface SignedInRequest extends Request {
+  session: {
+    passport: {
+      user: string;
+    }
+  };
+  user: User;
+}
+
+export type RouteHandler = (req: Request, res: AugmentedResponse, next: NextFunction) => (void | Promise<void>);
+
+export type SignedInRouteHandler = (req: SignedInRequest, res: AugmentedResponse, next: NextFunction) => (void|Promise<void>);
 
 export interface DBQuery<Payload, WritePayload = Partial<Indexed<Payload>>> {
   count?: number; /* return this many things upon read */
@@ -33,16 +50,14 @@ export type DBQueryFunction<Payload> = (dbQuery: DBQuery<Payload, void>) => Prom
 export type DBWriteFunction<WritePayload, Payload = WritePayload> = (dbQuery: DBQuery<Payload, WritePayload>) => Promise<DBQueryResult<Payload>>;
 
 export interface DBConnection {
+  connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  getDeserializeUserFunction: () => (id: string) => Object; // User
-  getPassportStrategyFunction: () => Passport.Strategy;
-  getSerializeUserFunction: () => (user: Object, done: any) => string;
-  getSessionStore: () => Promise<KoaSession.stores>;
+  configureUserAuth: () => void;
 
   getBlogPosts: DBQueryFunction<BlogPost>;
-  getSettings: DBQueryFunction<Settings>;
+  getSettings: DBQueryFunction<SiteSettings>;
   getUser: DBQueryFunction<User>;
-  updateSettings: DBQueryFunction<Partial<Settings>>;
+  updateSettings: DBWriteFunction<SettingsUpdate, SiteSettings>;
 }
 
 export interface Storage {
@@ -68,11 +83,3 @@ export interface Storage {
     path: string
   }>;
 }
-
-type CustomContext = Koa.Context & {
-  db: DBConnection;
-  storage: Storage;
-}
-
-export type ApiRouter = KoaRouter<Koa.DefaultState, CustomContext>;
-export type RouterMiddleware<ResponseBody = any> = Koa.Middleware<Koa.DefaultState, CustomContext, ResponseBody>;

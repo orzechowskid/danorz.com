@@ -1,7 +1,8 @@
-import Koa from 'koa';
-import bodyParser from 'koa-bodyparser';
-import session from 'koa-session';
-import passport from 'koa-passport';
+import connectRedis from 'connect-redis';
+import express from 'express';
+import expressSession from 'express-session';
+import passport from 'passport';
+import * as redis from 'redis';
 
 import {
   factory as apiRouterFactory
@@ -12,38 +13,36 @@ import {
 
 async function factory() {
   const db = await initDB();
-  const app = new Koa();
+  const SessionStore = connectRedis(expressSession);
+  const app = express();
   const apiRouter = apiRouterFactory();
 
-  /** @type {import('~/t').RouterMiddleware} */
-  async function augmentContext(ctx, next) {
-    ctx.db = db;
+  db.configureUserAuth();
 
-    await next();
-  }
-
-  /** @type {import('~/t').RouterMiddleware} */
-  async function routeDiagnostics(ctx, next) {
-    /* eslint-disable-next-line no-console */
-    console.log(ctx.method, ctx.path, ctx.query, ctx.request.body);
-
-    await next();
-  }
-
-  app.keys = [ process.env.WEB_BACKEND_SESSION_SECRET ];
-  app.use(session({
-    store: await db.getSessionStore()
-  }, app));
-  app.use(bodyParser());
+  app.use(expressSession({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.WEB_BACKEND_SESSION_SECRET,
+    store: new SessionStore({
+      client: redis.createClient({
+        url: process.env.WEB_BACKEND_SESSIONDB_URI
+      })
+    })
+  }));
+  app.use(express.json());
   app.use(passport.initialize());
   app.use(passport.session());
-  passport.use(db.getPassportStrategyFunction());
-  passport.serializeUser(db.getSerializeUserFunction());
-  passport.deserializeUser(db.getDeserializeUserFunction());
-  app.use(augmentContext);
-  app.use(routeDiagnostics);
-  apiRouter.prefix(`/api/1`);
-  app.use(apiRouter.routes());
+  app.use(function log(req, res, next) {
+    /* eslint-disable-next-line no-console */
+    console.debug(`${req.method} ${req.path} ${JSON.stringify(req.body)}`);
+    next();
+  });
+  app.use(function augment(req, res, next) {
+    res.locals.db = db;
+
+    next();
+  });
+  app.use(`/api/1`, apiRouter);
 
   return app;
 }

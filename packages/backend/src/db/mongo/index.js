@@ -1,8 +1,7 @@
-import KoaSessionStore from 'koa-session-mongoose';
 import {
-  connect as MongooseConnect,
-  connections as MongooseConnections
+  connect as MongooseConnect
 } from 'mongoose';
+import passport from 'passport';
 
 import * as Content from './content.js';
 import * as LinkPreview from './linkpreview.js';
@@ -10,42 +9,11 @@ import * as Posts from './posts.js';
 import * as Settings from './settings.js';
 import * as User from './user.js';
 
-function getSerializeUserFunction() {
-  return User.serializeUser();
-}
-
-function getDeserializeUserFunction() {
-  return User.deserializeUser();
-}
-
-function getPassportStrategyFunction() {
-  return User.createPassportStrategy();
-}
-
 /** @type {import('~/t').DBConnection} */
 class DBConnection {
   constructor() {
     /** @type {import('mongoose')} */
     this.connection = undefined;
-    /** @type {import('koa-session').stores} */
-    this.sessionStore = undefined;
-
-    this.getSerializeUserFunction = getSerializeUserFunction;
-    this.getDeserializeUserFunction = getDeserializeUserFunction;
-    this.getPassportStrategyFunction = getPassportStrategyFunction;
-  }
-
-  async getSessionStore() {
-    try {
-      this.sessionStore = new KoaSessionStore({
-        connection: this.connection
-      });
-    }
-    catch (ex) {
-      console.warn(ex.message);
-    }
-
-    return this.sessionStore;
   }
 
   async connect() {
@@ -83,6 +51,7 @@ class DBConnection {
     this.getBlogPostComments = Posts.getBlogPostComments;
 
     this.getSettings = Settings.getSettings;
+    this.updateSettings = Settings.updateSettings;
 
     this.createUser = User.createUser;
     this.getUser = User.getUser;
@@ -96,6 +65,12 @@ class DBConnection {
     delete this.connection.models;
     // @ts-ignore
     this.connection.models = {};
+  }
+
+  configureUserAuth() {
+    passport.use(User.createPassportStrategy());
+    passport.serializeUser(User.serializeUser());
+    passport.deserializeUser(User.deserializeUser());
   }
 }
 

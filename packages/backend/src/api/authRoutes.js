@@ -1,47 +1,56 @@
-import Router from '@koa/router';
+import express from 'express';
 import passport from 'passport';
 
 import {
   ensureSignedIn
 } from './utils.js';
 
-/** @type {import('~/t').ApiRouter} */
-const router = new Router();
+const router = express.Router();
 
 router.get(
   `/session`,
   ensureSignedIn,
-  async function getSession(ctx, next) {
-    ctx.status = 200;
-    ctx.response.body = {
-      isLoggedIn: true
-    };
-
-    await next();
+  /** @type {import('~/t').SignedInRouteHandler} */
+  async function getSession(req, res) {
+    res.status(200).json({
+      data: [{
+        isLoggedIn: true,
+        name: req.user.name
+      }],
+      metadata: {
+        count: 1,
+        error: null
+      }
+    });
   }
 );
 
 router.post(
   `/session`,
-  /* koa-passport and passport-local do the heavy lifting here */
-  passport.authenticate(`local`, {
-    session: true
-  }),
-  async function handleAuth(ctx, next) {
-    ctx.status = 201;
-
-    await next();
-  });
+  passport.authenticate(`local`),
+  /** @type {import('~/t').SignedInRouteHandler} */
+  function onCreateSession(req, res) {
+    res.status(201).json({
+      data: [{
+        isLoggedIn: true,
+        name: req.user.name
+      }],
+      metadata: {
+        count: 1,
+        error: null
+      }
+    });
+  }
+);
 
 router.delete(
   `/session`,
   ensureSignedIn,
-  async function handleAuth(ctx, next) {
-    ctx.logout();
-
-    ctx.status = 200;
-
-    await next();
-  });
+  /** @type {import('~/t').SignedInRouteHandler} */
+  async function handleAuth(req, res) {
+    req.logout();
+    res.status(205).end();
+  }
+);
 
 export default router;

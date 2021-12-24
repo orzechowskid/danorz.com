@@ -1,22 +1,24 @@
-import Router from '@koa/router';
+import express from 'express';
 
-/** @type {import('~/t').ApiRouter} */
-const router = new Router();
+const router = express.Router({
+  mergeParams: true
+});
 
 router.post(
   `/event`,
-  async function recordEvent(ctx, next) {
-    const event = JSON.parse(Buffer.from(ctx.request.body.event, `base64`).toString());
+  async function recordEvent(req, res, next) {
+    // const event = JSON.parse(Buffer.from(ctx.request.body.event, `base64`).toString());
 
-    ctx.body = {
-      data: [ event ],
-      metadata: {
-        count: 1
-      }
-    };
-    ctx.status = 201;
+    // ctx.body = {
+    //   data: [ event ],
+    //   metadata: {
+    //     count: 1
+    //   }
+    // };
+    // ctx.status = 201;
 
-    await next();
+    // await next();
+    res.status(201).end();
   }
 );
 

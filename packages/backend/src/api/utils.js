@@ -1,10 +1,10 @@
-/** @type {import('~/t').RouterMiddleware} */
-function ensureSignedIn(ctx, next) {
-  if (ctx.isUnauthenticated?.()) {
-    ctx.response.status = 401;
+function ensureSignedIn(req, res, next) {
+  if (!req.session?.passport?.user) {
+    res.status(401).end();
   }
-
-  next();
+  else {
+    next();
+  }
 }
 
 export {

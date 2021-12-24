@@ -1,45 +1,53 @@
-import Router from '@koa/router';
+import express from 'express';
 
 import {
   ensureSignedIn
 } from './utils.js';
 
-/** @type {import('~/t').ApiRouter} */
-const router = new Router();
+const router = express.Router({
+  mergeParams: true
+});
 
 router.get(
   `/settings`,
-  async function getSettings(ctx, next) {
-    const db = ctx.db;
-    const response = await db.getSettings({
-      which: {
-        name: `site`
-      }
-    });
+  /** @type {import('~/t').RouteHandler} */
+  async function getSettings(req, res, next) {
+    try {
+      const db = res.locals.db;
+      const response = await db.getSettings({
+        which: {
+          name: `site`
+        }
+      });
 
-    ctx.status = 200;
-    ctx.body = response;
-
-    await next();
+      res.status(200).json(response);
+    }
+    catch (ex) {
+      next(ex);
+    }
   }
 );
 
 router.patch(
-  `/settings/:objName`,
+  `/settings`,
   ensureSignedIn,
-  async function updateSettingsObject(ctx, next) {
-    const db = ctx.db;
+  /** @type {import('~/t').SignedInRouteHandler} */
+  async function updateSettingsObject(req, res, next) {
+    try {
+      const db = res.locals.db;
 
-    await db.updateSettings({
-      data: ctx.request.body,
-      which: {
-        name: `site`
-      }
-    });
+      await db.updateSettings({
+        data: req.body,
+        which: {
+          name: `site`
+        }
+      });
 
-    ctx.status = 204;
-
-    await next();
+      res.status(204).end();
+    }
+    catch (ex) {
+      next(ex);
+    }
   }
 );
 

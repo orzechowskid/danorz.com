@@ -1,4 +1,4 @@
-import Router from '@koa/router';
+import express from 'express';
 
 import locales from '../../../translations/src/locales.json';
 import enUS from '../../../translations/src/en-US.json';
@@ -23,31 +23,28 @@ function getDictionary(locale) {
   }
 }
 
-/** @type {import('~/t').ApiRouter} */
-const router = new Router();
+const router = express.Router({
+  mergeParams: true
+});
 
 router.get(
   `/`,
-  async function getLocales(ctx, next) {
-    ctx.status = 200;
-    ctx.body = locales;
-
-    await next();
+  /** @type {import('~/t').RouteHandler} */
+  async function getLocales(req, res) {
+    res.status(200).json(locales);
   }
 );
 
 router.get(
   `/locales/:locale/dictionary`,
-  async function getDictionaryForLocale(ctx, next) {
+  /** @type {import('~/t').RouteHandler} */
+  async function getDictionaryForLocale(req, res, next) {
     const {
       locale
-    } = ctx.params;
+    } = req.params;
     const dictionary = getDictionary(locale);
 
-    ctx.status = 200;
-    ctx.body = dictionary;
-
-    await next();
+    res.status(200).json(dictionary);
   }
 );
 

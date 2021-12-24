@@ -101,12 +101,9 @@
     "save-button": "Save"
   },
   "Settings": {
-    "description": "Configure your site",
-    "title": "Site Settings",
-    "blog": "Blog settings",
-    "blog.allowComments": "Allow comments on blog posts",
-    "content": "Content settings",
-    "site": "Global settings",
+    "enabled": "Enabled",
+    "offline": "Offline mode",
+    "site": "Site settings",
     "site.title": "Site title"
   },
   "SignInForm": {
