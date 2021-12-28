@@ -18,3 +18,5 @@ $ docker . -f gateway/Dockerfile
 ```
 
 ## Local DB
+
+## Session DB
