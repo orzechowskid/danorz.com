@@ -1,2 +1,1 @@
-appendonly.aof
-dump.rdb
+.storage/**/*

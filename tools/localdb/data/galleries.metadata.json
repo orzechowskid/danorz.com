@@ -1,1 +1,0 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"heroku_app3535375.galleries"}],"uuid":"c2234a5de13044ef88b6fb7a69677213","collectionName":"galleries"}
