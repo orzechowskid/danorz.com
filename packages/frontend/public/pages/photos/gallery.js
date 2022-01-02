@@ -15,6 +15,8 @@ import {
   useRemoteObject
 } from '~/utils/useRemoteData.js';
 
+import layoutStyles from '~/components/Layout.module.css';
+
 /**
  * @typedef GalleryProps
  * @property {import('dto').Id} id
@@ -71,13 +73,19 @@ const Gallery = (props) => {
   } = useGallery(props);
 
   return (
-    <Busy ready={!busy}>
+    <Busy
+      class={layoutStyles.layout}
+      ready={!busy}
+    >
       <Heading>{data?.name}</Heading>
       {data?.items.map((item) => (
+        /* TODO: figure out why preact-iso router doesn't support data-native */
+        /* TODO: or just lightbox? */
         <a
           key={item.path}
-          data-native={true}
+          data-native
           href={`${window.location.origin}${item.path}`}
+          target="_blank" rel="noreferrer"
         >
           <img
             className={styles.thumbnail}
