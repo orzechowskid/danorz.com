@@ -31,9 +31,9 @@ sleep 3
 
 # seed db with a user and some sample data
 # TODO: this should really use /docker-entrypoint-initdb.d
-cp -r $SCRIPT_DIR/localdb/data $DB_DIR/dump
+cp -r $SCRIPT_DIR/localdb/data/dump $DB_DIR/dump
 docker exec -it $CONTAINER_ID mongo -u $DB_ROOT_USER -p $DB_ROOT_PASS --eval "db.getSiblingDB(\"$DB_DATABASE\").createUser({ user: \"$DB_USER\", pwd: \"$DB_PASS\", roles:['dbOwner']})"
-docker exec -it $CONTAINER_ID mongorestore -h 127.0.0.1 -p 27017 -u $DB_USER -p $DB_PASS -d $DB_DATABASE /data/db/dump
+docker exec -it $CONTAINER_ID mongorestore -h 127.0.0.1 -p 27017 -u $DB_USER -p $DB_PASS -d $DB_DATABASE /data/db/dump/$DB_DATABASE
 rm -rf $DB_DIR/dump
 
 docker stop $CONTAINER_ID

@@ -16,19 +16,19 @@ class DBConnection {
   }
 
   async connect() {
-    if (!process.env.WEB_BACKEND_DB_PASS
-      || !process.env.WEB_BACKEND_DB_USER
-      || !process.env.WEB_BACKEND_DB_URI) {
+    if (!process.env.LOCALDB_PASS
+      || !process.env.LOCALDB_USER
+      || !process.env.LOCALDB_URI) {
       throw new Error(`missing mongo user/pass or db uri`);
     }
 
     const auth = {
-      password: process.env.WEB_BACKEND_DB_PASS,
-      user: process.env.WEB_BACKEND_DB_USER
+      password: process.env.LOCALDB_PASS,
+      user: process.env.LOCALDB_USER
     };
 
     this.connection = await mongoose.connect(
-      process.env.WEB_BACKEND_DB_URI, {
+      process.env.LOCALDB_URI, {
         auth,
         useCreateIndex: true,
         useFindAndModify: false,
@@ -78,12 +78,6 @@ class DBConnection {
 }
 
 async function init() {
-  if (!process.env.WEB_BACKEND_DB_PASS
-      || !process.env.WEB_BACKEND_DB_USER
-      || !process.env.WEB_BACKEND_DB_URI) {
-    throw new Error(`missing mongo user/pass or db uri`);
-  }
-
   const connection = new DBConnection();
 
   await connection.connect();

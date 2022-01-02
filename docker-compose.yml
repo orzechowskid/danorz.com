@@ -18,10 +18,8 @@ services:
         - UID=${USERID}
         - USER=${USERNAME}
       context: ./tools/localdb
-    depends_on:
-      - gateway
     environment:
-      - DB_PORT=${DB_PORT}
+      - DB_PORT=${LOCALDB_PORT}
     network_mode: "host"
     volumes:
       - ./tools/localdb/.storage:/data/db
@@ -32,8 +30,6 @@ services:
         - USER=${USERNAME}
       context: ./tools/sessiondb
     command: redis-server --appendonly yes
-    depends_on:
-      - localdb
     network_mode: "host"
     volumes:
       - ./tools/sessiondb/.storage:/data
@@ -46,10 +42,10 @@ services:
       - localdb
       - sessiondb
     environment:
-      - WEB_BACKEND_DB_DRIVER=${WEB_BACKEND_DB_DRIVER}
-      - WEB_BACKEND_DB_PASS=${WEB_BACKEND_DB_PASS}
-      - WEB_BACKEND_DB_URI=${WEB_BACKEND_DB_URI}
-      - WEB_BACKEND_DB_USER=${WEB_BACKEND_DB_USER}
+      - LOCALDB_PASS=${LOCALDB_PASS}
+      - LOCALDB_URI=${LOCALDB_URI}
+      - LOCALDB_USER=${LOCALDB_USER}
+      - WEB_BACKEND_LOCALDB_DRIVER=${WEB_BACKEND_LOCALDB_DRIVER}
       - WEB_BACKEND_PORT=${WEB_BACKEND_PORT}
       - WEB_BACKEND_SESSION_SECRET=${WEB_BACKEND_SESSION_SECRET}
       - WEB_BACKEND_SESSIONDB_URI=${WEB_BACKEND_SESSIONDB_URI}
