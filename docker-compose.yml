@@ -12,7 +12,7 @@ services:
       - WEB_FRONTEND_PORT=${WEB_FRONTEND_PORT}
       - WEB_BACKEND_PORT=${WEB_BACKEND_PORT}
     network_mode: "host"
-  db:
+  localdb:
     build:
       args:
         - UID=${USERID}
@@ -33,7 +33,7 @@ services:
       context: ./tools/sessiondb
     command: redis-server --appendonly yes
     depends_on:
-      - db
+      - localdb
     network_mode: "host"
     volumes:
       - ./tools/sessiondb/.storage:/data
@@ -43,7 +43,7 @@ services:
       context: .
       dockerfile: ./packages/backend/Dockerfile
     depends_on:
-      - db
+      - localdb
       - sessiondb
     environment:
       - WEB_BACKEND_DB_DRIVER=${WEB_BACKEND_DB_DRIVER}
