@@ -22,7 +22,7 @@ function useSiteSettings() {
     put
   } = useRemoteObject(`env/settings`, {
     getOpts: {
-      raw: true
+      rawResponse: true
     },
     putOpts: {
       method: `PATCH`

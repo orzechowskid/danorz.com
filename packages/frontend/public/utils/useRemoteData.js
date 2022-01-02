@@ -18,7 +18,8 @@ import {
 /**
  * @typedef ExtraRequestOpts
  * @property {boolean} [noCache]
- * @property {boolean} [raw]
+ * @property {boolean} [rawRequest]
+ * @property {boolean} [rawResponse]
  *
  * @typedef {RequestInit & ExtraRequestOpts} RequestOpts
  *
@@ -28,7 +29,6 @@ import {
  * @property {RequestOpts} [getOpts]
  * @property {RequestOpts} [postOpts]
  * @property {RequestOpts} [putOpts]
- * @property {boolean} [raw]
  * @property {number} [ttl]
  */
 
@@ -60,7 +60,8 @@ function useRemoteObject(path, opts) {
       try {
         const {
           noCache,
-          raw,
+          rawRequest,
+          rawResponse,
           ...deleteOptions
         } = deleteOpts ?? {};
         await deleteData(path, deleteOptions);
@@ -97,7 +98,8 @@ function useRemoteObject(path, opts) {
       try {
         const {
           noCache,
-          raw,
+          rawRequest,
+          rawResponse,
           ...getOptions
         } = getOpts ?? {};
 
@@ -106,7 +108,7 @@ function useRemoteObject(path, opts) {
         }
 
         const response = await getData(path, getOptions);
-        const unwrapped = raw
+        const unwrapped = rawResponse
           ? response
           : response.data?.[0];
 
@@ -132,24 +134,29 @@ function useRemoteObject(path, opts) {
       try {
         const {
           noCache,
-          raw,
+          rawRequest,
+          rawResponse,
           ...postOptions
         } = postOpts ?? {};
+        let response = null;
 
-        if (raw) {
-          await rawFetch(path, {
+        if (rawRequest) {
+          const request = await rawFetch(path, {
             method: `POST`,
             ...postOptions,
             /* this can be anything */
             /* @ts-ignore */
             body: payload
           });
+
+          response = await request.json();
         }
         else {
-          /** @type {import('dto').DtoWrapper<T>} */
-          const response = await postData(path, payload, postOpts);
+          response = await postData(path, payload, postOpts);
+        }
 
-          setData(response.data[0]);
+        if (!rawResponse) {
+          setData(/** @type {import('dto').DtoWrapper<T>} */(response.data[0]));
 
           if (!noCache) {
             dataCache.set(path, response.data[0], ttl);
@@ -172,7 +179,8 @@ function useRemoteObject(path, opts) {
       try {
         const {
           noCache,
-          raw,
+          rawRequest,
+          rawResponse,
           ...putOptions
         } = putOpts ?? {};
 
@@ -256,7 +264,8 @@ function useRemoteCollection(path, opts) {
       try {
         const {
           noCache,
-          raw,
+          rawRequest,
+          rawResponse,
           ...deleteOptions
         } = deleteOpts ?? {};
         const idx = data?.findIndex(
@@ -290,7 +299,8 @@ function useRemoteCollection(path, opts) {
     async function doGet() {
       const {
         noCache,
-        raw,
+        rawRequest,
+        rawResponse,
         ...getOptions
       } = getOpts ?? {};
       const cacheEntry = !noCache
@@ -334,7 +344,8 @@ function useRemoteCollection(path, opts) {
       try {
         const {
           noCache,
-          raw,
+          rawRequest,
+          rawResponse,
           ...postOptions
         } = postOpts ?? {};
         /** @type {import('dto').DtoWrapper<T>} */
@@ -367,13 +378,15 @@ function useRemoteCollection(path, opts) {
       try {
         const {
           noCache,
-          raw
+          rawRequest,
+          rawResponse,
+          ...putOptions
         } = putOpts ?? {};
         const idx = data?.findIndex(
           (obj) => obj._id === nextObj._id
         ) ?? -1;
 
-        await putData(`${path}/${nextObj._id}`, putOpts);
+        await putData(`${path}/${nextObj._id}`, putOptions);
 
         if (idx !== -1) {
           const nextData = [

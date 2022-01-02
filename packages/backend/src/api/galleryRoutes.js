@@ -85,7 +85,8 @@ router.post(
       const {
         id
       } = req.params;
-      const results = await Promise.all(req.files.map(async function(file) {
+
+      await Promise.all(req.files.map(async function(file) {
         const imageBuffer = file.buffer;
         const thumbnailBuffer = Buffer.from(imageBuffer);
         const thumbnail = await sharp(thumbnailBuffer)
@@ -125,12 +126,13 @@ router.post(
         });
       }));
 
-      res.status(201).json({
-        data: results,
-        metadata: {
-          total: results.length
+      const response = await db.getGalleries({
+        which: {
+          _id: id
         }
-      })
+      });
+
+      res.status(201).json(response)
     }
     catch (ex) {
       next(ex);

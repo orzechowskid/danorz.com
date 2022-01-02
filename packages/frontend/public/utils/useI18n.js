@@ -112,7 +112,7 @@ function useDictionary(locale) {
     data
   } = useRemoteObject(`i18n/locales/${locale}/dictionary`, {
     getOpts: {
-      raw: true
+      rawResponse: true
     },
     ttl: 1000 * 86400
   });
