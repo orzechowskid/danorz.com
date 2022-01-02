@@ -25,9 +25,11 @@ class DataCache {
   get(path) {
     const entry = this.data[path];
 
-    return (entry && Date.now() - entry.createdAt <= entry.ttl)
-      ? entry
-      : undefined;
+    if (entry && (entry.ttl === -1 || (Date.now() - entry.createdAt <= entry.ttl))) {
+      return entry;
+    }
+
+    return undefined;
   }
 
   /**
