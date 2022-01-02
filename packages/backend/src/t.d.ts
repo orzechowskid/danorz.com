@@ -1,7 +1,8 @@
 import {
   BlogPost,
-  Id,
+  GalleryItem,
   Indexed,
+  PhotoGallery,
   SettingsUpdate,
   SiteSettings,
   User
@@ -54,7 +55,9 @@ export interface DBConnection {
   disconnect: () => Promise<void>;
   configureUserAuth: () => void;
 
+  createGalleryItem: DBWriteFunction<GalleryItem[]>; // ?
   getBlogPosts: DBQueryFunction<BlogPost>;
+  getGalleries: DBQueryFunction<PhotoGallery>;
   getSettings: DBQueryFunction<SiteSettings>;
   getUser: DBQueryFunction<User>;
   updateSettings: DBWriteFunction<SettingsUpdate, SiteSettings>;

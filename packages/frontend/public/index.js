@@ -43,6 +43,8 @@ import {
 const About = lazy(() => import('./pages/about/index.js'));
 const Blog = lazy(() => import('./pages/blog/index.js'));
 const BlogPost = lazy(() => import('./pages/blog/post.js'));
+const Photos = lazy(() => import('./pages/photos/index.js'));
+const PhotoGallery = lazy(() => import('./pages/photos/gallery.js'));
 
 /**
  * @param {Error} err
@@ -90,6 +92,8 @@ function AppContents() {
           <Route path="/about" component={About} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/posts/:id" component={BlogPost} />
+          <Route path="/photos" component={Photos} />
+          <Route path="/photos/gallery/:id" component={PhotoGallery} />
           <Route default component={NotFound} />
         </Router>
       </Busy>

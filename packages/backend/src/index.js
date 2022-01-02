@@ -1,3 +1,4 @@
+import bodyParser from 'body-parser';
 import connectRedis from 'connect-redis';
 import express from 'express';
 import expressSession from 'express-session';
@@ -10,15 +11,31 @@ import {
 import {
   initDB
 } from './db/index.js';
+import {
+  factory as mediaRouterFactory
+} from './media/index.js';
+import {
+  initStorage
+} from './storage/index.js';
 
 async function factory() {
-  const db = await initDB();
+  const [ db, storage ] = await Promise.all([
+    initDB(),
+    initStorage()
+  ]);
   const SessionStore = connectRedis(expressSession);
   const app = express();
-  const apiRouter = apiRouterFactory();
+  const [ apiRouter, mediaRouter ] = await Promise.all([
+    apiRouterFactory(),
+    mediaRouterFactory({
+      db,
+      storage
+    })
+  ]);
 
   db.configureUserAuth();
 
+  app.use(bodyParser.json());
   app.use(expressSession({
     resave: false,
     saveUninitialized: false,
@@ -29,20 +46,25 @@ async function factory() {
       })
     })
   }));
-  app.use(express.json());
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use(function log(req, res, next) {
-    /* eslint-disable-next-line no-console */
-    console.debug(`${req.method} ${req.path} ${JSON.stringify(req.body)}`);
-    next();
-  });
+
+  if (process.env.NODE_ENV !== `production`) {
+    app.use(function log(req, res, next) {
+      /* eslint-disable-next-line no-console */
+      console.debug(`${req.method} ${req.path} ${JSON.stringify(req.body)}`);
+      next();
+    });
+  }
+
   app.use(function augment(req, res, next) {
     res.locals.db = db;
+    res.locals.storage = storage;
 
     next();
   });
   app.use(`/api/1`, apiRouter);
+  app.use(`/media`, mediaRouter);
 
   return app;
 }

@@ -5,6 +5,7 @@ import authRouter from './authRoutes.js';
 import blogRouter from './blogRoutes.js';
 import contentRouter from './contentRoutes.js';
 import envRouter from './envRoutes.js';
+import galleryRouter from './galleryRoutes.js';
 import i18nRouter from './i18nRoutes.js';
 import linkPreviewRouter from './linkpreview.js';
 
@@ -20,6 +21,7 @@ function factory() {
   router.use(`/env`, envRouter);
   router.use(`/i18n`, i18nRouter);
   router.use(`/linkpreview`, linkPreviewRouter);
+  router.use(`/media`, galleryRouter);
 
   router.use(function onError(err, req, res, next) {
     console.error(err.stack);

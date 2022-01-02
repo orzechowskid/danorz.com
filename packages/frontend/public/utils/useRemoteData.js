@@ -8,20 +8,26 @@ import {
   deleteData,
   getData,
   postData,
-  putData
+  putData,
+  rawFetch
 } from '~/utils/api.js';
 import {
   DataCache
 } from '~/utils/dataCache.js';
 
 /**
+ * @typedef ExtraRequestOpts
+ * @property {boolean} [noCache]
+ * @property {boolean} [raw]
+ *
+ * @typedef {RequestInit & ExtraRequestOpts} RequestOpts
+ *
  * @typedef RemoteObjectOpts
  * @property {boolean} [defer]
- * @property {RequestInit} [deleteOpts]
- * @property {RequestInit} [getOpts]
- * @property {boolean} [noCache]
- * @property {RequestInit} [postOpts]
- * @property {RequestInit} [putOpts]
+ * @property {RequestOpts} [deleteOpts]
+ * @property {RequestOpts} [getOpts]
+ * @property {RequestOpts} [postOpts]
+ * @property {RequestOpts} [putOpts]
  * @property {boolean} [raw]
  * @property {number} [ttl]
  */
@@ -40,10 +46,8 @@ function useRemoteObject(path, opts) {
   const {
     deleteOpts,
     getOpts,
-    noCache,
     postOpts,
     putOpts,
-    raw,
     ttl
   } = opts ?? {};
   const [ busy, setBusy ] = useState(false);
@@ -54,7 +58,12 @@ function useRemoteObject(path, opts) {
       setBusy(true);
 
       try {
-        await deleteData(path, deleteOpts);
+        const {
+          noCache,
+          raw,
+          ...deleteOptions
+        } = deleteOpts ?? {};
+        await deleteData(path, deleteOptions);
 
         setData(undefined);
 
@@ -68,12 +77,12 @@ function useRemoteObject(path, opts) {
 
       setBusy(false);
     },
-    [ noCache, deleteOpts, path ]
+    [ deleteOpts, path ]
   );
   const get = useCallback(
     async function doGet(force = false) {
       /** @type {import('~/utils/dataCache').CacheEntry<T>|undefined} */
-      const cacheEntry = !noCache && !force
+      const cacheEntry = !getOpts?.noCache && !force
         ? dataCache.get(path)
         : undefined;
 
@@ -86,11 +95,17 @@ function useRemoteObject(path, opts) {
       setBusy(true);
 
       try {
+        const {
+          noCache,
+          raw,
+          ...getOptions
+        } = getOpts ?? {};
+
         if (!noCache) {
           dataCache.set(path, undefined, ttl);
         }
 
-        const response = await getData(path, getOpts);
+        const response = await getData(path, getOptions);
         const unwrapped = raw
           ? response
           : response.data?.[0];
@@ -102,12 +117,12 @@ function useRemoteObject(path, opts) {
         }
       }
       catch (ex) {
-        console.error(ex);
+        console.error(path, ex);
       }
 
       setBusy(false);
     },
-    [ noCache, raw, getOpts, path, ttl ]
+    [ getOpts, path, ttl ]
   );
   const post = useCallback(
     /** @param {CreateShape} payload */
@@ -115,13 +130,30 @@ function useRemoteObject(path, opts) {
       setBusy(true);
 
       try {
-        /** @type {import('dto').DtoWrapper<T>} */
-        const response = await postData(path, payload, postOpts);
+        const {
+          noCache,
+          raw,
+          ...postOptions
+        } = postOpts ?? {};
 
-        setData(response.data[0]);
+        if (raw) {
+          await rawFetch(path, {
+            method: `POST`,
+            ...postOptions,
+            /* this can be anything */
+            /* @ts-ignore */
+            body: payload
+          });
+        }
+        else {
+          /** @type {import('dto').DtoWrapper<T>} */
+          const response = await postData(path, payload, postOpts);
 
-        if (!noCache) {
-          dataCache.set(path, response.data[0], ttl);
+          setData(response.data[0]);
+
+          if (!noCache) {
+            dataCache.set(path, response.data[0], ttl);
+          }
         }
       }
       catch (ex) {
@@ -130,7 +162,7 @@ function useRemoteObject(path, opts) {
 
       setBusy(false);
     },
-    [ noCache, postOpts, path, ttl ]
+    [ postOpts, path, ttl ]
   );
   const put = useCallback(
     /** @param {UpdateShape} payload */
@@ -138,7 +170,13 @@ function useRemoteObject(path, opts) {
       setBusy(true);
 
       try {
-        await putData(path, payload, putOpts);
+        const {
+          noCache,
+          raw,
+          ...putOptions
+        } = putOpts ?? {};
+
+        await putData(path, payload, putOptions);
         get(true);
       }
       catch (ex) {
@@ -147,7 +185,7 @@ function useRemoteObject(path, opts) {
 
       setBusy(false);
     },
-    [ noCache, putOpts, get, path ]
+    [ putOpts, get, path ]
   );
 
   useEffect(
@@ -161,7 +199,7 @@ function useRemoteObject(path, opts) {
 
   useEffect(
     function syncOnExternalUpdate() {
-      if (noCache) {
+      if (getOpts?.noCache) {
         return;
       }
 
@@ -179,7 +217,7 @@ function useRemoteObject(path, opts) {
         dataCache.off(path, onUpdate);
       }
     },
-    [ noCache, path ]
+    [ getOpts?.noCache, path ]
   );
 
   return {
@@ -194,14 +232,13 @@ function useRemoteObject(path, opts) {
 
 /**
  * @param {string} path
- * @param {Omit<RemoteObjectOpts, 'raw'>} [opts]
+ * @param {RemoteObjectOpts} [opts]
  * @template T
  */
 function useRemoteCollection(path, opts) {
   const {
     deleteOpts,
     getOpts,
-    noCache,
     postOpts,
     putOpts,
     ttl
@@ -217,11 +254,16 @@ function useRemoteCollection(path, opts) {
       setBusy(true);
 
       try {
+        const {
+          noCache,
+          raw,
+          ...deleteOptions
+        } = deleteOpts ?? {};
         const idx = data?.findIndex(
           (obj) => obj._id === oldObj._id
         ) ?? -1;
 
-        await deleteData(`${path}/${oldObj._id}`, deleteOpts);
+        await deleteData(`${path}/${oldObj._id}`, deleteOptions);
 
         if (idx !== -1) {
           const nextData = [
@@ -242,10 +284,15 @@ function useRemoteCollection(path, opts) {
 
       setBusy(false);
     },
-    [ data, noCache, deleteOpts, path ]
+    [ data, deleteOpts, path ]
   );
   const get = useCallback(
     async function doGet() {
+      const {
+        noCache,
+        raw,
+        ...getOptions
+      } = getOpts ?? {};
       const cacheEntry = !noCache
         ? dataCache.get(path)
         : undefined;
@@ -263,7 +310,7 @@ function useRemoteCollection(path, opts) {
           dataCache.set(path, undefined, ttl);
         }
 
-        const response = await getData(path, getOpts);
+        const response = await getData(path, getOptions);
 
         setData(response.data);
 
@@ -277,7 +324,7 @@ function useRemoteCollection(path, opts) {
 
       setBusy(false);
     },
-    [ getOpts, noCache, path, ttl ]
+    [ getOpts, path, ttl ]
   );
   const post = useCallback(
     /** @param {Partial<T>} payload */
@@ -285,8 +332,13 @@ function useRemoteCollection(path, opts) {
       setBusy(true);
 
       try {
+        const {
+          noCache,
+          raw,
+          ...postOptions
+        } = postOpts ?? {};
         /** @type {import('dto').DtoWrapper<T>} */
-        const response = await postData(path, payload, postOpts);
+        const response = await postData(path, payload, postOptions);
         const nextData = [
           ...(data ?? []),
           response.data[0]
@@ -304,7 +356,7 @@ function useRemoteCollection(path, opts) {
 
       setBusy(false);
     },
-    [ data, noCache, postOpts, path, ttl ]
+    [ data, postOpts, path, ttl ]
   );
 
   const put = useCallback(
@@ -313,6 +365,10 @@ function useRemoteCollection(path, opts) {
       setBusy(true);
 
       try {
+        const {
+          noCache,
+          raw
+        } = putOpts ?? {};
         const idx = data?.findIndex(
           (obj) => obj._id === nextObj._id
         ) ?? -1;
@@ -339,7 +395,7 @@ function useRemoteCollection(path, opts) {
 
       setBusy(false);
     },
-    [ data, noCache, putOpts, get, path ]
+    [ data, putOpts, get, path ]
   );
 
   useEffect(
@@ -353,7 +409,7 @@ function useRemoteCollection(path, opts) {
 
   useEffect(
     function syncOnExternalUpdate() {
-      if (noCache) {
+      if (getOpts?.noCache) {
         return;
       }
 
@@ -371,7 +427,7 @@ function useRemoteCollection(path, opts) {
         dataCache.off(path, onUpdate);
       }
     },
-    [ noCache, path ]
+    [ getOpts?.noCache, path ]
   );
 
   return {

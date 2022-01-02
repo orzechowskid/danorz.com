@@ -136,54 +136,11 @@ async function deleteData(apiEndpoint, opts = {}) {
   });
 }
 
-/**
- * @param {T|T[]} data
- * @param {import('~/t').RemoteData<T>} apiResponse
- * @return {import('~/t').RemoteData<T>}
- * @template T
- */
-function wrap(data, apiResponse) {
-  return {
-    ...apiResponse,
-    data: !!data.length && typeof data !== `string` ? data : [ data ]
-  };
-}
-
-/**
- * @param {import('~/t').RemoteData<T>} apiResponse
- * @return {string|T[]|T}
- * @template T
- */
-function unwrap(apiResponse) {
-  if (!apiResponse) {
-    return undefined;
-  }
-
-  const {
-    data,
-    metadata
-  } = apiResponse;
-
-  if (!metadata) {
-    return undefined;
-  }
-
-  if (metadata.error) {
-    return metadata.error;
-  }
-
-  return metadata.total === 1
-    ? data[0]
-    : data;
-}
-
 export {
   deleteData,
   getData,
   postData,
   putData,
   rawFetch,
-  rawRequest,
-  //  unwrap,
-  wrap
+  rawRequest
 };
