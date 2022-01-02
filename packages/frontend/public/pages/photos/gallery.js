@@ -39,10 +39,8 @@ function useGallery(props) {
     post
   } = useRemoteObject(`media/galleries/${id}`, {
     postOpts: {
-      headers: {
-      },
       noCache: true,
-      raw: true
+      rawRequest: true
     }
   });
   const onUpload = useCallback(
