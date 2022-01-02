@@ -17,6 +17,11 @@ pushd ./tools > /dev/null
 ./bootstrap-localdb.sh > /dev/null
 popd > /dev/null
 
+message "bootstrapping local session database..."
+pushd ./tools > /dev/null
+./bootstrap-sessiondb.sh > /dev/null
+popd > /dev/null
+
 message "configuring git hooks..."
 cp tools/git-hooks/pre-commit .git/hooks
 
