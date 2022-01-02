@@ -21,7 +21,9 @@ function useSiteSettings() {
     data,
     put
   } = useRemoteObject(`env/settings`, {
-    raw: true,
+    getOpts: {
+      raw: true
+    },
     putOpts: {
       method: `PATCH`
     }

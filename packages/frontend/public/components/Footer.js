@@ -1,3 +1,7 @@
+import {
+  useLocation
+} from 'preact-iso';
+
 import Heading from '~/components/Heading.js';
 import Section from '~/components/Section.js';
 import {
@@ -12,6 +16,9 @@ function Footer() {
   const {
     t
   } = useI18n();
+  const {
+    url
+  } = useLocation();
 
   return (
     <footer class={styles.footer}>
@@ -23,9 +30,37 @@ function Footer() {
           {t(`Footer:nav-title`)}
         </Heading>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/blog">Blog</a></li>
-          <li><a href="/about">About</a></li>
+          <li>
+            <a
+              aria-current={url === `/` || undefined}
+              href="/"
+            >
+              {t(`Home:title`)}
+            </a>
+          </li>
+          <li>
+            <a
+              aria-current={url.startsWith(`/blog`) || undefined}
+              href="/blog"
+            >
+              {t(`Blog:title`)}
+            </a>
+          </li>
+          <li>
+            <a
+              aria-current={url.startsWith(`/photos`) || undefined}
+              href="/photos">
+              {t(`Photos:title`)}
+            </a>
+          </li>
+          <li>
+            <a
+              aria-current={url === `/about` || undefined}
+              href="/about"
+            >
+              {t(`About:title`)}
+            </a>
+          </li>
         </ul>
       </Section>
     </footer>

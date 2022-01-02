@@ -32,7 +32,7 @@ const BusyContainer = function(props) {
       class={`${styles.busy} ${classname}`}
       {...otherProps}
     >
-      {ready ? children : null}
+      {children}
     </ElementName>
   );
 };

@@ -9,6 +9,8 @@ import {
   StateUpdater,
 } from 'preact/hooks';
 
+export type EventHandler<T extends EventTarget> = JSX.GenericEventHandler<T>;
+
 export type Component<Props = {}> = FunctionComponent<JSX.HTMLAttributes & Props>;
 
 export interface RemoteObject<T, CreateShape = Partial<T>, UpdateShape = T> {
