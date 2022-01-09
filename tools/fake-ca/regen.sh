@@ -55,7 +55,9 @@ openssl genrsa -out domains/local.host/key.pem 2048
 
 # generate CSR
 openssl req -config openssl.cnf -new -sha256 -key domains/local.host/key.pem -out domains/local.host/csr.pem
-exit 0
+
 # generate certificate
 pushd ca
 openssl ca -batch -config openssl.cnf -extensions server_cert -days 720 -notext -md sha256 -in ../domains/local.host/csr.pem -out ../domains/local.host/crt.pem
+
+popd > /dev/null
