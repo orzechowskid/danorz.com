@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 
 # configure directory
 mkdir -p root-ca ca domains
