@@ -58,6 +58,6 @@ openssl req -config openssl.cnf -new -sha256 -key domains/local.host/key.pem -ou
 
 # generate certificate
 pushd ca
-openssl ca -batch -config openssl.cnf -extensions server_cert -days 720 -notext -md sha256 -in ../domains/local.host/csr.pem -out ../domains/local.host/crt.pem -subj "CN=AlewifeLabsGateway"
+openssl ca -batch -config openssl.cnf -extensions server_cert -days 720 -notext -md sha256 -in ../domains/local.host/csr.pem -out ../domains/local.host/crt.pem -subj "/CN=AlewifeLabsGateway"
 
 popd > /dev/null
