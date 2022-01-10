@@ -10,4 +10,4 @@ ARG USER
 USER $USER
 
 COPY ./gateway/nginx.conf /etc/nginx/templates/gateway.conf.template
-COPY ./fake-ca/domains/local.host/ /etc/fake-ca/local.host
+COPY ./fake-ca/domains/ /etc/fake-ca/domains
