@@ -17,7 +17,9 @@ const LinkPreview = (props) => {
   } = props;
   const {
     data
-  } = useRemoteObject(`linkpreview?url=${encodeURIComponent(url)}`);
+  } = useRemoteObject(`linkpreview?url=${encodeURIComponent(url)}`, {
+    ttl: -1
+  });
   const {
     favicons,
     images,
