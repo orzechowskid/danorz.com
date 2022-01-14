@@ -1,16 +1,4 @@
 import {
-  useDialog
-} from '@react-aria/dialog';
-import {
-  FocusScope
-} from '@react-aria/focus';
-import {
-  useModal,
-  useOverlay,
-  usePreventScroll,
-  OverlayContainer
-} from '@react-aria/overlays';
-import {
   useRef
 } from 'preact/hooks';
 
@@ -33,14 +21,12 @@ const ModalBackdrop = (props) => {
   } = props;
 
   return (
-    <OverlayContainer>
-      <div
-        className={styles.overlay}
-        {...otherProps}
-      >
-        {children}
-      </div>
-    </OverlayContainer>
+    <div
+      className={styles.overlay}
+      {...otherProps}
+    >
+      {children}
+    </div>
   );
 };
 
@@ -54,30 +40,30 @@ function useModalDialog(props) {
     title
   } = props;
   const dialogContentsRef = useRef();
-  const {
-    overlayProps,
-    underlayProps
-  } = useOverlay(props, dialogContentsRef);
-  const {
-    modalProps
-  } = useModal();
-  const {
-    dialogProps,
-    titleProps
-  } = useDialog(props, dialogContentsRef)
+  // const {
+  //   overlayProps,
+  //   underlayProps
+  // } = useOverlay(props, dialogContentsRef);
+  // const {
+  //   modalProps
+  // } = useModal();
+  // const {
+  //   dialogProps,
+  //   titleProps
+  // } = useDialog(props, dialogContentsRef)
 
-  usePreventScroll();
+  // usePreventScroll();
 
   return {
     children,
     className,
     dialogContentsRef,
-    dialogProps,
-    modalProps,
-    overlayProps,
-    title,
-    titleProps,
-    underlayProps
+    // dialogProps,
+    // modalProps,
+    // overlayProps,
+    title
+    // titleProps,
+    // underlayProps
   };
 }
 
@@ -87,12 +73,12 @@ const ModalDialog = function(props) {
     children,
     className,
     dialogContentsRef,
-    dialogProps,
-    modalProps,
-    overlayProps,
+    dialogProps = {},
+    modalProps = {},
+    overlayProps = {},
     title,
-    titleProps,
-    underlayProps
+    titleProps = {},
+    underlayProps = {}
   } = useModalDialog(props);
 
   return (
@@ -101,22 +87,20 @@ const ModalDialog = function(props) {
         className={styles.dialogContainer}
         {...underlayProps}
       >
-        <FocusScope autoFocus contain restoreFocus>
-          <div
-            ref={dialogContentsRef}
-            {...overlayProps}
-            {...dialogProps}
-            {...modalProps}
-            className={className}
-          >
-            {title && (
-              <div {...titleProps}>
-                {title}
-              </div>
-            )}
-            {children}
-          </div>
-        </FocusScope>
+        <div
+          ref={dialogContentsRef}
+          {...overlayProps}
+          {...dialogProps}
+          {...modalProps}
+          className={className}
+        >
+          {title && (
+            <div {...titleProps}>
+              {title}
+            </div>
+          )}
+          {children}
+        </div>
       </div>
     </ModalBackdrop>
   );
