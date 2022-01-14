@@ -1,13 +1,4 @@
 import {
-  FocusScope
-} from '@react-aria/focus';
-import {
-  useButton
-} from '@react-aria/button';
-import {
-  useOverlayTriggerState
-} from '@react-stately/overlays';
-import {
   useCallback,
   useRef
 } from 'preact/hooks';
@@ -30,16 +21,16 @@ function useSiteMenu() {
   const {
     t
   } = useI18n();
-  const state = useOverlayTriggerState({});
+  // const state = useOverlayTriggerState({});
   const triggerButtonRef = useRef();
-  const {
-    buttonProps
-  } = useButton(
-    {
-      onPress: state.open
-    },
-    triggerButtonRef
-  );
+  // const {
+  //   buttonProps
+  // } = useButton(
+  //   {
+  //     onPress: state.open
+  //   },
+  //   triggerButtonRef
+  // );
   const {
     isSignedIn,
     signOut
@@ -47,15 +38,15 @@ function useSiteMenu() {
   const onSignOut = useCallback(
     async function onSignOut() {
       signOut();
-      state.close();
+      // state.close();
     },
-    [ signOut, state?.close ]);
+    [ signOut/*, state?.close*/ ]);
 
   return {
-    buttonProps,
+    // buttonProps,
     isSignedIn,
     onSignOut,
-    state,
+    // state,
     t,
     triggerButtonRef
   };
@@ -73,10 +64,10 @@ function useSiteMenuContainer(props) {
   const {
     children,
     dialogContentsRef,
-    dialogProps,
-    modalProps,
-    overlayProps,
-    underlayProps
+    dialogProps = {},
+    modalProps = {},
+    overlayProps = {},
+    underlayProps = {}
   } = useModalDialog({
     ...props,
     isDismissable: true,
@@ -111,13 +102,7 @@ const SiteMenuContainer = (props) => {
         {...dialogContentsProps}
         className={styles.siteMenu}
       >
-        <FocusScope
-          autoFocus
-          contain
-          restoreFocus
-        >
-          {children}
-        </FocusScope>
+        {children}
       </div>
     </ModalBackdrop>
   );
@@ -125,10 +110,10 @@ const SiteMenuContainer = (props) => {
 
 const SiteMenu = () => {
   const {
-    buttonProps,
+    buttonProps = {},
     isSignedIn,
     onSignOut,
-    state,
+    state = {},
     t,
     triggerButtonRef
   } = useSiteMenu();

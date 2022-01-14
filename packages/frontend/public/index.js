@@ -1,9 +1,6 @@
 import 'preact/debug';
 
 import {
-  OverlayProvider
-} from '@react-aria/overlays';
-import {
   ErrorBoundary,
   LocationProvider,
   Router,
@@ -108,9 +105,7 @@ export function App() {
       <ErrorBoundary onError={onAppError}>
         <GlobalToastProvider>
           <DocumentLevelProvider value={1}>
-            <OverlayProvider>
-              <AppContents />
-            </OverlayProvider>
+            <AppContents />
             <GlobalToast />
           </DocumentLevelProvider>
         </GlobalToastProvider>
