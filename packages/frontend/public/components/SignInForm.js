@@ -23,6 +23,7 @@ function useSignInForm() {
   const {
     signIn
   } = useSession();
+  /* some parents unmount this component upon successful login */
   const [ isBusy, setBusy ] = useStateWhenMounted(false);
   const [ focusedEls, setFocusedEls ] = useStateWhenMounted(0);
   /** @type {(e: SubmitEvent) => void} */
