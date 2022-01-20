@@ -49,7 +49,7 @@ function useAboutPage() {
     setPreviewContents(pageContents);
     setTimeout(function() {
       // TODO: something else here?  setTimeout + querySelector is kinda gross
-      document.querySelector(`textarea`).focus();
+      document?.querySelector(`textarea`).focus();
     }, 0);
   }, [ pageContents ]);
   const onPreview = useCallback(function onPreview() {

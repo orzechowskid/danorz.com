@@ -1,12 +1,14 @@
 import 'preact/debug';
 
 import {
+  render
+} from 'preact';
+import {
   ErrorBoundary,
   LocationProvider,
   Router,
   Route,
   lazy,
-  hydrate,
   prerender as ssr
 } from 'preact-iso';
 
@@ -17,6 +19,9 @@ import Busy from './components/Busy.js';
 import Footer from './components/Footer.js';
 import GlobalToast from './components/GlobalToast.js';
 import Header from './components/Header.js';
+import {
+  ModalDialogProvider
+} from './components/ModalDialog.js';
 import {
   fireEvent
 } from './utils/analytics.js';
@@ -76,7 +81,7 @@ function AppContents() {
   const ready = useApp();
 
   return (
-    <div id="app">
+    <>
       <a id="skip-link" href="#main">skip to content</a>
       <Header />
       <Busy
@@ -95,7 +100,7 @@ function AppContents() {
         </Router>
       </Busy>
       <Footer />
-    </div>
+    </>
   );
 }
 
@@ -105,7 +110,9 @@ export function App() {
       <ErrorBoundary onError={onAppError}>
         <GlobalToastProvider>
           <DocumentLevelProvider value={1}>
-            <AppContents />
+            <ModalDialogProvider>
+              <AppContents />
+            </ModalDialogProvider>
             <GlobalToast />
           </DocumentLevelProvider>
         </GlobalToastProvider>
@@ -114,7 +121,7 @@ export function App() {
   );
 }
 
-hydrate(<App />);
+render(<App />, document.querySelector(`#app`));
 
 /** @param {any} data */
 export async function prerender(data) {
