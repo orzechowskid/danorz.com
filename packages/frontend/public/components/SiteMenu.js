@@ -34,6 +34,12 @@ function useSiteMenu() {
     isSignedIn,
     signOut
   } = useSession();
+  const onTriggerClick = useCallback(
+    function onTriggerClick() {
+      setOpen(true);
+    },
+    []
+  );
   const onSignOut = useCallback(
     async function onSignOut() {
       signOut();
@@ -49,27 +55,23 @@ function useSiteMenu() {
   );
 
   return {
-    // buttonProps,
+    isMenuVisible: isOpen,
     isSignedIn,
     onDismissMenu,
     onSignOut,
-    // state,
     t,
     triggerButtonRef,
-    state: {
-      isOpen,
-      setOpen
-    }
+    onTriggerClick
   };
 }
 
 const SiteMenu = () => {
   const {
-    //    buttonProps = {},
+    isMenuVisible,
     isSignedIn,
     onDismissMenu,
     onSignOut,
-    state = {},
+    onTriggerClick,
     t,
     triggerButtonRef
   } = useSiteMenu();
@@ -80,8 +82,7 @@ const SiteMenu = () => {
         ref={triggerButtonRef}
         aria-label={t(`SiteMenu:trigger-label`)}
         class={styles.menuTrigger}
-        {...{}/*buttonProps*/}
-        onClick={() => state.setOpen(true)}
+        onClick={onTriggerClick}
       >
         <span
           class={styles.menuTriggerIcon}
@@ -91,10 +92,9 @@ const SiteMenu = () => {
         </span>
       </button>
 
-      {state.isOpen && (
+      {isMenuVisible && (
         <ModalDialog
           class={styles.siteMenu}
-          isOpen
           onDismiss={onDismissMenu}
           triggerRef={triggerButtonRef}
         >

@@ -88,18 +88,30 @@ function useEscapeToClose(opts) {
   }, [ onEscape ]);
 }
 
-/** @type {import('~/t').Component<{children: import('preact').ComponentChildren}>} */
+/** @type {import('~/t').Component<{ onDismiss: () => void}>} */
 const ModalBackdrop = (props) => {
   const {
     class: cls,
     onDismiss,
     ...otherProps
   } = props;
+  /** @type {import('preact').Ref<HTMLDivElement>} */
+  const backdropRef = useRef(null);
+  const onBackdropClick = useCallback(
+    /** @param {MouseEvent} e */
+    function onBackdropClick(e) {
+      if ((/** @type {HTMLElement} */(e.target))?.contains(backdropRef.current)) {
+        onDismiss();
+      }
+    },
+    [ onDismiss ]
+  );
 
   return (
     <div
+      ref={backdropRef}
       class={`${styles.overlay} ${cls ?? ''}`}
-      onClick={onDismiss}
+      onClick={onBackdropClick}
       {...otherProps}
     />
   );
@@ -165,14 +177,9 @@ const ModalDialog = function(props) {
     children,
     cls,
     dialogContentsRef,
-    isOpen,
     onDismiss,
     title
   } = useModalDialog(props);
-
-  if (!isOpen) {
-    return null;
-  }
 
   return (
     <Portal to="#modal-container">

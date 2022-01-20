@@ -15,7 +15,7 @@ import {
  */
 
 function useSession() {
-  /** @type {import('~/t').RemoteObject<Session>} */
+  /** @type {import('~/t').RemoteObject<Session, SignInShape>} */
   const {
     busy,
     data,
