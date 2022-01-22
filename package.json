@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "bootstrap": "./tools/bootstrap.sh"
   },
   "keywords": [],
@@ -24,6 +24,7 @@
     "@babel/preset-env": "^7.16.5",
     "@types/eslint": "^7.28.1",
     "@types/estree": "^0.0.50",
+    "@types/jest": "^27.4.0",
     "babel-preset-preact": "^2.0.0",
     "eslint": "^7.15.0",
     "eslint-plugin-import": "^2.22.1",
