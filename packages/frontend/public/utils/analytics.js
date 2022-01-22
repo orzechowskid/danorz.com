@@ -18,6 +18,8 @@ async function fireEvent(eventData) {
     postData(`analytics/event`, {
       event: payload
     });
+
+    return true;
   }
   catch (ex) {
     // TODO: dump into local storage and retry later

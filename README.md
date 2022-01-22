@@ -1,6 +1,6 @@
 # Prerequisites
 
-- install node@^14.0.0
+- install node@^16.0.0
 - install npm@^7.0.0
 - install Docker
 
