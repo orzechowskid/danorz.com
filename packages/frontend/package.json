@@ -7,7 +7,6 @@
     "serve": "wmr serve"
   },
   "dependencies": {
-    "@react-aria/utils": "^3.6.0",
     "focus-layers": "^0.6.1",
     "intl-messageformat": "^9.5.2",
     "lodash": "^4.17.21",
