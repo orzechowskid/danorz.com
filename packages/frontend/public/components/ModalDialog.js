@@ -1,32 +1,119 @@
+import useFocusLock, {
+  FocusGuard
+} from 'focus-layers';
 import {
-  useRef
+  createContext
+} from 'preact';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
 } from 'preact/hooks';
+
+import Portal from '~/components/Portal.js';
 
 import styles from './ModalDialog.module.css';
 
 /**
- * @typedef {Object} ModalDialogOwnProps
- * @property {string} [title]
+ * @typedef {Object} ModalDialogProps
  * @property {import('preact').ComponentChildren} [children]
- * @property {string} [className]
+ * @property {string} [class]
+ * @property {boolean} isOpen
+ * @property {() => void} [onDismiss]
+ * @property {string} [title]
+ * @property {import('preact/hooks').Ref<HTMLElement>} [triggerRef]
  *
- * @typedef {import('@react-aria/overlays').OverlayProps & import('@react-types/dialog').AriaDialogProps & ModalDialogOwnProps} ModalDialogProps
+ * @typedef EscapeToCloseProps
+ * @property {() => void} onEscape
+ * @property {import('preact/hooks').Ref<HTMLElement>} ref
  */
 
-/** @type {import('~/t').Component<{children: import('preact').ComponentChildren}>} */
+/** @type {import('~/t').Context<Record<string, function>>} */
+const ModalDialogContext = createContext(undefined);
+
+/** @type {import('~/t').Component<{}>} */
+const ModalDialogProvider = (props) => {
+  const {
+    children
+  } = props;
+  /** @type {import('preact/hooks').MutableRef<boolean>} */
+  const mountedRef = useRef(false);
+  const onDialogMount = useCallback(function onDialogMount() {
+    if (mountedRef.current) {
+      throw new Error(`only one modal dialog can be mounted at a time`);
+    }
+
+    mountedRef.current = true;
+    document?.querySelector(`#app`)?.setAttribute(`aria-hidden`, `true`);
+  }, []);
+  const onDialogUnmount = useCallback(function onDialogUnmount() {
+    mountedRef.current = false;
+    document?.querySelector(`#app`)?.removeAttribute(`aria-hidden`);
+  }, []);
+
+  return (
+    <ModalDialogContext.Provider value={{
+      onDialogMount, onDialogUnmount
+    }}>
+      {children}
+    </ModalDialogContext.Provider>
+  );
+};
+
+/**
+ * @param {EscapeToCloseProps} opts
+ */
+function useEscapeToClose(opts) {
+  const {
+    onEscape,
+    ref
+  } = opts;
+
+  useLayoutEffect(function manageEventListener() {
+    /** @param {KeyboardEvent} e */
+    function onKeyDown(e) {
+      if (e.key === `Escape`) {
+        onEscape();
+      }
+    }
+
+    ref.current?.addEventListener(`keydown`, onKeyDown);
+
+    return function cleanup() {
+      ref.current?.removeEventListener(`keydown`, onKeyDown);
+    };
+  }, [ onEscape ]);
+}
+
+/** @type {import('~/t').Component<{ onDismiss: () => void}>} */
 const ModalBackdrop = (props) => {
   const {
-    children,
+    class: cls,
+    onDismiss,
     ...otherProps
   } = props;
+  /** @type {import('preact').Ref<HTMLDivElement>} */
+  const backdropRef = useRef(null);
+  const onBackdropClick = useCallback(
+    /** @param {MouseEvent} e */
+    function onBackdropClick(e) {
+      if ((/** @type {HTMLElement} */(e.target))?.contains(backdropRef.current)) {
+        onDismiss();
+      }
+    },
+    [ onDismiss ]
+  );
 
   return (
     <div
-      className={styles.overlay}
+      ref={backdropRef}
+      class={`${styles.overlay} ${cls ?? ''}`}
+      onClick={onBackdropClick}
       {...otherProps}
-    >
-      {children}
-    </div>
+    />
   );
 };
 
@@ -36,34 +123,51 @@ const ModalBackdrop = (props) => {
 function useModalDialog(props) {
   const {
     children,
-    className,
-    title
+    class: cls,
+    isOpen,
+    onDismiss,
+    title,
+    triggerRef
   } = props;
-  const dialogContentsRef = useRef();
-  // const {
-  //   overlayProps,
-  //   underlayProps
-  // } = useOverlay(props, dialogContentsRef);
-  // const {
-  //   modalProps
-  // } = useModal();
-  // const {
-  //   dialogProps,
-  //   titleProps
-  // } = useDialog(props, dialogContentsRef)
+  const contextManager = useContext(ModalDialogContext);
+  /** @type {import('preact/hooks').Ref<HTMLElement>} */
+  const dialogContentsRef = useRef(null);
+  const onEscape = useCallback(function onEscape() {
+    onDismiss?.();
+  }, [ onDismiss ]);
+  useEscapeToClose({
+    onEscape,
+    ref: dialogContentsRef
+  });
 
-  // usePreventScroll();
+  useFocusLock(dialogContentsRef, {
+    returnRef: triggerRef
+  });
+
+  if (!contextManager) {
+    throw new Error(`can't useModalDialog outside of ModalDialogContext`);
+  }
+
+  const {
+    onDialogMount,
+    onDialogUnmount
+  } = contextManager;
+
+  useEffect(function onMount() {
+    onDialogMount();
+
+    return function onUnmount() {
+      onDialogUnmount();
+    };
+  }, [ onDialogMount, onDialogUnmount ]);
 
   return {
     children,
-    className,
+    cls,
     dialogContentsRef,
-    // dialogProps,
-    // modalProps,
-    // overlayProps,
+    isOpen,
+    onDismiss,
     title
-    // titleProps,
-    // underlayProps
   };
 }
 
@@ -71,43 +175,36 @@ function useModalDialog(props) {
 const ModalDialog = function(props) {
   const {
     children,
-    className,
+    cls,
     dialogContentsRef,
-    dialogProps = {},
-    modalProps = {},
-    overlayProps = {},
-    title,
-    titleProps = {},
-    underlayProps = {}
+    onDismiss,
+    title
   } = useModalDialog(props);
 
   return (
-    <ModalBackdrop>
-      <div
-        className={styles.dialogContainer}
-        {...underlayProps}
-      >
+    <Portal to="#modal-container">
+      <ModalBackdrop onDismiss={onDismiss}>
+        <FocusGuard />
         <div
           ref={dialogContentsRef}
-          {...overlayProps}
-          {...dialogProps}
-          {...modalProps}
-          className={className}
+          class={cls}
         >
           {title && (
-            <div {...titleProps}>
+            <div>
               {title}
             </div>
           )}
           {children}
         </div>
-      </div>
-    </ModalBackdrop>
+        <FocusGuard />
+      </ModalBackdrop>
+    </Portal>
   );
 }
 
 export {
   ModalBackdrop,
+  ModalDialogProvider,
   useModalDialog
 };
 export default ModalDialog;

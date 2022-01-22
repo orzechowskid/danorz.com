@@ -13,6 +13,9 @@ import {
 import {
   useSession
 } from '~/utils/useSession.js';
+import {
+  useStateWhenMounted
+} from '~/utils/useStateWhenMounted.js';
 
 import styles from './SignInForm.module.css';
 
@@ -20,16 +23,15 @@ function useSignInForm() {
   const {
     signIn
   } = useSession();
-  /** @type {import('~/t').LocalState<boolean>} */
-  const [ isBusy, setBusy ] = useState(false);
-  /** @type {import('~/t').LocalState<number>} */
-  const [ focusedEls, setFocusedEls ] = useState(0);
+  /* some parents unmount this component upon successful login */
+  const [ isBusy, setBusy ] = useStateWhenMounted(false);
+  const [ focusedEls, setFocusedEls ] = useStateWhenMounted(0);
   /** @type {(e: SubmitEvent) => void} */
   const onSignIn = useCallback(async function onSignIn(e) {
     const {
       password,
       username
-    } = getFormData(e.target);
+    } = getFormData(/** @type {HTMLFormElement} */(e.target));
 
     e.preventDefault();
     setBusy(true);

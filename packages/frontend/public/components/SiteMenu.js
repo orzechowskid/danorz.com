@@ -1,12 +1,10 @@
 import {
   useCallback,
-  useRef
+  useRef,
+  useState
 } from 'preact/hooks';
 
-import {
-  useModalDialog,
-  ModalBackdrop
-} from '~/components/ModalDialog.js';
+import ModalDialog from '~/components/ModalDialog.js';
 import SignInForm from '~/components/SignInForm.js';
 import {
   useI18n
@@ -21,6 +19,7 @@ function useSiteMenu() {
   const {
     t
   } = useI18n();
+  const [ isOpen, setOpen ] = useState(false);
   // const state = useOverlayTriggerState({});
   const triggerButtonRef = useRef();
   // const {
@@ -35,85 +34,44 @@ function useSiteMenu() {
     isSignedIn,
     signOut
   } = useSession();
+  const onTriggerClick = useCallback(
+    function onTriggerClick() {
+      setOpen(true);
+    },
+    []
+  );
   const onSignOut = useCallback(
     async function onSignOut() {
       signOut();
       // state.close();
     },
-    [ signOut/*, state?.close*/ ]);
-
-  return {
-    // buttonProps,
-    isSignedIn,
-    onSignOut,
-    // state,
-    t,
-    triggerButtonRef
-  };
-}
-
-/**
- * @typedef {Object} SiteMenuContainerProps
- * @property {() => void} onClose
- */
-
-/**
- * @param {SiteMenuContainerProps} props
- */
-function useSiteMenuContainer(props) {
-  const {
-    children,
-    dialogContentsRef,
-    dialogProps = {},
-    modalProps = {},
-    overlayProps = {},
-    underlayProps = {}
-  } = useModalDialog({
-    ...props,
-    isDismissable: true,
-    isOpen: true
-  });
-
-  return {
-    children,
-    dialogContentsProps: {
-      ...overlayProps,
-      ...dialogProps,
-      ...modalProps
-    },
-    dialogContentsRef,
-    underlayProps
-  };
-}
-
-/** @type {import('~/t').Component<SiteMenuContainerProps>} */
-const SiteMenuContainer = (props) => {
-  const {
-    children,
-    dialogContentsProps,
-    dialogContentsRef,
-    underlayProps
-  } = useSiteMenuContainer(props);
-
-  return (
-    <ModalBackdrop {...underlayProps}>
-      <div
-        ref={dialogContentsRef}
-        {...dialogContentsProps}
-        className={styles.siteMenu}
-      >
-        {children}
-      </div>
-    </ModalBackdrop>
+    [ signOut/*, state?.close*/ ]
   );
+  const onDismissMenu = useCallback(
+    function onDismissMenu() {
+      setOpen(false);
+    },
+    []
+  );
+
+  return {
+    isMenuVisible: isOpen,
+    isSignedIn,
+    onDismissMenu,
+    onSignOut,
+    t,
+    triggerButtonRef,
+    onTriggerClick
+  };
 }
 
 const SiteMenu = () => {
   const {
-    buttonProps = {},
+    isMenuVisible,
     isSignedIn,
+    onDismissMenu,
     onSignOut,
-    state = {},
+    onTriggerClick,
     t,
     triggerButtonRef
   } = useSiteMenu();
@@ -122,21 +80,29 @@ const SiteMenu = () => {
     <>
       <button
         ref={triggerButtonRef}
-        className={styles.menuTrigger}
-        {...buttonProps}
+        aria-label={t(`SiteMenu:trigger-label`)}
+        class={styles.menuTrigger}
+        onClick={onTriggerClick}
       >
-        <span className={styles.menuTriggerIcon}>
+        <span
+          class={styles.menuTriggerIcon}
+          role="presentation"
+        >
           &#x2630;
         </span>
       </button>
 
-      {state.isOpen && (
-        <SiteMenuContainer onClose={state.close}>
+      {isMenuVisible && (
+        <ModalDialog
+          class={styles.siteMenu}
+          onDismiss={onDismissMenu}
+          triggerRef={triggerButtonRef}
+        >
           {isSignedIn
             ? <button onClick={onSignOut}>{t(`SiteMenu:sign-out`)}</button>
             : <SignInForm />
           }
-        </SiteMenuContainer>
+        </ModalDialog>
       )}
     </>
   );

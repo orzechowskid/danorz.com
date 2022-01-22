@@ -149,6 +149,16 @@ time {
   background-color: var(--color-page-background);
 }
 
+#modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-index-modal-backdrop);
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
 [at-only] {
   position: fixed;
   top: -1px;

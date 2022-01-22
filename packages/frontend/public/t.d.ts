@@ -2,6 +2,7 @@ import {
   Indexed
 } from 'dto';
 import {
+  Context as ContextImpl,
   FunctionComponent,
   JSX
 } from 'preact';
@@ -12,6 +13,7 @@ import {
 export type EventHandler<T extends EventTarget> = JSX.GenericEventHandler<T>;
 
 export type Component<Props = {}> = FunctionComponent<JSX.HTMLAttributes & Props>;
+export type Context<T> = ContextImpl<T|undefined>;
 
 export interface RemoteObject<T, CreateShape = Partial<T>, UpdateShape = T> {
   busy: boolean;
