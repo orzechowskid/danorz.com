@@ -25,6 +25,8 @@
     "@types/eslint": "^7.28.1",
     "@types/estree": "^0.0.50",
     "@types/jest": "^27.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "@typescript-eslint/parser": "^5.10.0",
     "babel-jest": "^27.4.6",
     "babel-preset-preact": "^2.0.0",
     "eslint": "^7.15.0",

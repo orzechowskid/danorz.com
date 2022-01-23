@@ -4,6 +4,16 @@
   "env": {
     "es2021": true
   },
+  "overrides": [{
+    "files": [ "**/*.test.js" ],
+    "env": {
+      "jest/globals": true
+    },
+    "plugins": [
+      "jest"
+    ]
+  }],
+  "parser": "@typescript-eslint/parser",
   "plugins": [
     "import",
     "jsdoc",

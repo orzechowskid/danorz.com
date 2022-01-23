@@ -3,7 +3,7 @@ import {
 } from './dataCache.js';
 
 describe(`the DataCache class`, function() {
-  describe(`when manually setting and getting`, function() {
+  describe(`when manually invoked`, function() {
     it(`sets and gets with the same key`, function() {
       const cache = new DataCache();
 
