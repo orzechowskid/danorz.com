@@ -1,5 +1,5 @@
 {
-  "*.{js,jsx}": "eslint --fix",
+  "*.{js,jsx}": "npx eslint --fix",
   "*.json": "jsonlint -q",
   "*.ts": "tsc --noEmit --strict"
 }
