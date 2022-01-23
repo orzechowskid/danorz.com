@@ -1,5 +1,5 @@
 {
-  "*.{js,jsx}": "eslint --env-info --fix",
+  "*.{js,jsx}": "eslint --fix",
   "*.json": "jsonlint -q",
   "*.ts": "tsc --noEmit --strict"
 }
