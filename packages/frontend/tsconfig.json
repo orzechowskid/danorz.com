@@ -19,14 +19,11 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ESNext",
-    "typeRoots": [
-      "./node_modules",
-      "../../mode_modules",
-      "../../tools",
-      "."
-    ],
     "useUnknownInCatchVariables": false
   },
+  "exclude": [
+    "./public/**/*.test.*"
+  ],
   "include": [
     "./public/**/*"
   ],

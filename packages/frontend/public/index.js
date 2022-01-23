@@ -82,7 +82,9 @@ function AppContents() {
 
   return (
     <>
-      <a id="skip-link" href="#main">skip to content</a>
+      <a id="skip-link" href="#main">
+        skip to content
+      </a>
       <Header />
       <Busy
         as="main"

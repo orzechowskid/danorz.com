@@ -10,6 +10,16 @@
   "globals": {
     "browser": true
   },
+  "overrides": [{
+    "files": [ "**/*.test.js" ],
+    "globals": {
+      "jest": true,
+      "jest/globals": true
+    },
+    "plugins": [
+      "jest"
+    ]
+  }],
   "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": 2020,
