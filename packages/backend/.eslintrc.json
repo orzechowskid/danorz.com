@@ -3,7 +3,7 @@
     "node": true
   },
   "extends": [
-    "../../.eslintrc.base.json"
+    "../../.eslintrc.json"
   ],
   "parserOptions": {
     "sourceType": "module"

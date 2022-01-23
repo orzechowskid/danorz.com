@@ -4,18 +4,11 @@
     "es2020": true
   },
   "extends": [
-    "../../.eslintrc.base.json",
+    "../../.eslintrc.json",
     "plugin:react/recommended"
   ],
   "globals": {
     "browser": true
-  },
-  "parser": "@babel/eslint-parser",
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "jsx": true,
-    "sourceType": "module",
-    "project": [ "./tsconfig.json" ]
   },
   "plugins": [
     "react",
