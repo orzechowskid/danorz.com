@@ -1,29 +1,29 @@
 import styles from './Busy.module.css';
 
 /**
- * @typedef {'div'|'main'|'section'|'span'} Els
+ * @typedef {'div'|'main'|'section'|'span'} ElTags
  *
  * @typedef BusyContainerSelfProps
- * @property {Els} [as]
- * @property {boolean} ready;
+ * @property {ElTags|import('~/t').Component<any>} [asTag]
+ * @property {boolean} ready
  *
- * @typedef {BusyContainerSelfProps & import('preact').JSX.HTMLAttributes<HTMLElement>} BusyContainerProps
+ * @typedef {BusyContainerSelfProps & import('~/t').HTMLAttributes} BusyContainerProps
  *
- * @typedef {Omit<BusyContainerProps, 'as'>} BusyContainerHelperProps
+ * @typedef {Omit<BusyContainerProps, 'asTag'>} BusyContainerHelperProps
  *
- * @typedef {Record<Els, import('~/t').Component<BusyContainerHelperProps>>} Helpers
+ * @typedef {Record<ElTags, import('~/t').Component<BusyContainerHelperProps>>} Helpers
  */
 
 /** @type {import('~/t').Component<BusyContainerProps>} */
 const BusyContainer = function(props) {
   const {
-    as = `div`,
+    asTag = `div`,
     children,
     class: cls,
     ready,
     ...otherProps
   } = props;
-  const ElementName = as;
+  const ElementName = asTag;
   const classname = cls || ``;
 
   return (

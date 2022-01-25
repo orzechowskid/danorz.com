@@ -19,6 +19,7 @@ import {
 function useSiteSettings() {
   /** @type {SiteSettingsObject} */
   const {
+    busy,
     data,
     put
   } = useRemoteObject(`env/settings`, {
@@ -66,6 +67,7 @@ function useSiteSettings() {
   }
 
   return {
+    busy,
     data,
     getSetting,
     updateSetting

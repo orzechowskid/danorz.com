@@ -6,7 +6,7 @@ import {
  * @typedef SectionSelfProps
  * @property {'article'|'aside'|'nav'|'section'} [as]
  *
- * @typedef {SectionSelfProps & import('~/t').HTMLAttributes} SectionProps
+ * @typedef {SectionSelfProps & Omit<import('~/t').HTMLAttributes, 'as'>} SectionProps
  */
 
 /** @type {import('~/t').Component<SectionProps>} */

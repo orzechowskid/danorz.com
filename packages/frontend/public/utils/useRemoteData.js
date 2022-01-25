@@ -1,7 +1,6 @@
 import {
   useCallback,
-  useEffect,
-  useState
+  useEffect
 } from 'preact/hooks';
 
 import {
@@ -14,6 +13,9 @@ import {
 import {
   DataCache
 } from '~/utils/dataCache.js';
+import {
+  useStateWhenMounted
+} from '~/utils/useStateWhenMounted.js';
 
 /**
  * @typedef ExtraRequestOpts
@@ -50,9 +52,9 @@ function useRemoteObject(path, opts) {
     putOpts,
     ttl
   } = opts ?? {};
-  const [ busy, setBusy ] = useState(false);
+  const [ busy, setBusy ] = useStateWhenMounted(false);
   /** @type {import('~/t').LocalState<T|undefined>} */
-  const [ data, setData ] = useState();
+  const [ data, setData ] = useStateWhenMounted(getOpts?.noCache ? undefined : dataCache.get(path)?.data);
   const del = useCallback(
     async function doDelete() {
       setBusy(true);
@@ -251,9 +253,9 @@ function useRemoteCollection(path, opts) {
     putOpts,
     ttl
   } = opts ?? {};
-  const [ busy, setBusy ] = useState(false);
+  const [ busy, setBusy ] = useStateWhenMounted(false);
   /** @type {import('~/t').LocalState<import('dto').Indexed<T>[]|undefined>} */
-  const [ data, setData ] = useState();
+  const [ data, setData ] = useStateWhenMounted();
   const del = useCallback(
     /**
      * @param {import('dto').Indexed<T>} oldObj

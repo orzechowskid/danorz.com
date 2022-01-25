@@ -6,7 +6,7 @@ import {
 } from 'preact/hooks';
 
 /**
- * @param {T} initialValue
+ * @param {T} [initialValue]
  * @returns {import('~/t').LocalState<T>}
  * @template T
  */

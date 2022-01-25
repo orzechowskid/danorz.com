@@ -1,4 +1,9 @@
 import {
+  useEffect,
+  useState
+} from 'preact/hooks';
+
+import {
   useRemoteObject
 } from './useRemoteData.js';
 
@@ -25,13 +30,10 @@ function useSession() {
     ttl: 1000  * 86400
   });
 
-  const isSignedIn = busy
-    ? undefined
-    : data?.isLoggedIn ?? false;
-
   return {
+    busy,
     currentUser: data?.name,
-    isSignedIn,
+    isSignedIn: data?.isLoggedIn,
     signIn: post,
     signOut: del
   };
