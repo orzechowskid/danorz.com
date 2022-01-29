@@ -6,7 +6,7 @@ module.exports = {
   },
   name: `frontend`,
   setupFiles: [
-    `<rootDir>/__tests__/index.js`
+    `<rootDir>/__test-setup__/index.js`
   ],
   testEnvironment: `jsdom`
 };
