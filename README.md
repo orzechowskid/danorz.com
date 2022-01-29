@@ -2,7 +2,7 @@
 
 - install node@^16.0.0
 - install npm@^7.0.0
-- install Docker
+- install Docker and docker-compose
 
 # Getting Started
 
