@@ -27,13 +27,16 @@ function useSession() {
     del,
     post
   } = useRemoteObject(`auth/session`, {
+    getOpts: {
+      rawResponse: false//true
+    },
     ttl: 1000  * 86400
   });
 
   return {
     busy,
     currentUser: data?.name,
-    isSignedIn: data?.isLoggedIn,
+    isSignedIn: busy === true ? undefined : (data?.isLoggedIn ?? false),
     signIn: post,
     signOut: del
   };

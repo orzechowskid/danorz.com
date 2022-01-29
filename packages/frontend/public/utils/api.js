@@ -32,27 +32,16 @@ async function rawRequest(apiEndpoint, opts = {}) {
  * @template T
  */
 async function getData(apiEndpoint, opts = {}) {
-  try {
-    const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
-      method: `GET`,
-      ...opts
-    });
+  const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
+    method: `GET`,
+    ...opts
+  });
 
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
 
-    return response.json();
-  }
-  catch (ex) {
-    return {
-      data: [],
-      metadata: {
-        count: -1,
-        error: ex.message
-      }
-    };
-  }
+  return response.json();
 }
 
 /**
@@ -65,29 +54,18 @@ async function getData(apiEndpoint, opts = {}) {
  * @template T
  */
 async function postData(apiEndpoint, payload, opts = {}) {
-  try {
-    const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
-      body: JSON.stringify(payload),
-      method: `POST`,
-      ...opts,
-      headers: {
-        'Content-Type': `application/json`,
-        ...(opts.headers ?? {})
-      }
-    });
-    const json = await response.json();
+  const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
+    body: JSON.stringify(payload),
+    method: `POST`,
+    ...opts,
+    headers: {
+      'Content-Type': `application/json`,
+      ...(opts.headers ?? {})
+    }
+  });
+  const json = await response.json();
 
-    return json;
-  }
-  catch (ex) {
-    return {
-      data: [],
-      metadata: {
-        count: -1,
-        error: ex.message
-      }
-    };
-  }
+  return json;
 }
 
 /**
@@ -101,24 +79,18 @@ async function postData(apiEndpoint, payload, opts = {}) {
  * @template T
  */
 async function putData(apiEndpoint, payload, opts = {}) {
-  try {
-    const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
-      body: JSON.stringify(payload),
-      method: `PUT`,
-      ...opts,
-      headers: {
-        'Content-Type': `application/json`,
-        ...(opts.headers ?? {})
-      }
-    });
-    const json = await response.json();
+  const response = await window.fetch(`${API_PATH}/${apiEndpoint}`, {
+    body: JSON.stringify(payload),
+    method: `PUT`,
+    ...opts,
+    headers: {
+      'Content-Type': `application/json`,
+      ...(opts.headers ?? {})
+    }
+  });
+  const json = await response.json();
 
-    return json;
-  }
-  catch (ex) {
-    // TODO: analytics
-    throw new Error(ex.message);
-  }
+  return json;
 }
 
 /**

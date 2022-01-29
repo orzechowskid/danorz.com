@@ -72,6 +72,7 @@ function useApp() {
     data: siteSettings
   } = useSiteSettings();
   const {
+    busy,
     isSignedIn
   } = useSession();
   const sessionCheck = isSignedIn !== undefined;

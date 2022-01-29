@@ -52,13 +52,11 @@ function useRemoteObject(path, opts) {
     putOpts,
     ttl
   } = opts ?? {};
-  const [ busy, setBusy ] = useStateWhenMounted(false);
   /** @type {import('~/t').LocalState<T|undefined>} */
   const [ data, setData ] = useStateWhenMounted(getOpts?.noCache ? undefined : dataCache.get(path)?.data);
+  const [ ready, setReady ] = useStateWhenMounted(getOpts?.noCache ? false : !!data);
   const del = useCallback(
     async function doDelete() {
-      setBusy(true);
-
       try {
         const {
           noCache,
@@ -78,7 +76,7 @@ function useRemoteObject(path, opts) {
         console.error(ex);
       }
 
-      setBusy(false);
+      setReady(true);
     },
     [ deleteOpts, path ]
   );
@@ -91,11 +89,10 @@ function useRemoteObject(path, opts) {
 
       if (cacheEntry) {
         setData(cacheEntry.data);
+        setReady(true);
 
         return;
       }
-
-      setBusy(true);
 
       try {
         const {
@@ -113,7 +110,6 @@ function useRemoteObject(path, opts) {
         const unwrapped = rawResponse
           ? response
           : response.data?.[0];
-
         setData(unwrapped);
 
         if (!noCache) {
@@ -124,15 +120,13 @@ function useRemoteObject(path, opts) {
         console.error(path, ex);
       }
 
-      setBusy(false);
+      setReady(true);
     },
     [ getOpts, path, ttl ]
   );
   const post = useCallback(
     /** @param {CreateShape} payload */
     async function doCreate(payload) {
-      setBusy(true);
-
       try {
         const {
           noCache,
@@ -169,15 +163,13 @@ function useRemoteObject(path, opts) {
         console.error(ex);
       }
 
-      setBusy(false);
+      setReady(true);
     },
     [ postOpts, path, ttl ]
   );
   const put = useCallback(
     /** @param {UpdateShape} payload */
     async function doUpdate(payload) {
-      setBusy(true);
-
       try {
         const {
           noCache,
@@ -193,7 +185,7 @@ function useRemoteObject(path, opts) {
         console.error(ex);
       }
 
-      setBusy(false);
+      setReady(true);
     },
     [ putOpts, get, path ]
   );
@@ -231,7 +223,7 @@ function useRemoteObject(path, opts) {
   );
 
   return {
-    busy,
+    busy: !ready,
     data,
     del,
     get,
