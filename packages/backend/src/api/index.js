@@ -8,6 +8,7 @@ import envRouter from './envRoutes.js';
 import galleryRouter from './galleryRoutes.js';
 import i18nRouter from './i18nRoutes.js';
 import linkPreviewRouter from './linkpreview.js';
+import socialRouter from './socialRoutes.js';
 
 function factory() {
   const router = express.Router({
@@ -22,6 +23,7 @@ function factory() {
   router.use(`/i18n`, i18nRouter);
   router.use(`/linkpreview`, linkPreviewRouter);
   router.use(`/media`, galleryRouter);
+  router.use(`/social`, socialRouter);
 
   router.use(function onError(err, req, res, next) {
     console.error(err.stack);

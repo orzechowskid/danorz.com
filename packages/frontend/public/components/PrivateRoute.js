@@ -2,6 +2,9 @@ import {
   useEffect
 } from 'preact/hooks';
 import {
+  Route
+} from 'preact-iso';
+import {
   useLocation
 } from 'preact-iso/router';
 
@@ -23,10 +26,11 @@ function usePrivateRoute() {
   };
 }
 
-/** @type {Component<PrivateRouteProps>} */
-function PrivateRoute(props) {
+/** @type {import('~/t').Component<import('preact-iso').RouteProps<any>>} */
+const PrivateRoute = function(props) {
   const {
-    component: Component
+    component: Component,
+    path
   } = props;
   const {
     isSignedIn,
@@ -35,8 +39,8 @@ function PrivateRoute(props) {
 
   useEffect(function componentDidMount() {
     if (isSignedIn === false) {
-      window.history.pushState(undefined, ``, `/home`);
-      route(`/home`);
+      window.history.pushState(undefined, ``, `/`);
+      route(`/`);
     }
   }, [ isSignedIn ]);
 
@@ -45,7 +49,7 @@ function PrivateRoute(props) {
   }
 
   return (
-    <Component />
+    <Route path={path} component={Component} />
   );
 }
 

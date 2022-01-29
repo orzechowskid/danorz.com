@@ -22,6 +22,7 @@ import Header from './components/Header.js';
 import {
   ModalDialogProvider
 } from './components/ModalDialog.js';
+import PrivateRoute from './components/PrivateRoute.js';
 import {
   fireEvent
 } from './utils/analytics.js';
@@ -47,6 +48,7 @@ const Blog = lazy(() => import('./pages/blog/index.js'));
 const BlogPost = lazy(() => import('./pages/blog/post.js'));
 const Photos = lazy(() => import('./pages/photos/index.js'));
 const PhotoGallery = lazy(() => import('./pages/photos/gallery.js'));
+const Settings = lazy(() => import('./pages/settings/index.js'));
 
 /**
  * @param {Error} err
@@ -70,6 +72,7 @@ function useApp() {
     data: siteSettings
   } = useSiteSettings();
   const {
+    busy,
     isSignedIn
   } = useSession();
   const sessionCheck = isSignedIn !== undefined;
@@ -87,7 +90,7 @@ function AppContents() {
       </a>
       <Header />
       <Busy
-        as="main"
+        asTag="main"
         id="main"
         ready={ready}
       >
@@ -98,6 +101,7 @@ function AppContents() {
           <Route path="/blog/posts/:id" component={BlogPost} />
           <Route path="/photos" component={Photos} />
           <Route path="/photos/gallery/:id" component={PhotoGallery} />
+          <PrivateRoute path="/settings" component={Settings} />
           <Route default component={NotFound} />
         </Router>
       </Busy>

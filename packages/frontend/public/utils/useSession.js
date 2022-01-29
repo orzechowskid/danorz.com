@@ -1,4 +1,9 @@
 import {
+  useEffect,
+  useState
+} from 'preact/hooks';
+
+import {
   useRemoteObject
 } from './useRemoteData.js';
 
@@ -22,16 +27,16 @@ function useSession() {
     del,
     post
   } = useRemoteObject(`auth/session`, {
+    getOpts: {
+      rawResponse: false//true
+    },
     ttl: 1000  * 86400
   });
 
-  const isSignedIn = busy
-    ? undefined
-    : data?.isLoggedIn ?? false;
-
   return {
+    busy,
     currentUser: data?.name,
-    isSignedIn,
+    isSignedIn: busy === true ? undefined : (data?.isLoggedIn ?? false),
     signIn: post,
     signOut: del
   };

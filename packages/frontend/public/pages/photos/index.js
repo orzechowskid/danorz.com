@@ -55,7 +55,7 @@ const Photos = () => {
 
   return (
     <Busy
-      as="div"
+      asTag="div"
       className={layoutStyles.layout}
       ready
     >
