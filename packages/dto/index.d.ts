@@ -1,4 +1,5 @@
 export type Id = string;
+export type Timestamp = ReturnType<typeof Date.prototype.toISOString>;
 
 export type Indexed<T> = T & {
   _id?: Id;
@@ -16,7 +17,7 @@ export interface BlogPostComment {
   gravatarHash: string;
   name: string;
   text: string;
-  timestamp: string; /* ISO-8601 */
+  timestamp: Timestamp;
 }
 
 export interface BlogPost {
@@ -24,7 +25,7 @@ export interface BlogPost {
   comments: BlogPostComment[];
   tags: string[];
   text: string;
-  timestamp: string; /* ISO-8601 */
+  timestamp: Timestamp;
   title: string;
 }
 
@@ -64,8 +65,6 @@ export interface SettingsUpdate {
   value: any;
 }
 
-export type Timestamp = ReturnType<typeof Date.prototype.toISOString>;
-
 export type SiteBannerData = Indexed<{
   bannerDismissable: boolean;
   bannerSeverity: 'info' | 'warning';
@@ -78,10 +77,23 @@ export interface GalleryItem {
   mimeType: string;
   path: string;
   thumbnailPath: string;
-  timestamp: string; /* ISO-8601 */
+  timestamp: Timestamp;
 }
 
 export interface PhotoGallery {
   items: GalleryItem[];
   name: string;
+}
+
+export type RemotePeerRequestStatus = "requested" | "awaitingVerification";
+
+export interface RemotePeerRequest {
+  status: RemotePeerRequestStatus;
+  timestamp: Timestamp;
+  url: string;
+}
+
+export interface RemotePeer {
+  timestamp: Timestamp;
+  url: string;
 }

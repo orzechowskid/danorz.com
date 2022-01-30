@@ -4,6 +4,7 @@ import passport from 'passport';
 import * as Content from './content.js';
 import * as Galleries from './galleries.js';
 import * as LinkPreview from './linkpreview.js';
+import * as PeerRequests from './peer-requests.js';
 import * as Posts from './posts.js';
 import * as Settings from './settings.js';
 import * as User from './user.js';
@@ -59,6 +60,8 @@ class DBConnection {
     this.getGalleries = Galleries.getGalleries;
     this.createGallery = Galleries.createGallery;
     this.createGalleryItem = Galleries.createGalleryItem;
+
+    this.getRemotePeerRequests = PeerRequests.getRemotePeerRequests;
   }
 
   async disconnect() {

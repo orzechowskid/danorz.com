@@ -3,6 +3,8 @@ import {
   GalleryItem,
   Indexed,
   PhotoGallery,
+  RemotePeer,
+  RemotePeerRequest,
   SettingsUpdate,
   SiteSettings,
   User
@@ -10,12 +12,21 @@ import {
 import {
   NextFunction,
   Request,
-  Response
+  Response,
 } from 'express';
+
+export interface StorageService {
+  createFolder: () => Promise<void>;
+  getBaseUrl: () => Promise<void>;
+  getFolderContents: () => Promise<void>;
+  getObject: () => Promise<void>;
+  uploadObject: () => Promise<void>;
+}
 
 export interface AugmentedResponse extends Response {
   locals: {
     db: DBConnection;
+    storage: StorageService;
   }
 }
 
@@ -56,8 +67,10 @@ export interface DBConnection {
   configureUserAuth: () => void;
 
   createGalleryItem: DBWriteFunction<GalleryItem[]>; // ?
+  createRemotePeerRequest: DBWriteFunction<RemotePeerRequest>;
   getBlogPosts: DBQueryFunction<BlogPost>;
   getGalleries: DBQueryFunction<PhotoGallery>;
+  getRemotePeerRequests: DBQueryFunction<RemotePeerRequest[]>;
   getSettings: DBQueryFunction<SiteSettings>;
   getUser: DBQueryFunction<User>;
   updateSettings: DBWriteFunction<SettingsUpdate, SiteSettings>;

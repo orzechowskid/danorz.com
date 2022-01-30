@@ -26,7 +26,7 @@ export async function runStandardCreateQuery(model, dbQuery) {
 
 /**
  * @param {import('mongoose').Model<Payload>} model
- * @param {import('~/t').DBQuery<Payload>} dbQuery
+ * @param {import('~/t').DBQuery<Payload, void>} dbQuery
  * @return {Promise<import('~/t').DBQueryResult<Payload>>}
  * @template Payload
  */
